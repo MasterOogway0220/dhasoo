@@ -13,7 +13,7 @@ window.D = {
   },
 
   nav: {
-    super_admin:   ['overview','shows','audience','call-queue','broadcast','analytics'],
+    super_admin:   ['overview','shows','audience','call-queue','broadcast','settings'],
     event_manager: ['overview','shows','audience','broadcast'],
     calling_agent: ['call-queue','audience'],
     gate_staff:    [],

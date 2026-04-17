@@ -1,5 +1,95 @@
 window.ShowDetailPage = {
   render(params) {
+    return isMobile() ? this.renderMobile(params) : this.renderDesktop(params);
+  },
+
+  renderMobile(params) {
+    const showId = params?.showId || 4;
+    const show = D.shows.find(s => s.id === showId) || D.shows[3];
+    const regs = D.registrations.filter(r => r.showId === showId);
+    const pct = Math.round((show.filled / show.seats) * 100);
+    const confirmCount = regs.filter(r => r.callStatus === 'confirmed').length;
+    const checkinCount = regs.filter(r => r.checkin === 'checked_in').length;
+    const stCfg = {
+      active:    { label: 'LIVE NOW',   bg: '#22c55e' },
+      full:      { label: 'SOLD OUT',   bg: '#f97316' },
+      completed: { label: 'COMPLETED',  bg: '#94a3b8' },
+      cancelled: { label: 'CANCELLED',  bg: '#ef4444' },
+    };
+    const st = stCfg[show.status] || { label: show.status.toUpperCase(), bg: '#94a3b8' };
+    const callColors = { confirmed: '#22c55e', declined: '#ef4444', no_answer: '#f97316', not_called: '#94a3b8', callback: '#3B4FDB' };
+
+    const regCards = regs.map(r => `
+      <div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #f1f5f9;cursor:pointer" onclick="navigate('audience',{userId:'${r.id}'})">
+        <div class="avatar ${r.avatar}" style="width:40px;height:40px;font-size:13px;border-radius:12px;flex-shrink:0">${r.initials}</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:14px;font-weight:600;color:#0F172A">${r.name}</div>
+          <div style="font-size:12px;color:#64748b">${r.mobile}</div>
+        </div>
+        <span style="background:${(callColors[r.callStatus]||'#94a3b8')}22;color:${callColors[r.callStatus]||'#94a3b8'};font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px;white-space:nowrap">${r.callStatus.replace(/_/g,' ').toUpperCase()}</span>
+      </div>`).join('');
+
+    return `
+    <div style="background:#ECEEF5;min-height:100vh;padding-bottom:80px">
+
+      <!-- Header -->
+      <div style="background:#fff;padding:16px 20px 20px;border-bottom:1px solid #f1f5f9">
+        <button class="btn btn-ghost btn-sm" style="padding:0;margin-bottom:12px" onclick="navigate('shows')">${icon('arrow-left',18)} Back</button>
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px">
+          <div>
+            <div style="font-size:26px;margin-bottom:6px">${show.banner}</div>
+            <div style="font-size:18px;font-weight:800;color:#0F172A;margin-bottom:4px">${show.name}</div>
+            <div style="font-size:12px;color:#64748b;margin-bottom:2px">${show.date} · ${show.time}</div>
+            <div style="font-size:12px;color:#64748b">${show.venue.split(',')[0]}, ${show.city}</div>
+          </div>
+          <span style="background:${st.bg};color:#fff;font-size:10px;font-weight:700;padding:4px 12px;border-radius:20px;flex-shrink:0">${st.label}</span>
+        </div>
+      </div>
+
+      <div style="padding:16px">
+        <!-- Stats -->
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px">
+          <div class="mob-card" style="margin-bottom:0;text-align:center;padding:12px">
+            <div style="font-size:10px;font-weight:700;color:#94a3b8;margin-bottom:4px">SEATS</div>
+            <div style="font-size:20px;font-weight:800;color:#0F172A">${show.filled}</div>
+            <div style="font-size:10px;color:#94a3b8">/ ${show.seats}</div>
+          </div>
+          <div class="mob-card" style="margin-bottom:0;text-align:center;padding:12px">
+            <div style="font-size:10px;font-weight:700;color:#94a3b8;margin-bottom:4px">CONFIRMED</div>
+            <div style="font-size:20px;font-weight:800;color:#3B4FDB">${confirmCount}</div>
+          </div>
+          <div class="mob-card" style="margin-bottom:0;text-align:center;padding:12px">
+            <div style="font-size:10px;font-weight:700;color:#94a3b8;margin-bottom:4px">CHECKED-IN</div>
+            <div style="font-size:20px;font-weight:800;color:#22c55e">${checkinCount}</div>
+          </div>
+        </div>
+
+        <!-- Fill bar -->
+        <div class="mob-card" style="margin-bottom:14px">
+          <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+            <span style="font-size:13px;color:#64748b">Capacity</span>
+            <span style="font-size:13px;font-weight:700;color:#3B4FDB">${pct}%</span>
+          </div>
+          <div style="background:#e2e8f0;border-radius:6px;height:8px">
+            <div style="background:#3B4FDB;width:${pct}%;height:100%;border-radius:6px"></div>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div style="display:flex;gap:8px;margin-bottom:14px;overflow-x:auto;padding-bottom:4px">
+          <button style="white-space:nowrap;padding:9px 14px;border-radius:10px;border:none;background:#3B4FDB;color:#fff;font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px" onclick="toast('Exporting CSV…','info')">${icon('download',14)} Export</button>
+          <button style="white-space:nowrap;padding:9px 14px;border-radius:10px;border:1.5px solid #e2e8f0;background:#fff;color:#374151;font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px" onclick="navigate('broadcast')">${icon('send',14)} Broadcast</button>
+          <button style="white-space:nowrap;padding:9px 14px;border-radius:10px;border:1.5px solid #e2e8f0;background:#fff;color:#374151;font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px" onclick="navigate('scanner')">${icon('scan-line',14)} Scanner</button>
+        </div>
+
+        <!-- Registrations -->
+        <div style="font-size:16px;font-weight:700;color:#0F172A;margin-bottom:10px">Registrations (${regs.length})</div>
+        <div class="mob-card">${regCards}</div>
+      </div>
+    </div>`;
+  },
+
+  renderDesktop(params) {
     const showId = params.showId || 4;
     const show = D.shows.find(s=>s.id===showId) || D.shows[3];
     const regs = D.registrations.filter(r=>r.showId===showId);

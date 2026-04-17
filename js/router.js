@@ -170,17 +170,29 @@ function destroyCharts() {
 function renderBottomNav(active) {
   const el = document.getElementById('mob-bottom-nav');
   if (!el) return;
-  const items = [
-    { key: 'overview',  label: 'HOME',      ic: 'layout-dashboard' },
-    { key: 'shows',     label: 'SHOWS',     ic: 'tv-2' },
-    { key: 'broadcast', label: 'BROADCAST', ic: 'radio' },
-    { key: 'analytics', label: 'DATA',      ic: 'database' },
-    { key: 'settings',  label: 'SETTINGS',  ic: 'settings-2' },
-  ];
-  el.innerHTML = items.map(it => `
-    <div class="mob-nav-item ${active===it.key?'active':''}" onclick="navigate('${it.key}')">
-      ${icon(it.ic, 22)}
-      <span>${it.label}</span>
+  const labels = {
+    'overview':   'HOME',
+    'shows':      'SHOWS',
+    'audience':   'AUDIENCE',
+    'call-queue': 'CALLS',
+    'broadcast':  'BROADCAST',
+    'analytics':  'DATA',
+    'settings':   'SETTINGS',
+  };
+  const icons = {
+    'overview':   'layout-dashboard',
+    'shows':      'tv-2',
+    'audience':   'users',
+    'call-queue': 'phone',
+    'broadcast':  'radio',
+    'analytics':  'database',
+    'settings':   'settings-2',
+  };
+  const keys = D.nav[D.currentRole] || [];
+  el.innerHTML = keys.map(key => `
+    <div class="mob-nav-item ${active===key?'active':''}" onclick="navigate('${key}')">
+      ${icon(icons[key] || 'circle', 22)}
+      <span>${labels[key] || key.toUpperCase()}</span>
     </div>`).join('');
   if (window.lucide) lucide.createIcons();
 }
