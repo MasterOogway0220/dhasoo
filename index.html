@@ -23,12 +23,56 @@
 
   <style>
     body { background: #f8fafc; }
-    #sidebar { width: 220px; min-height: 100vh; background: #fff; border-right: 1px solid #e2e8f0; display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; z-index: 10; overflow-y: auto; }
+    #sidebar { width: 220px; min-height: 100vh; background: #fff; border-right: 1px solid #e2e8f0; display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; z-index: 100; overflow-y: auto; transition: transform 0.25s ease; }
     #topbar { position: fixed; top: 0; left: 220px; right: 0; height: 56px; background: #fff; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; padding: 0 20px; z-index: 9; gap: 12px; }
     #main-wrapper { margin-left: 220px; padding-top: 56px; min-height: 100vh; }
     #app { padding: 24px; }
     #notification-panel { position: fixed; top: 0; right: 0; width: 340px; height: 100vh; background: #fff; border-left: 1px solid #e2e8f0; z-index: 50; transform: translateX(100%); display: flex; flex-direction: column; box-shadow: -4px 0 20px rgba(0,0,0,0.08); }
     #overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.3); z-index: 40; }
+    #mob-sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 99; }
+
+    @media (max-width: 768px) {
+      #sidebar { transform: translateX(-100%); width: 260px; z-index: 101; box-shadow: 4px 0 24px rgba(0,0,0,0.15); }
+      #sidebar.open { transform: translateX(0); }
+      #mob-sidebar-overlay.show { display: block; }
+      #topbar { left: 0 !important; padding: 0 14px; }
+      #main-wrapper { margin-left: 0 !important; }
+      #app { padding: 14px !important; }
+      #notification-panel { width: 100% !important; }
+      .mob-menu-btn { display: flex !important; }
+      .topbar-search { display: none !important; }
+
+      /* Stack all multi-column grids */
+      #app div[style*="grid-template-columns"] { grid-template-columns: 1fr !important; }
+
+      /* Keep KPI/stat grids at 2 columns */
+      #app div[style*="auto-fit"],
+      #app div[style*="repeat(4,1fr)"],
+      #app div[style*="repeat(3,1fr)"] { grid-template-columns: repeat(2, 1fr) !important; }
+
+      /* Tables: scroll horizontally */
+      .card { overflow: visible !important; }
+      .data-table { min-width: 500px; font-size: 12px; }
+      .data-table th, .data-table td { padding: 8px 10px; }
+
+      /* Full-width containers */
+      #app > div[style*="max-width"] { max-width: 100% !important; }
+
+      /* Modal full-width */
+      .modal-box { width: 96% !important; padding: 20px !important; max-height: 85vh !important; }
+
+      /* Nav items: bigger tap target */
+      .nav-item { padding: 12px 14px; font-size: 15px; }
+
+      /* Page header buttons wrap */
+      #app div[style*="justify-content:space-between"] { flex-wrap: wrap; gap: 10px; }
+
+      /* Buttons in header: shrink text */
+      #app .btn { font-size: 13px; padding: 7px 12px; }
+
+      /* Stat highlight smaller on mobile */
+      .stat-highlight { font-size: 22px !important; }
+    }
   </style>
 </head>
 <body>
@@ -52,6 +96,12 @@
 
   <!-- Overlay (for notifications + modals) -->
   <div id="overlay" class="hidden"></div>
+
+  <!-- Mobile sidebar overlay -->
+  <div id="mob-sidebar-overlay" onclick="closeMobileNav()"></div>
+
+  <!-- Mobile bottom navigation -->
+  <nav id="mob-bottom-nav"></nav>
 
   <!-- ─── Data ─────────────────────────────────────────────────── -->
   <script src="js/data.js"></script>

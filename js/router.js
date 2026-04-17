@@ -33,9 +33,22 @@ window.icon = icon;
 
 function navigate(page, params={}) {
   window._routeParams = params;
+  closeMobileNav();
   window.location.hash = page;
 }
 window.navigate = navigate;
+
+function toggleMobileNav() {
+  document.getElementById('sidebar')?.classList.toggle('open');
+  document.getElementById('mob-sidebar-overlay')?.classList.toggle('show');
+}
+window.toggleMobileNav = toggleMobileNav;
+
+function closeMobileNav() {
+  document.getElementById('sidebar')?.classList.remove('open');
+  document.getElementById('mob-sidebar-overlay')?.classList.remove('show');
+}
+window.closeMobileNav = closeMobileNav;
 
 function currentRole() { return D.currentRole; }
 window.currentRole = currentRole;
@@ -77,20 +90,24 @@ function renderSidebar(active) {
 }
 
 function renderTopbar() {
+  const role = D.roles[D.currentRole];
   document.getElementById('topbar').innerHTML = `
-    <div style="display:flex;align-items:center;gap:12px;flex:1">
+    <button class="btn btn-ghost mob-menu-btn" style="display:none;padding:6px 8px" onclick="toggleMobileNav()">
+      ${icon('menu', 22)}
+    </button>
+    <div class="topbar-search" style="display:flex;align-items:center;gap:12px;flex:1">
       <div style="position:relative;flex:1;max-width:320px">
         <span style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:#94a3b8">${icon('search',16)}</span>
         <input class="input" placeholder="Search shows, users, registrations…" style="padding-left:34px;font-size:13px">
       </div>
     </div>
-    <div style="display:flex;align-items:center;gap:6px">
+    <div style="flex:1" class="mob-topbar-title" style="display:none"></div>
+    <div style="display:flex;align-items:center;gap:6px;margin-left:auto">
       <button class="btn btn-ghost" style="position:relative" onclick="toggleNotifications()">
         ${icon('bell',20)}
         <span class="notif-dot"></span>
       </button>
-      <button class="btn btn-ghost">${icon('circle-help',20)}</button>
-      <div class="avatar ${D.roles[D.currentRole].color}" style="cursor:pointer">${D.roles[D.currentRole].initials}</div>
+      <div class="avatar ${role.color}" style="cursor:pointer;font-size:12px">${role.initials}</div>
     </div>`;
 }
 
@@ -144,6 +161,24 @@ function destroyCharts() {
   window._activeCharts = _activeCharts;
 }
 
+function renderBottomNav(active) {
+  const role = D.currentRole;
+  const allowed = D.nav[role];
+  const el = document.getElementById('mob-bottom-nav');
+  if (!el) return;
+  // Show max 5 items in bottom nav
+  const items = allowed.slice(0, 5);
+  el.innerHTML = items.map(key => {
+    const m = NAV_META[key];
+    if (!m) return '';
+    return `<div class="mob-nav-item ${active===key?'active':''}" onclick="navigate('${key}')">
+      ${icon(m.icon, 20)}
+      <span>${m.label}</span>
+    </div>`;
+  }).join('');
+  if (window.lucide) lucide.createIcons();
+}
+
 function loadPage(hash) {
   const isLogin = hash === 'login' || !hash;
 
@@ -151,6 +186,7 @@ function loadPage(hash) {
   document.body.classList.toggle('login-mode', isLogin);
   document.getElementById('sidebar').style.display     = isLogin ? 'none' : '';
   document.getElementById('topbar').style.display      = isLogin ? 'none' : '';
+  document.getElementById('mob-bottom-nav').style.display = isLogin ? 'none' : '';
   document.getElementById('main-wrapper').style.marginLeft  = isLogin ? '0' : '';
   document.getElementById('main-wrapper').style.paddingTop  = isLogin ? '0' : '';
 
@@ -158,6 +194,7 @@ function loadPage(hash) {
     renderSidebar(hash);
     renderTopbar();
     renderNotificationPanel();
+    renderBottomNav(hash);
   }
 
   destroyCharts();

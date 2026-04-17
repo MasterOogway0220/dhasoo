@@ -135,3 +135,56 @@ input[type="checkbox"] { width: 15px; height: 15px; cursor: pointer; accent-colo
 
 /* Show status badge on table */
 td .badge { font-size: 11px; }
+
+/* Hamburger: hidden on desktop */
+.mob-menu-btn { display: none; }
+
+/* Mobile bottom navigation bar */
+#mob-bottom-nav {
+  display: none;
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  height: 60px;
+  background: #fff;
+  border-top: 1px solid #e2e8f0;
+  z-index: 90;
+  align-items: center;
+  justify-content: space-around;
+  padding: 0 4px;
+  box-shadow: 0 -2px 12px rgba(0,0,0,0.06);
+}
+#mob-bottom-nav .mob-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 6px 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 10px;
+  font-weight: 600;
+  color: #94a3b8;
+  transition: color 0.15s;
+  flex: 1;
+  min-width: 0;
+}
+#mob-bottom-nav .mob-nav-item.active { color: #2563eb; }
+#mob-bottom-nav .mob-nav-item svg { flex-shrink: 0; }
+
+@media (max-width: 768px) {
+  #mob-bottom-nav { display: flex; }
+  /* Push content up so bottom nav doesn't overlap */
+  #main-wrapper { padding-bottom: 60px; }
+
+  /* Hide sidebar role switcher on mobile (bottom nav handles navigation) */
+  #sidebar .select { font-size: 11px; }
+
+  /* Ensure flex-wrap for filter rows */
+  #app div[style*="display:flex"] { flex-wrap: wrap; }
+
+  /* Login card padding */
+  body.login-mode #app { padding: 16px !important; }
+
+  /* Topbar title on mobile */
+  .mob-topbar-title { font-size: 15px; font-weight: 700; color: #1e293b; }
+}
