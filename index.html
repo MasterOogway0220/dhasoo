@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dhaasoo Admin Dashboard</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+  <!-- Inter Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="css/custom.css">
+
+  <style>
+    body { background: #f8fafc; }
+    #sidebar { width: 220px; min-height: 100vh; background: #fff; border-right: 1px solid #e2e8f0; display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; z-index: 10; overflow-y: auto; }
+    #topbar { position: fixed; top: 0; left: 220px; right: 0; height: 56px; background: #fff; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; padding: 0 20px; z-index: 9; gap: 12px; }
+    #main-wrapper { margin-left: 220px; padding-top: 56px; min-height: 100vh; }
+    #app { padding: 24px; }
+    #notification-panel { position: fixed; top: 0; right: 0; width: 340px; height: 100vh; background: #fff; border-left: 1px solid #e2e8f0; z-index: 50; transform: translateX(100%); display: flex; flex-direction: column; box-shadow: -4px 0 20px rgba(0,0,0,0.08); }
+    #overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.3); z-index: 40; }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <aside id="sidebar"></aside>
+
+  <!-- Main wrapper -->
+  <div id="main-wrapper">
+    <!-- Topbar -->
+    <header id="topbar"></header>
+
+    <!-- Page content -->
+    <main id="app">
+      <div style="display:flex;align-items:center;justify-content:center;height:60vh;color:#94a3b8;font-size:16px">Loading…</div>
+    </main>
+  </div>
+
+  <!-- Notification slide-out panel -->
+  <div id="notification-panel"></div>
+
+  <!-- Overlay (for notifications + modals) -->
+  <div id="overlay" class="hidden"></div>
+
+  <!-- ─── Data ─────────────────────────────────────────────────── -->
+  <script src="js/data.js"></script>
+
+  <!-- ─── Page modules ─────────────────────────────────────────── -->
+  <script src="js/pages/login.js"></script>
+  <script src="js/pages/overview.js"></script>
+  <script src="js/pages/shows.js"></script>
+  <script src="js/pages/show-detail.js"></script>
+  <script src="js/pages/audience.js"></script>
+  <script src="js/pages/call-queue.js"></script>
+  <script src="js/pages/broadcast.js"></script>
+  <script src="js/pages/database.js"></script>
+  <script src="js/pages/analytics.js"></script>
+  <script src="js/pages/scanner.js"></script>
+  <script src="js/pages/settings.js"></script>
+
+  <!-- ─── Router (must be last) ─────────────────────────────────── -->
+  <script src="js/router.js"></script>
+
+</body>
+</html>
