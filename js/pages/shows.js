@@ -160,7 +160,9 @@ window.ShowsPage = {
       <div style="font-size:14px;color:#94a3b8;margin-bottom:20px">${show.name}</div>
       <div style="display:flex;flex-direction:column;gap:10px">
         <button class="btn btn-secondary" onclick="closeModal();toast('Show duplicated!','success')"><span>${icon('copy',15)}</span> Duplicate Show</button>
-        <button class="btn btn-secondary" onclick="closeModal();toast('Show marked as Fully Booked','info')"><span>${icon('lock',15)}</span> Mark as Fully Booked</button>
+        <button class="btn btn-secondary" onclick="closeModal();toast('Show marked Active','success')"><span>${icon('check-circle',15)}</span> Mark as Active</button>
+        <button class="btn btn-secondary" onclick="closeModal();toast('Show marked Inactive','info')"><span>${icon('eye-off',15)}</span> Mark as Inactive</button>
+        <button class="btn btn-secondary" onclick="closeModal();toast('Show marked as Fully Booked / Closed','info')"><span>${icon('lock',15)}</span> Mark as Fully Booked / Closed</button>
         <button class="btn btn-secondary" onclick="ShowsPage.confirmCancel(${showId})"><span>${icon('x-circle',15)}</span> Cancel Show</button>
         <button class="btn btn-secondary" onclick="closeModal();toast('Show marked Completed','success')"><span>${icon('check-circle',15)}</span> Mark as Completed</button>
         <button class="btn btn-danger" onclick="ShowsPage.confirmDelete(${showId})"><span>${icon('trash-2',15)}</span> Delete Show</button>
@@ -225,9 +227,27 @@ window.ShowsPage = {
           <label style="font-size:12px;font-weight:600;color:#64748b;display:block;margin-bottom:5px">TOTAL SEATS *</label>
           <input class="input" type="number" placeholder="e.g. 1000">
         </div>
+        <div>
+          <label style="font-size:12px;font-weight:600;color:#64748b;display:block;margin-bottom:5px">REPORTING TIME</label>
+          <input class="input" type="time" value="18:00">
+        </div>
         <div style="grid-column:1/-1">
-          <label style="font-size:12px;font-weight:600;color:#64748b;display:block;margin-bottom:5px">VENUE</label>
-          <input class="input" placeholder="Venue name, City">
+          <label style="font-size:12px;font-weight:600;color:#64748b;display:block;margin-bottom:5px">VENUE / LOCATION *</label>
+          <input class="input" placeholder="Venue name">
+        </div>
+        <div>
+          <label style="font-size:12px;font-weight:600;color:#64748b;display:block;margin-bottom:5px">CITY *</label>
+          <select class="select" style="width:100%">
+            <option value="">Select City</option>
+            <option>Mumbai</option><option>Delhi</option><option>Bangalore</option><option>Pune</option><option>Hyderabad</option><option>Chennai</option><option>Kolkata</option><option>Ahmedabad</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size:12px;font-weight:600;color:#64748b;display:block;margin-bottom:5px">INITIAL STATUS</label>
+          <select class="select" style="width:100%">
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+          </select>
         </div>
         <div style="grid-column:1/-1">
           <label style="font-size:12px;font-weight:600;color:#64748b;display:block;margin-bottom:5px">DESCRIPTION</label>

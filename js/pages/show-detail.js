@@ -88,7 +88,8 @@ window.ShowDetailPage = {
           </div>
         </div>
         <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap">
-          <button class="btn btn-primary btn-sm" onclick="toast('Exporting registrations…','info')">${icon('download',14)} Export List</button>
+          <button class="btn btn-primary btn-sm" onclick="toast('Exporting as CSV…','info')">${icon('download',14)} Export CSV</button>
+          <button class="btn btn-secondary btn-sm" onclick="toast('Exporting as Excel…','info')">${icon('file-spreadsheet',14)} Export Excel</button>
           <button class="btn btn-secondary btn-sm" onclick="navigate('broadcast')">${icon('send',14)} Send Bulk SMS</button>
           <button class="btn btn-secondary btn-sm" onclick="navigate('scanner')">${icon('scan-line',14)} Open Scanner</button>
           <button class="btn btn-secondary btn-sm">${icon('edit',14)} Edit Show</button>
@@ -100,7 +101,12 @@ window.ShowDetailPage = {
         <div style="display:flex;align-items:center;justify-content:space-between;padding:16px;border-bottom:1px solid #f1f5f9;flex-wrap:wrap;gap:10px">
           <div style="font-size:15px;font-weight:600;color:#1e293b">Registered Users</div>
           <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-            <input class="input" placeholder="Filter by name, mobile or status…" style="font-size:13px;max-width:220px" id="sd-search" oninput="ShowDetailPage.filterRows()">
+            <input class="input" placeholder="Filter by name or mobile…" style="font-size:13px;max-width:180px" id="sd-search" oninput="ShowDetailPage.filterRows()">
+            <select class="select" id="sd-city" style="font-size:13px" onchange="ShowDetailPage.filterRows()">
+              <option value="">All Cities</option>
+              <option>Mumbai</option><option>Thane</option><option>Pune</option><option>Navi Mumbai</option><option>Delhi</option>
+            </select>
+            <input class="input" id="sd-date" placeholder="Reg. date…" style="font-size:13px;max-width:130px" oninput="ShowDetailPage.filterRows()">
             <button class="btn btn-secondary btn-sm" onclick="toast('Assigning to agent…','info')">${icon('user-plus',14)} Assign to Agent</button>
             <button class="btn btn-primary btn-sm" onclick="navigate('broadcast')">${icon('send',14)} Send Bulk SMS</button>
           </div>
@@ -144,9 +150,12 @@ window.ShowDetailPage = {
   },
 
   filterRows() {
-    const q = document.getElementById('sd-search')?.value.toLowerCase()||'';
+    const q    = (document.getElementById('sd-search')?.value||'').toLowerCase();
+    const city = (document.getElementById('sd-city')?.value||'').toLowerCase();
+    const date = (document.getElementById('sd-date')?.value||'').toLowerCase();
     document.querySelectorAll('#sd-tbody tr').forEach(row => {
-      row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none';
+      const text = row.textContent.toLowerCase();
+      row.style.display = (!q || text.includes(q)) && (!city || text.includes(city)) && (!date || text.includes(date)) ? '' : 'none';
     });
   }
 };

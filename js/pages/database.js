@@ -20,11 +20,14 @@ window.DatabasePage = {
             <div class="avatar ${u.avatar}" style="width:36px;height:36px;font-size:13px">${u.initials}</div>
             <div>
               <div style="font-weight:600;color:#1e293b;font-size:13px">${u.name}</div>
-              <div style="font-size:12px;color:#94a3b8">${u.location}</div>
+              <div style="font-size:12px;color:#94a3b8">${u.city}</div>
             </div>
           </div>
         </td>
-        <td style="font-size:13px;color:#374151">${u.location.split(',')[0]}</td>
+        <td style="font-size:13px;color:#374151">${u.mobile || '—'}</td>
+        <td style="font-size:12px;color:#374151">${u.email || '—'}</td>
+        <td style="font-size:12px;color:#64748b">${u.dob || '—'}</td>
+        <td style="font-size:12px;color:#64748b">${u.regDate || '—'}</td>
         <td>
           <div style="display:flex;align-items:center;gap:6px">
             <div class="avatar av-green" style="width:24px;height:24px;font-size:10px">${u.attended}</div>
@@ -57,11 +60,12 @@ window.DatabasePage = {
 
       <!-- Filters -->
       <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap">
-        <input class="input" id="db-search" placeholder="Search by Name or Mobile Number" style="flex:1;min-width:200px" oninput="DatabasePage.filterRows()">
+        <input class="input" id="db-search" placeholder="Search by Name, Mobile or Email" style="flex:1;min-width:200px" oninput="DatabasePage.filterRows()">
         <select class="select" id="db-city" onchange="DatabasePage.filterRows()">
           <option value="">All Cities</option>
           <option>Mumbai</option><option>Delhi</option><option>Bangalore</option><option>Pune</option><option>Hyderabad</option><option>Chennai</option>
         </select>
+        <input class="input" id="db-regdate" placeholder="Reg. date (e.g. Jan 2024)" style="max-width:160px" oninput="DatabasePage.filterRows()">
         <select class="select" id="db-rep" onchange="DatabasePage.filterRows()">
           <option value="">Any Score</option>
           <option>Excellent</option><option>Good</option><option>Flagged</option><option>Poor</option><option>New</option>
@@ -70,7 +74,7 @@ window.DatabasePage = {
           <option value="">All Status</option>
           <option value="active">Active</option><option value="flagged">Flagged</option><option value="blacklist">Blacklisted</option>
         </select>
-        <button class="btn btn-ghost btn-sm" onclick="DatabasePage.clearFilters()">${icon('x',14)} Clear</button>
+        <button class="btn btn-ghost btn-sm" onclick="DatabasePage.clearFilters()">${icon('x',14)} Clear Filters</button>
       </div>
 
       <!-- Table -->
@@ -79,8 +83,11 @@ window.DatabasePage = {
           <table class="data-table">
             <thead>
               <tr>
-                <th>USER PROFILE</th>
-                <th>LOCATION</th>
+                <th>NAME &amp; CITY</th>
+                <th>MOBILE</th>
+                <th>EMAIL</th>
+                <th>DATE OF BIRTH</th>
+                <th>REG. DATE</th>
                 <th>ATTENDANCE</th>
                 <th>NO-SHOWS</th>
                 <th>REPUTATION</th>
@@ -129,21 +136,25 @@ window.DatabasePage = {
   init() {},
 
   filterRows() {
-    const q      = (document.getElementById('db-search')?.value||'').toLowerCase();
-    const rep    = (document.getElementById('db-rep')?.value||'').toLowerCase();
-    const status = (document.getElementById('db-status')?.value||'').toLowerCase();
+    const q       = (document.getElementById('db-search')?.value||'').toLowerCase();
+    const city    = (document.getElementById('db-city')?.value||'').toLowerCase();
+    const regdate = (document.getElementById('db-regdate')?.value||'').toLowerCase();
+    const rep     = (document.getElementById('db-rep')?.value||'').toLowerCase();
+    const status  = (document.getElementById('db-status')?.value||'').toLowerCase();
 
     document.querySelectorAll('#db-tbody tr').forEach(row => {
       const text = row.textContent.toLowerCase();
-      const matchQ      = !q      || text.includes(q);
-      const matchRep    = !rep    || text.includes(rep);
-      const matchStatus = !status || text.includes(status);
-      row.style.display = (matchQ && matchRep && matchStatus) ? '' : 'none';
+      const matchQ       = !q       || text.includes(q);
+      const matchCity    = !city    || text.includes(city);
+      const matchRegdate = !regdate || text.includes(regdate);
+      const matchRep     = !rep     || text.includes(rep);
+      const matchStatus  = !status  || text.includes(status);
+      row.style.display = (matchQ && matchCity && matchRegdate && matchRep && matchStatus) ? '' : 'none';
     });
   },
 
   clearFilters() {
-    ['db-search','db-city','db-rep','db-status'].forEach(id => {
+    ['db-search','db-city','db-regdate','db-rep','db-status'].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.value = '';
     });

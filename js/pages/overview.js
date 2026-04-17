@@ -42,8 +42,8 @@ window.OverviewPage = {
       <!-- Header -->
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px">
         <div>
-          <h1 style="font-size:22px;font-weight:700;color:#1e293b">India Executive Overview</h1>
-          <p style="font-size:13px;color:#94a3b8;margin-top:2px">Unified operational insights for the Dhaasoo platform across pan-India scheduled events and registered members.</p>
+          <h1 style="font-size:22px;font-weight:700;color:#1e293b">Dashboard Overview</h1>
+          <p style="font-size:13px;color:#94a3b8;margin-top:2px">Manage shows, audience registrations, and confirmations across all events.</p>
         </div>
         <button class="btn btn-primary" onclick="navigate('shows')">
           ${icon('plus',16)} New Show
@@ -53,24 +53,29 @@ window.OverviewPage = {
       <!-- KPI Cards -->
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:24px">
         <div class="metric-card">
-          <div style="font-size:11px;font-weight:600;color:#94a3b8;margin-bottom:8px">TOTAL INDIAN VOTERS</div>
+          <div style="font-size:11px;font-weight:600;color:#94a3b8;margin-bottom:8px">TOTAL REGISTERED USERS</div>
           <div class="stat-highlight" data-count="4124802">0</div>
           <div style="font-size:11px;color:#22c55e;margin-top:4px">↑ 1.8% this week</div>
         </div>
         <div class="metric-card">
           <div style="font-size:11px;font-weight:600;color:#94a3b8;margin-bottom:8px">NEW REGISTRATIONS</div>
           <div class="stat-highlight" data-count="15429">0</div>
-          <div style="font-size:11px;color:#94a3b8;margin-top:4px">Today / This Week</div>
+          <div style="font-size:11px;color:#94a3b8;margin-top:4px">Daily · Weekly · Monthly</div>
         </div>
         <div class="metric-card">
-          <div style="font-size:11px;font-weight:600;color:#94a3b8;margin-bottom:8px">UPCOMING INDIA SHOWS</div>
+          <div style="font-size:11px;font-weight:600;color:#94a3b8;margin-bottom:8px">SHOW SEAT REGISTRATIONS</div>
+          <div class="stat-highlight" data-count="6312">0</div>
+          <div style="font-size:11px;color:#94a3b8;margin-top:4px">Across all active shows</div>
+        </div>
+        <div class="metric-card">
+          <div style="font-size:11px;font-weight:600;color:#94a3b8;margin-bottom:8px">UPCOMING SHOWS</div>
           <div class="stat-highlight" data-count="42">0</div>
           <div style="font-size:11px;color:#94a3b8;margin-top:4px">Next 7 days</div>
         </div>
         <div class="metric-card">
-          <div style="font-size:11px;font-weight:600;color:#94a3b8;margin-bottom:8px">PUNE CHECK-IN RATE</div>
-          <div class="stat-highlight" style="color:#22c55e">96.8%</div>
-          <div style="font-size:11px;color:#94a3b8;margin-top:4px">Last completed show</div>
+          <div style="font-size:11px;font-weight:600;color:#94a3b8;margin-bottom:8px">CONFIRMATION RATE</div>
+          <div class="stat-highlight" style="color:#22c55e">85%</div>
+          <div style="font-size:11px;color:#94a3b8;margin-top:4px">Across all active shows</div>
         </div>
       </div>
 
@@ -101,10 +106,10 @@ window.OverviewPage = {
                 <div style="font-size:11px;color:#94a3b8">Create a new event</div>
               </div>
             </div>
-            <div class="quick-action" onclick="toast('Exporting today\'s list…','info')">
+            <div class="quick-action" onclick="toast('Exporting registrations…','info')">
               <div style="width:36px;height:36px;background:#dcfce7;border-radius:10px;display:flex;align-items:center;justify-content:center">${icon('download',18,'text-green-600')}</div>
               <div>
-                <div style="font-size:13px;font-weight:600;color:#1e293b">Export Indian Leads</div>
+                <div style="font-size:13px;font-weight:600;color:#1e293b">Export Registrations</div>
                 <div style="font-size:11px;color:#94a3b8">Download as CSV / Excel</div>
               </div>
             </div>
@@ -124,7 +129,7 @@ window.OverviewPage = {
         <!-- Ongoing Shows -->
         <div class="card">
           <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 16px 0">
-            <div style="font-size:15px;font-weight:600;color:#1e293b">Ongoing &amp; Upcoming Shows in India</div>
+            <div style="font-size:15px;font-weight:600;color:#1e293b">Ongoing &amp; Upcoming Shows</div>
             <button class="btn btn-ghost btn-sm" onclick="navigate('shows')">View All →</button>
           </div>
           ${showCards}
@@ -146,8 +151,8 @@ window.OverviewPage = {
           <div style="font-size:32px">📊</div>
           <div>
             <div style="font-size:11px;font-weight:600;color:#93c5fd;margin-bottom:4px">INTELLIGENT INSIGHT</div>
-            <div style="font-size:16px;font-weight:700;color:#fff;margin-bottom:4px">Indian audiences are most active during festive weekends.</div>
-            <div style="font-size:13px;color:#94a3b8">Consider launching new concert tickets on Friday evenings for Mumbai and Delhi regions to maximise conversion rates.</div>
+            <div style="font-size:16px;font-weight:700;color:#fff;margin-bottom:4px">Registrations spike 2× on weekends — plan show announcements accordingly.</div>
+            <div style="font-size:13px;color:#94a3b8">Sending registration confirmations on Friday evenings has shown 18% higher check-in rates across past shows.</div>
           </div>
         </div>
         <div style="display:flex;gap:10px;flex-shrink:0">

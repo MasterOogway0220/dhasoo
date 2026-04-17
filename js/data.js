@@ -13,11 +13,11 @@ window.D = {
   },
 
   nav: {
-    super_admin:   ['overview','shows','audience','call-queue','broadcast','database','analytics','scanner','settings'],
-    event_manager: ['overview','shows','audience','broadcast','analytics','scanner'],
+    super_admin:   ['overview','shows','audience','call-queue','broadcast'],
+    event_manager: ['overview','shows','audience','broadcast'],
     calling_agent: ['call-queue','audience'],
-    gate_staff:    ['scanner'],
-    viewer:        ['overview','analytics'],
+    gate_staff:    [],
+    viewer:        ['overview'],
   },
 
   shows: [
@@ -129,12 +129,12 @@ window.D = {
   },
 
   users: [
-    { id: 'U-001', name: 'Vikram Singh',   location: 'Mumbai, MH', attended: 14, noShows: 0, reputation: 'Excellent', status: 'active',    initials: 'VS', avatar: 'av-blue',   lastAttended: '3d ago' },
-    { id: 'U-002', name: 'Priya Kapoor',   location: 'Delhi NCR',  attended: 8,  noShows: 3, reputation: 'Flagged',   status: 'flagged',   initials: 'PK', avatar: 'av-pink',   lastAttended: '2w ago' },
-    { id: 'U-003', name: 'Rahul Agarwal',  location: 'Bangalore',  attended: 1,  noShows: 0, reputation: 'New',       status: 'active',    initials: 'RA', avatar: 'av-green',  lastAttended: '1w ago' },
-    { id: 'U-004', name: 'Sneha Reddy',    location: 'Hyderabad',  attended: 22, noShows: 1, reputation: 'Excellent', status: 'active',    initials: 'SR', avatar: 'av-purple', lastAttended: '1d ago' },
-    { id: 'U-005', name: 'Mohit Kumar',    location: 'Pune',       attended: 3,  noShows: 4, reputation: 'Poor',      status: 'blacklist', initials: 'MK', avatar: 'av-red',    lastAttended: '1m ago' },
-    { id: 'U-006', name: 'Kavya Nair',     location: 'Chennai',    attended: 7,  noShows: 0, reputation: 'Good',      status: 'active',    initials: 'KN', avatar: 'av-teal',   lastAttended: '4d ago' },
+    { id: 'U-001', name: 'Vikram Singh',   mobile: '+91 98001 11222', email: 'vikram.s@gmail.com',   dob: '12 Mar 1989', city: 'Mumbai',    regDate: '05 Jan 2024', location: 'Mumbai, MH', attended: 14, noShows: 0, reputation: 'Excellent', status: 'active',    initials: 'VS', avatar: 'av-blue',   lastAttended: '3d ago' },
+    { id: 'U-002', name: 'Priya Kapoor',   mobile: '+91 70451 23456', email: 'priya.k@yahoo.com',    dob: '22 Aug 1995', city: 'Delhi',     regDate: '18 Feb 2024', location: 'Delhi NCR',  attended: 8,  noShows: 3, reputation: 'Flagged',   status: 'flagged',   initials: 'PK', avatar: 'av-pink',   lastAttended: '2w ago' },
+    { id: 'U-003', name: 'Rahul Agarwal',  mobile: '+91 91870 98765', email: 'rahul.a@gmail.com',    dob: '04 Nov 2000', city: 'Bangalore', regDate: '02 Mar 2024', location: 'Bangalore',  attended: 1,  noShows: 0, reputation: 'New',       status: 'active',    initials: 'RA', avatar: 'av-green',  lastAttended: '1w ago' },
+    { id: 'U-004', name: 'Sneha Reddy',    mobile: '+91 88795 65432', email: 'sneha.r@outlook.com',  dob: '30 Jul 1992', city: 'Hyderabad', regDate: '14 Dec 2023', location: 'Hyderabad',  attended: 22, noShows: 1, reputation: 'Excellent', status: 'active',    initials: 'SR', avatar: 'av-purple', lastAttended: '1d ago' },
+    { id: 'U-005', name: 'Mohit Kumar',    mobile: '+91 99887 76655', email: 'mohit.k@gmail.com',    dob: '17 Apr 1997', city: 'Pune',      regDate: '09 Apr 2024', location: 'Pune',       attended: 3,  noShows: 4, reputation: 'Poor',      status: 'blacklist', initials: 'MK', avatar: 'av-red',    lastAttended: '1m ago' },
+    { id: 'U-006', name: 'Kavya Nair',     mobile: '+91 82345 67890', email: 'kavya.n@gmail.com',    dob: '08 Jan 1998', city: 'Chennai',   regDate: '27 Jun 2024', location: 'Chennai',    attended: 7,  noShows: 0, reputation: 'Good',      status: 'active',    initials: 'KN', avatar: 'av-teal',   lastAttended: '4d ago' },
   ],
 
   templates: [

@@ -70,7 +70,10 @@ window.CallQueuePage = {
             </div>
 
             <div style="display:flex;gap:10px;margin-bottom:20px">
-              <a href="tel:${user.mobile}" class="btn btn-primary" style="flex:1;justify-content:center">${icon('phone',16)} ${user.mobile}</a>
+              <div style="flex:1;display:flex;align-items:center;gap:8px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:10px 14px">
+                ${icon('phone',16)}
+                <span style="font-size:14px;font-weight:600;color:#1e293b;letter-spacing:0.5px">${user.mobile}</span>
+              </div>
               <button class="btn" style="flex:1;justify-content:center;background:#25D366;color:#fff" onclick="toast('Opening WhatsApp…','info')">${icon('message-circle',16)} WhatsApp</button>
             </div>
 
