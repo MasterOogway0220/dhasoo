@@ -13,7 +13,7 @@ window.D = {
   },
 
   nav: {
-    super_admin:   ['overview','shows','audience','call-queue','broadcast'],
+    super_admin:   ['overview','shows','audience','call-queue','broadcast','analytics'],
     event_manager: ['overview','shows','audience','broadcast'],
     calling_agent: ['call-queue','audience'],
     gate_staff:    [],
@@ -113,19 +113,35 @@ window.D = {
   },
 
   analyticsData: {
-    trend30: {
-      labels: ['30d ago','25d','20d','15d','10d','5d','Now'],
-      concerts:   [400, 600, 500, 900, 1244, 1100, 1300],
-      techTalk:   [200, 350, 450, 600,  890,  800, 1000],
-      workshops:  [100, 150, 200, 300,  400,  380,  500],
+    // Daily registrations – last 14 days
+    dailyRegs: {
+      labels: ['4 Oct','5 Oct','6 Oct','7 Oct','8 Oct','9 Oct','10 Oct','11 Oct','12 Oct','13 Oct','14 Oct','15 Oct','16 Oct','17 Oct'],
+      values:  [42, 58, 35, 90, 124, 88, 76, 142, 198, 164, 210, 185, 230, 216],
     },
-    cities: [
-      { name: 'Mumbai',    pct: 42 },
-      { name: 'Delhi',     pct: 28 },
-      { name: 'Bangalore', pct: 18 },
-      { name: 'Pune',      pct: 12 },
+    // New app users – last 14 days
+    newUsers: {
+      labels: ['4 Oct','5 Oct','6 Oct','7 Oct','8 Oct','9 Oct','10 Oct','11 Oct','12 Oct','13 Oct','14 Oct','15 Oct','16 Oct','17 Oct'],
+      values:  [18, 24, 14, 38, 52, 40, 30, 60, 84, 72, 96, 80, 110, 98],
+    },
+    // Mumbai area breakdown
+    areas: [
+      { name: 'Andheri',      pct: 22, count: 1852 },
+      { name: 'Bandra',       pct: 18, count: 1516 },
+      { name: 'Thane',        pct: 16, count: 1348 },
+      { name: 'Borivali',     pct: 14, count: 1179 },
+      { name: 'Navi Mumbai',  pct: 12, count: 1011 },
+      { name: 'Dadar',        pct: 10, count:  842 },
+      { name: 'Others',       pct:  8, count:  674 },
     ],
-    kpis: { fillRate: 92, confirmRate: 85, attendanceRate: 78, noShowRate: 12 },
+    // Show-wise performance
+    showStats: [
+      { name: 'Bollywood Retro Beats',  type: 'Concert', date: '24 Oct', regs: 1320, confirmed: 1108, checkedIn: 0,   noShows: 0,  fillPct: 88 },
+      { name: 'Sufi Night with Nizami', type: 'Concert', date: '26 Oct', regs: 800,  confirmed: 712,  checkedIn: 0,   noShows: 0,  fillPct: 100 },
+      { name: 'Great Indian Comedy',    type: 'Comedy',  date: '03 Nov', regs: 240,  confirmed: 186,  checkedIn: 0,   noShows: 0,  fillPct: 40 },
+      { name: 'Neon Echoes Live',       type: 'Concert', date: '24 Oct', regs: 842,  confirmed: 604,  checkedIn: 412, noShows: 38, fillPct: 84 },
+      { name: 'MH Weekender Finals',    type: 'Reality', date: '15 Nov', regs: 1800, confirmed: 1260, checkedIn: 0,   noShows: 0,  fillPct: 90 },
+    ],
+    kpis: { appUsers: 8420, regsThisMonth: 2140, confirmRate: 85, attendanceRate: 78, noShowRate: 12 },
   },
 
   users: [
