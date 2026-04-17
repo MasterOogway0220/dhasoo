@@ -1,5 +1,88 @@
 window.AudiencePage = {
   render(params) {
+    return isMobile() ? this.renderMobile(params) : this.renderDesktop(params);
+  },
+
+  renderMobile(params) {
+    const user = D.audience[0];
+    const repColor = user.reputation >= 800 ? '#22c55e' : user.reputation >= 600 ? '#f97316' : '#ef4444';
+
+    const logItems = user.callLog.map(l => {
+      const cfg = {
+        confirmed: { ic: 'phone-call', color: '#3B4FDB', bg: '#EEF0FB', label: 'Outbound Call' },
+        sms:       { ic: 'mail',       color: '#8b5cf6', bg: '#f3e8ff', label: 'Auto-Broadcast Sent' },
+        reminder:  { ic: 'message-square', color: '#0ea5e9', bg: '#e0f2fe', label: 'WhatsApp Message' },
+      }[l.outcome] || { ic: 'phone', color: '#64748b', bg: '#f1f5f9', label: 'Call' };
+
+      return `
+      <div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid #f1f5f9">
+        <div style="width:36px;height:36px;border-radius:10px;background:${cfg.bg};display:flex;align-items:center;justify-content:center;color:${cfg.color};flex-shrink:0">${icon(cfg.ic,16)}</div>
+        <div style="flex:1">
+          <div style="display:flex;justify-content:space-between;margin-bottom:3px">
+            <span style="font-size:13px;font-weight:600;color:#1e293b">${cfg.label}</span>
+            <span style="font-size:11px;color:#94a3b8">${l.date.split(',')[0]}</span>
+          </div>
+          <div style="font-size:12px;color:#64748b;line-height:1.5">${l.remark}</div>
+        </div>
+      </div>`;
+    }).join('');
+
+    return `
+    <div style="background:#ECEEF5;min-height:100vh;padding-bottom:80px">
+
+      <!-- Profile card -->
+      <div style="background:#fff;border-radius:0 0 24px 24px;padding:20px 20px 24px;margin-bottom:12px;box-shadow:0 4px 20px rgba(59,79,219,0.08)">
+        <div style="text-align:center;margin-bottom:16px">
+          <div style="width:80px;height:80px;border-radius:20px;background:#3B4FDB;color:#fff;font-size:26px;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;position:relative">
+            ${user.initials}
+            <div style="position:absolute;bottom:-4px;right:-4px;width:18px;height:18px;background:#22c55e;border-radius:50%;border:2px solid #fff"></div>
+          </div>
+          <div style="font-size:20px;font-weight:800;color:#0F172A">${user.name}</div>
+          <div style="font-size:13px;color:#64748b;margin-top:2px">${user.reputation >= 800 ? 'Reliable Attendee' : 'Standard Member'} · ${user.city}</div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <button class="mob-btn-primary" onclick="toast('Opening dialler…','info')">${icon('phone',16)} Call</button>
+          <button class="mob-btn-outline" onclick="toast('Opening WhatsApp…','info')">${icon('message-circle',16)} WhatsApp</button>
+        </div>
+      </div>
+
+      <div style="padding:0 16px">
+        <!-- Stats row -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+          <div class="mob-card" style="margin-bottom:0">
+            <div style="font-size:10px;font-weight:700;color:#94a3b8;letter-spacing:0.06em;margin-bottom:4px">TOTAL ATTENDANCE</div>
+            <div style="font-size:20px;font-weight:800;color:#3B4FDB">${user.totalShows} Shows</div>
+          </div>
+          <div class="mob-card" style="margin-bottom:0">
+            <div style="font-size:10px;font-weight:700;color:#94a3b8;letter-spacing:0.06em;margin-bottom:4px">LAST INTERACTION</div>
+            <div style="font-size:20px;font-weight:800;color:#0F172A">2d Ago</div>
+          </div>
+        </div>
+
+        <!-- Active Registration -->
+        <div class="mob-card">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+            <span style="font-size:15px;font-weight:700;color:#0F172A">Active Registration</span>
+            <span style="background:#EEF0FB;color:#3B4FDB;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px">UPCOMING</span>
+          </div>
+          <div style="display:flex;gap:12px;align-items:center;margin-bottom:14px">
+            <div style="width:52px;height:52px;border-radius:12px;background:#1e293b;display:flex;align-items:center;justify-content:center;font-size:22px">🎵</div>
+            <div>
+              <div style="font-size:14px;font-weight:700;color:#0F172A">${user.activeShow.name}</div>
+              <div style="font-size:12px;color:#64748b">${user.activeShow.date} · ${user.activeShow.venue.split(',')[0]}</div>
+            </div>
+          </div>
+          <button style="width:100%;padding:12px;border-radius:12px;border:1.5px solid #ef4444;background:transparent;color:#ef4444;font-size:14px;font-weight:600;cursor:pointer" onclick="toast('Registration cancelled','error')">Cancel Registration</button>
+        </div>
+
+        <!-- Communication Log -->
+        <div style="font-size:17px;font-weight:700;color:#0F172A;margin:16px 0 10px">Communication Log</div>
+        <div class="mob-card">${logItems}</div>
+      </div>
+    </div>`;
+  },
+
+  renderDesktop(params) {
     const user = D.audience[0]; // single profile for demo
     const historyRows = user.history.map(h => {
       const badge = h.status==='attended' ? 'badge-green' : 'badge-red';

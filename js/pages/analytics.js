@@ -1,5 +1,88 @@
 window.AnalyticsPage = {
   render() {
+    return isMobile() ? this.renderMobile() : this.renderDesktop();
+  },
+
+  renderMobile() {
+    const kpi = D.analyticsData.kpis;
+    const areas = D.analyticsData.areas;
+    const agentRows = D.agents.map(a => `
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid #f1f5f9">
+        <div>
+          <div style="font-size:13px;font-weight:600;color:#1e293b">${a.name.split(' ')[0]} ${a.name.split(' ')[1][0]}.</div>
+          <div style="font-size:11px;color:#94a3b8">${a.role.replace('Calling ','')}</div>
+        </div>
+        <div style="font-size:14px;font-weight:700;color:#1e293b">${a.calls.toLocaleString()}</div>
+        <span style="background:${a.status==='active'?'#dcfce7':a.status==='break'?'#fef9c3':'#f1f5f9'};color:${a.status==='active'?'#16a34a':a.status==='break'?'#ca8a04':'#64748b'};font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px">${a.status.toUpperCase()}</span>
+      </div>`).join('');
+
+    return `
+    <div style="background:#ECEEF5;min-height:100vh;padding-bottom:80px">
+      <div style="padding:20px 16px 14px">
+        <div class="mob-section-label">ANALYTICAL INTELLIGENCE</div>
+        <div class="mob-page-title">Data Insights</div>
+      </div>
+      <div style="padding:0 16px">
+
+        <!-- 2x2 KPI grid -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
+          <div class="mob-card" style="margin-bottom:0">
+            <div style="font-size:10px;font-weight:700;color:#94a3b8;letter-spacing:0.06em;margin-bottom:4px">ATTENDANCE</div>
+            <div style="font-size:22px;font-weight:800;color:#3B4FDB">${kpi.attendanceRate}%<span style="font-size:12px;color:#22c55e;margin-left:4px">↑ 2%</span></div>
+          </div>
+          <div class="mob-card" style="margin-bottom:0">
+            <div style="font-size:10px;font-weight:700;color:#94a3b8;letter-spacing:0.06em;margin-bottom:4px">CONF. RATE</div>
+            <div style="font-size:22px;font-weight:800;color:#3B4FDB">${kpi.confirmRate}%<span style="font-size:12px;color:#ef4444;margin-left:4px">↓ 0.4%</span></div>
+          </div>
+          <div class="mob-card" style="margin-bottom:0">
+            <div style="font-size:10px;font-weight:700;color:#94a3b8;letter-spacing:0.06em;margin-bottom:4px">ACTIVE USERS</div>
+            <div style="font-size:22px;font-weight:800;color:#0F172A">${(kpi.appUsers/1000).toFixed(1)}k<span style="font-size:12px;color:#22c55e;margin-left:4px">↑ 14%</span></div>
+          </div>
+          <div class="mob-card" style="margin-bottom:0">
+            <div style="font-size:10px;font-weight:700;color:#94a3b8;letter-spacing:0.06em;margin-bottom:4px">NO-SHOW</div>
+            <div style="font-size:22px;font-weight:800;color:#ef4444">${kpi.noShowRate}%<span style="font-size:12px;color:#22c55e;margin-left:4px">↓ 0.1%</span></div>
+          </div>
+        </div>
+
+        <!-- Registration trends chart -->
+        <div class="mob-card">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+            <div style="font-size:16px;font-weight:700;color:#0F172A">Registration Trends</div>
+            <span style="font-size:11px;font-weight:600;color:#3B4FDB;background:#EEF0FB;padding:3px 10px;border-radius:20px">LAST 7 DAYS</span>
+          </div>
+          <div class="chart-wrap" style="height:140px"><canvas id="mobTrendChart"></canvas></div>
+        </div>
+
+        <!-- Top regions -->
+        <div style="font-size:16px;font-weight:700;color:#0F172A;margin:4px 0 12px">Top Regions</div>
+        <div class="mob-card">
+          ${areas.slice(0,5).map((a,i)=>{
+            const dot = i < 2 ? '#3B4FDB' : '#94a3b8';
+            return `<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;${i<4?'border-bottom:1px solid #f1f5f9':''}">
+              <div style="display:flex;align-items:center;gap:10px">
+                <div style="width:8px;height:8px;border-radius:50%;background:${dot}"></div>
+                <span style="font-size:14px;color:#1e293b">${a.name}</span>
+              </div>
+              <span style="font-size:14px;font-weight:700;color:#1e293b">${a.pct}%</span>
+            </div>`;
+          }).join('')}
+        </div>
+
+        <!-- Agent performance -->
+        <div style="font-size:16px;font-weight:700;color:#0F172A;margin:4px 0 12px">Agent Performance</div>
+        <div class="mob-card">
+          <div style="display:flex;justify-content:space-between;padding-bottom:8px;border-bottom:1.5px solid #f1f5f9;margin-bottom:4px">
+            <span style="font-size:10px;font-weight:700;color:#94a3b8;letter-spacing:0.06em">AGENT</span>
+            <span style="font-size:10px;font-weight:700;color:#94a3b8;letter-spacing:0.06em">LEADS</span>
+            <span style="font-size:10px;font-weight:700;color:#94a3b8;letter-spacing:0.06em">STATUS</span>
+          </div>
+          ${agentRows}
+        </div>
+      </div>
+    </div>`;
+  },
+
+  renderDesktop() {
     const kpi = D.analyticsData.kpis;
 
     const kpiCards = [
@@ -143,6 +226,21 @@ window.AnalyticsPage = {
 
   init() {
     const d = D.analyticsData;
+
+    if (isMobile()) {
+      const ctx = document.getElementById('mobTrendChart');
+      if (!ctx) return;
+      const chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: d.dailyRegs.labels.slice(-7),
+          datasets: [{ data: d.dailyRegs.values.slice(-7), backgroundColor: d.dailyRegs.values.slice(-7).map((_,i)=>i===4?'#3B4FDB':'#C7CCEE'), borderRadius: 6 }]
+        },
+        options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{x:{grid:{display:false},ticks:{font:{size:9},color:'#94a3b8'}},y:{display:false}} }
+      });
+      window._activeCharts.push(chart);
+      return;
+    }
 
     const regsCtx = document.getElementById('dailyRegsChart');
     if (regsCtx) {

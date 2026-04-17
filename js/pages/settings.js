@@ -1,5 +1,74 @@
 window.SettingsPage = {
   render() {
+    return isMobile() ? this.renderMobile() : this.renderDesktop();
+  },
+
+  renderMobile() {
+    const staffCards = D.adminUsers.map(u => {
+      const stColor = u.status === 'active' ? { bg:'#dcfce7', color:'#16a34a' } : { bg:'#fee2e2', color:'#dc2626' };
+      return `
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid #f1f5f9">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div class="avatar ${u.avatar}" style="width:40px;height:40px;font-size:13px;border-radius:12px">${u.initials}</div>
+          <div>
+            <div style="font-size:14px;font-weight:600;color:#0F172A">${u.name}</div>
+            <div style="font-size:12px;color:#94a3b8">${u.role}</div>
+          </div>
+        </div>
+        <span style="background:${stColor.bg};color:${stColor.color};font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px">${u.status.toUpperCase()}</span>
+      </div>`;
+    }).join('');
+
+    const toggles = [
+      { label: 'Flag Duplicate Phone IDs',      checked: true  },
+      { label: 'Auto-Block High-Velocity Regs',  checked: true  },
+      { label: 'Restrict Disposable Emails',     checked: false },
+      { label: 'Enable 2FA for All Agents',       checked: false },
+    ];
+
+    return `
+    <div style="background:#ECEEF5;min-height:100vh;padding-bottom:80px">
+      <div style="padding:20px 16px 14px">
+        <div class="mob-section-label">ADMINISTRATION</div>
+        <div class="mob-page-title">System Settings</div>
+      </div>
+      <div style="padding:0 16px">
+
+        <!-- Staff Management -->
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+          <div class="mob-section-label" style="margin-bottom:0">STAFF MANAGEMENT</div>
+          <button class="btn btn-ghost btn-sm" style="color:#3B4FDB;font-size:12px" onclick="SettingsPage.openAddAdmin()">+ Add Admin</button>
+        </div>
+        <div class="mob-card">
+          ${staffCards}
+        </div>
+
+        <!-- Core Configuration -->
+        <div class="mob-section-label" style="margin:12px 0 10px">CORE CONFIGURATION</div>
+        <div class="mob-card">
+          ${toggles.map(t => `
+          <label style="display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid #f1f5f9;cursor:pointer">
+            <span style="font-size:14px;color:#374151">${t.label}</span>
+            <input type="checkbox" ${t.checked ? 'checked' : ''} onchange="toast('Setting updated','success')">
+          </label>`).join('')}
+        </div>
+
+        <!-- No-show threshold -->
+        <div class="mob-section-label" style="margin:12px 0 10px">THRESHOLDS</div>
+        <div class="mob-card" style="display:flex;align-items:center;justify-content:space-between">
+          <span style="font-size:14px;color:#374151">No-Show Auto-Flag Threshold</span>
+          <input class="input" type="number" value="3" min="1" max="10" style="width:64px;text-align:center">
+        </div>
+
+        <!-- Save -->
+        <div style="margin-top:16px;margin-bottom:16px">
+          <button class="mob-btn-primary" onclick="toast('All settings saved successfully!','success')">${icon('save',18)} Save Changes</button>
+        </div>
+      </div>
+    </div>`;
+  },
+
+  renderDesktop() {
     const adminRows = D.adminUsers.map(u => {
       const stBadge = u.status==='active'?'badge-green':u.status==='suspended'?'badge-red':'badge-gray';
       return `

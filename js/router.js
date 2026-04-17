@@ -1,3 +1,7 @@
+// ─── Mobile helper ──────────────────────────────────────────────────────────
+function isMobile() { return window.innerWidth <= 768; }
+window.isMobile = isMobile;
+
 // ─── Router ────────────────────────────────────────────────────────────────
 
 const PAGES = {
@@ -92,7 +96,7 @@ function renderSidebar(active) {
 function renderTopbar() {
   const role = D.roles[D.currentRole];
   document.getElementById('topbar').innerHTML = `
-    <button class="btn btn-ghost mob-menu-btn" style="display:none;padding:6px 8px" onclick="toggleMobileNav()">
+    <button class="btn btn-ghost mob-menu-btn" style="display:none;padding:6px 8px;margin-right:4px" onclick="toggleMobileNav()">
       ${icon('menu', 22)}
     </button>
     <div class="topbar-search" style="display:flex;align-items:center;gap:12px;flex:1">
@@ -101,13 +105,15 @@ function renderTopbar() {
         <input class="input" placeholder="Search shows, users, registrations…" style="padding-left:34px;font-size:13px">
       </div>
     </div>
-    <div style="flex:1" class="mob-topbar-title" style="display:none"></div>
-    <div style="display:flex;align-items:center;gap:6px;margin-left:auto">
+    <div class="mob-topbar-center" style="display:none;flex:1">
+      <span style="font-size:16px;font-weight:700;color:#3B4FDB;letter-spacing:-0.3px">Dhaasoo Admin</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;margin-left:auto">
       <button class="btn btn-ghost" style="position:relative" onclick="toggleNotifications()">
         ${icon('bell',20)}
         <span class="notif-dot"></span>
       </button>
-      <div class="avatar ${role.color}" style="cursor:pointer;font-size:12px">${role.initials}</div>
+      <div class="avatar ${role.color}" style="cursor:pointer;font-size:12px;width:34px;height:34px">${role.initials}</div>
     </div>`;
 }
 
@@ -162,20 +168,20 @@ function destroyCharts() {
 }
 
 function renderBottomNav(active) {
-  const role = D.currentRole;
-  const allowed = D.nav[role];
   const el = document.getElementById('mob-bottom-nav');
   if (!el) return;
-  // Show max 5 items in bottom nav
-  const items = allowed.slice(0, 5);
-  el.innerHTML = items.map(key => {
-    const m = NAV_META[key];
-    if (!m) return '';
-    return `<div class="mob-nav-item ${active===key?'active':''}" onclick="navigate('${key}')">
-      ${icon(m.icon, 20)}
-      <span>${m.label}</span>
-    </div>`;
-  }).join('');
+  const items = [
+    { key: 'overview',  label: 'HOME',      ic: 'layout-dashboard' },
+    { key: 'shows',     label: 'SHOWS',     ic: 'tv-2' },
+    { key: 'broadcast', label: 'BROADCAST', ic: 'radio' },
+    { key: 'analytics', label: 'DATA',      ic: 'database' },
+    { key: 'settings',  label: 'SETTINGS',  ic: 'settings-2' },
+  ];
+  el.innerHTML = items.map(it => `
+    <div class="mob-nav-item ${active===it.key?'active':''}" onclick="navigate('${it.key}')">
+      ${icon(it.ic, 22)}
+      <span>${it.label}</span>
+    </div>`).join('');
   if (window.lucide) lucide.createIcons();
 }
 

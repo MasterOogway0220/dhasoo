@@ -2,8 +2,70 @@ window.ShowsPage = {
   _filter: { status: 'all', city: 'all', search: '' },
 
   render() {
+    return isMobile() ? this.renderMobile() : this.renderDesktop();
+  },
+
+  renderMobile() {
+    const statusColor = { active:'#22c55e', full:'#f97316', completed:'#94a3b8', cancelled:'#ef4444' };
+
+    const cards = D.shows.map(s => {
+      const pct = Math.round((s.filled / s.seats) * 100);
+      const isLive = s.status === 'active';
+      const isFull = s.status === 'full';
+      const isCancelled = s.status === 'cancelled';
+      const badgeLabel = isFull ? 'SOLD OUT' : isCancelled ? 'CANCELLED' : isLive ? 'LIVE' : s.status.toUpperCase();
+      const badgeBg = isCancelled ? '#ef4444' : isFull ? '#f97316' : '#22c55e';
+
+      return `
+      <div style="background:#1e293b;border-radius:16px;overflow:hidden;margin-bottom:12px;position:relative" onclick="navigate('show-detail',{showId:${s.id}})">
+        <div style="padding:20px;background:linear-gradient(135deg,#1e293b 60%,#2d3f6b)">
+          <div style="position:absolute;top:14px;right:14px;background:${badgeBg};color:#fff;font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px">${badgeLabel}</div>
+          <div style="font-size:24px;margin-bottom:10px">${s.banner}</div>
+          <div style="font-size:17px;font-weight:700;color:#fff;margin-bottom:6px">${s.name}</div>
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
+            <span style="color:rgba(255,255,255,0.6);font-size:12px">${icon('calendar',12)}</span>
+            <span style="font-size:12px;color:rgba(255,255,255,0.7)">${s.date} · ${s.time}</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:14px">
+            <span style="color:rgba(255,255,255,0.6);font-size:12px">${icon('map-pin',12)}</span>
+            <span style="font-size:12px;color:rgba(255,255,255,0.7)">${s.venue.split(',')[0]}, ${s.city}</span>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <div style="display:flex;align-items:center">
+              ${['av-blue','av-indigo','av-green'].map(c=>`<div class="avatar ${c}" style="width:26px;height:26px;font-size:9px;border:2px solid #1e293b;margin-right:-6px">•</div>`).join('')}
+              <span style="font-size:12px;color:rgba(255,255,255,0.6);margin-left:16px">${s.filled.toLocaleString()} registered</span>
+            </div>
+            <button class="btn" style="background:#3B4FDB;color:#fff;padding:7px 16px;font-size:13px;font-weight:600;border-radius:10px" onclick="event.stopPropagation();navigate('show-detail',{showId:${s.id}})">Manage</button>
+          </div>
+        </div>
+        <div style="background:rgba(255,255,255,0.05);height:4px">
+          <div style="background:#3B4FDB;width:${pct}%;height:100%"></div>
+        </div>
+      </div>`;
+    }).join('');
+
     return `
-    <div style="max-width:1100px;margin:0 auto">
+    <div style="padding:20px 16px 8px">
+      <div class="mob-section-label">PERFORMANCE HUB</div>
+      <div class="mob-page-title">Show Listing</div>
+      <div style="font-size:13px;color:#94a3b8;margin-bottom:16px">Managing ${D.shows.length} upcoming productions across India.</div>
+    </div>
+    <div style="padding:0 16px">
+      <div style="position:relative;margin-bottom:14px">
+        <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#94a3b8">${icon('search',16)}</span>
+        <input class="input" placeholder="Search shows…" style="padding-left:40px;border-radius:30px;background:#fff;border:none;box-shadow:0 2px 8px rgba(0,0,0,0.06);font-size:14px">
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:18px;overflow-x:auto;padding-bottom:4px">
+        ${['Upcoming','Mumbai','Active','All'].map((f,i)=>`<button style="white-space:nowrap;padding:6px 16px;border-radius:20px;border:none;font-size:13px;font-weight:600;cursor:pointer;${i===0?'background:#3B4FDB;color:#fff':'background:#fff;color:#64748b;box-shadow:0 1px 4px rgba(0,0,0,0.08)'}">${f}</button>`).join('')}
+      </div>
+      ${cards}
+    </div>
+    <button onclick="ShowsPage.openAddModal()" style="position:fixed;bottom:80px;right:20px;width:52px;height:52px;border-radius:50%;background:#3B4FDB;color:#fff;border:none;box-shadow:0 4px 16px rgba(59,79,219,0.4);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:50">${icon('plus',24)}</button>`;
+  },
+
+  renderDesktop() {
+    return `
+    <div style="max-width:1100px;margin:0 auto;padding-bottom:0">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:22px">
         <div>
           <h1 style="font-size:22px;font-weight:700;color:#1e293b">Upcoming Shows</h1>
@@ -79,7 +141,7 @@ window.ShowsPage = {
   },
 
   init() {
-    this.applyFilters();
+    if (!isMobile()) this.applyFilters();
   },
 
   applyFilters() {

@@ -1,5 +1,102 @@
 window.BroadcastPage = {
   render() {
+    return isMobile() ? this.renderMobile() : this.renderDesktop();
+  },
+
+  renderMobile() {
+    const tplOptions = D.templates.map(t =>
+      `<option value="${t.id}">${t.name} (${t.channel})</option>`).join('');
+
+    const templateCards = D.templates.slice(0, 4).map((t, i) => `
+      <div style="flex-shrink:0;width:120px;border-radius:14px;overflow:hidden;border:${i===0?'2.5px solid #3B4FDB':'2px solid #e2e8f0'};cursor:pointer" onclick="BroadcastPage.selectTemplate(${i})">
+        <div style="height:70px;background:${i===0?'linear-gradient(135deg,#1e3a5f,#3B4FDB)':'#f1f5f9'};display:flex;align-items:center;justify-content:center;font-size:24px">${['📢','📱','📧','🔔'][i]}</div>
+        <div style="padding:8px">
+          <div style="font-size:11px;font-weight:700;color:#1e293b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${t.name}</div>
+          <div style="font-size:10px;color:#94a3b8">${t.channel}</div>
+        </div>
+      </div>`).join('');
+
+    return `
+    <div style="background:#ECEEF5;min-height:100vh;padding-bottom:80px">
+      <div style="padding:20px 16px 14px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+          <div class="mob-page-title" style="margin-bottom:0">Broadcast Center</div>
+          <span style="background:#dcfce7;color:#16a34a;font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px">LIVE NOW</span>
+        </div>
+      </div>
+
+      <div style="padding:0 16px">
+        <!-- Stats -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
+          <div class="mob-card" style="margin-bottom:0">
+            <div style="font-size:10px;font-weight:700;color:#94a3b8;letter-spacing:0.06em;margin-bottom:4px">ACTIVE REACH</div>
+            <div style="font-size:22px;font-weight:800;color:#0F172A">84.2k <span style="font-size:12px;background:#dcfce7;color:#16a34a;padding:2px 7px;border-radius:10px;font-weight:600">+42%</span></div>
+          </div>
+          <div class="mob-card" style="margin-bottom:0">
+            <div style="font-size:10px;font-weight:700;color:#94a3b8;letter-spacing:0.06em;margin-bottom:4px">ENGAGEMENT</div>
+            <div style="font-size:22px;font-weight:800;color:#0F172A">6.8% <span style="font-size:16px">↗</span></div>
+          </div>
+        </div>
+
+        <!-- Step 1 -->
+        <div class="mob-card">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+            <span class="mob-step-badge">1</span>
+            <span style="font-size:15px;font-weight:700;color:#0F172A">Target Segment</span>
+          </div>
+          <select class="select" style="width:100%;border-radius:12px;background:#f8fafc;border:1.5px solid #e2e8f0">
+            ${D.shows.filter(s=>s.status==='active').map(s=>`<option>${s.name} — ${s.city}</option>`).join('')}
+            <option>All Confirmed Registrations</option>
+            <option>Not Called Yet</option>
+            <option>No-Shows (last show)</option>
+          </select>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="mob-card">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+            <div style="display:flex;align-items:center;gap:10px">
+              <span class="mob-step-badge">2</span>
+              <span style="font-size:15px;font-weight:700;color:#0F172A">Select Template</span>
+            </div>
+            <button class="btn btn-ghost btn-sm" style="color:#3B4FDB;font-size:13px" onclick="BroadcastPage.openTemplates()">View All</button>
+          </div>
+          <div style="display:flex;gap:10px;overflow-x:auto;padding-bottom:4px">${templateCards}</div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="mob-card">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+            <span class="mob-step-badge">3</span>
+            <span style="font-size:15px;font-weight:700;color:#0F172A">Message Preview</span>
+          </div>
+          <div style="background:#f8fafc;border-radius:12px;padding:14px;border:1px solid #e2e8f0">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+              <div style="width:28px;height:28px;background:#3B4FDB;border-radius:8px;display:flex;align-items:center;justify-content:center">${icon('send',13)}</div>
+              <div>
+                <div style="font-size:10px;font-weight:700;color:#3B4FDB">DHAASOO BROADCAST</div>
+                <div style="font-size:10px;color:#94a3b8">Broadcasting to 14.3k recipients</div>
+              </div>
+            </div>
+            <div style="font-size:13px;color:#374151;line-height:1.6">
+              Hi <strong>{{Name}}</strong> 👋 Your ticket for <strong>Neon Echoes Live Mumbai</strong> is ready!<br>
+              📅 24 Oct 2025 · 📍 MMRDA Grounds, BKC<br>
+              Show your QR at Gate 4. See you there!
+            </div>
+            <div style="font-size:11px;color:#94a3b8;margin-top:8px">Estimated Delivery: &lt; 2 mins</div>
+          </div>
+        </div>
+
+        <!-- Execute -->
+        <div style="margin-top:8px;margin-bottom:16px">
+          <button class="mob-btn-primary" onclick="BroadcastPage.confirmBroadcast()">${icon('send',18)} Execute Broadcast</button>
+          <div style="text-align:center;font-size:11px;color:#94a3b8;margin-top:6px">REQUIRES CONFIRMATION</div>
+        </div>
+      </div>
+    </div>`;
+  },
+
+  renderDesktop() {
     const recentComms = [
       { show:'Weekend Music Fest – Mumbai', channel:'SMS',       status:'In Progress', target:14433, time:'Just now' },
       { show:'Ticket Confirmed – MKT Pune', channel:'WhatsApp', status:'Delivered',   target:231,   time:'Today'   },
@@ -140,7 +237,12 @@ window.BroadcastPage = {
     </div>`;
   },
 
+  selectTemplate(i) {
+    toast(`Template ${i+1} selected`, 'info');
+  },
+
   init() {
+    if (isMobile()) return;
     const ctx = document.getElementById('deliveryChart');
     if (!ctx) return;
     const chart = new Chart(ctx, {

@@ -1,5 +1,63 @@
 window.DatabasePage = {
   render() {
+    return isMobile() ? this.renderMobile() : this.renderDesktop();
+  },
+
+  renderMobile() {
+    const statusCfg = {
+      active:    { label:'ACTIVE',      bg:'#dcfce7', color:'#16a34a' },
+      flagged:   { label:'FLAGGED',     bg:'#fef9c3', color:'#ca8a04' },
+      blacklist: { label:'BLACKLISTED', bg:'#1e293b', color:'#fff'    },
+    };
+
+    const cards = D.users.map(u => {
+      const st = statusCfg[u.status] || { label: u.status.toUpperCase(), bg:'#f1f5f9', color:'#64748b' };
+      return `
+      <div class="mob-user-card" onclick="navigate('audience',{userId:'${u.id}'})">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+          <div class="avatar ${u.avatar}" style="width:48px;height:48px;font-size:16px;border-radius:14px;flex-shrink:0">${u.initials}</div>
+          <div style="flex:1;min-width:0">
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <span style="font-size:15px;font-weight:700;color:#0F172A">${u.name}</span>
+              <span style="background:${st.bg};color:${st.color};font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px">${st.label}</span>
+            </div>
+            <div style="font-size:13px;color:#64748b;margin-top:1px">${u.mobile || '—'}</div>
+          </div>
+        </div>
+        <div style="border-top:1px solid #f1f5f9;padding-top:8px;display:flex;align-items:center;justify-content:space-between">
+          <div>
+            <div style="font-size:10px;font-weight:700;color:#94a3b8;letter-spacing:0.06em;margin-bottom:2px">CITY · SHOWS ATTENDED</div>
+            <div style="font-size:13px;font-weight:600;color:#3B4FDB">${u.city} · ${u.attended} shows</div>
+          </div>
+          <div style="color:#94a3b8">${icon('chevron-right',18)}</div>
+        </div>
+      </div>`;
+    }).join('');
+
+    return `
+    <div style="background:#ECEEF5;min-height:100vh;padding-bottom:80px">
+      <div style="padding:20px 16px 14px">
+        <div class="mob-page-title">User Database</div>
+        <div style="font-size:13px;color:#94a3b8">Managing ${D.users.length.toLocaleString()}+ verified users</div>
+      </div>
+      <div style="padding:0 16px">
+        <div style="position:relative;margin-bottom:16px;display:flex;gap:10px">
+          <div style="position:relative;flex:1">
+            <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#94a3b8">${icon('search',16)}</span>
+            <input class="input" id="mob-db-search" placeholder="Search by name, ID or mobile…" style="padding-left:42px;border-radius:30px;background:#fff;border:none;box-shadow:0 2px 8px rgba(0,0,0,0.06)" oninput="DatabasePage.filterRows()">
+          </div>
+          <button style="width:44px;height:44px;background:#fff;border:none;border-radius:14px;box-shadow:0 2px 8px rgba(0,0,0,0.06);display:flex;align-items:center;justify-content:center;color:#64748b;cursor:pointer">${icon('sliders-horizontal',18)}</button>
+        </div>
+        ${cards}
+        <button class="mob-btn-primary" style="margin-bottom:16px" onclick="toast('Loading more…','info')">
+          ${icon('chevrons-down',18)} Load More Users
+        </button>
+      </div>
+      <button onclick="DatabasePage.openAddUser()" style="position:fixed;bottom:80px;right:20px;width:52px;height:52px;border-radius:50%;background:#3B4FDB;color:#fff;border:none;box-shadow:0 4px 16px rgba(59,79,219,0.4);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:50">${icon('user-plus',22)}</button>
+    </div>`;
+  },
+
+  renderDesktop() {
     const repCfg = {
       Excellent: 'badge-green',
       Good:      'badge-blue',
