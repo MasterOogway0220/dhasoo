@@ -193,8 +193,8 @@ window.ShowDetailPage = {
           <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
             <input class="input" placeholder="Filter by name or mobile…" style="font-size:13px;max-width:180px" id="sd-search" oninput="ShowDetailPage.filterRows()">
             <select class="select" id="sd-city" style="font-size:13px" onchange="ShowDetailPage.filterRows()">
-              <option value="">All Cities</option>
-              <option>Mumbai</option><option>Thane</option><option>Pune</option><option>Navi Mumbai</option><option>Delhi</option>
+              <option value="">All Areas</option>
+              <option>Mumbai</option><option>Thane</option><option>Navi Mumbai</option><option>Andheri</option><option>Bandra</option><option>Borivali</option><option>Dadar</option>
             </select>
             <input class="input" id="sd-date" placeholder="Reg. date…" style="font-size:13px;max-width:130px" oninput="ShowDetailPage.filterRows()">
             <button class="btn btn-secondary btn-sm" onclick="toast('Assigning to agent…','info')">${icon('user-plus',14)} Assign to Agent</button>
