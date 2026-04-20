@@ -48,7 +48,7 @@ window.ShowsPage = {
     <div style="padding:20px 16px 8px">
       <div class="mob-section-label">PERFORMANCE HUB</div>
       <div class="mob-page-title">Show Listing</div>
-      <div style="font-size:13px;color:#94a3b8;margin-bottom:16px">Managing ${D.shows.length} upcoming productions across India.</div>
+      <div style="font-size:13px;color:#94a3b8;margin-bottom:16px">Managing ${D.shows.length} upcoming productions across Mumbai.</div>
     </div>
     <div style="padding:0 16px">
       <div style="position:relative;margin-bottom:14px">
@@ -69,14 +69,14 @@ window.ShowsPage = {
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:22px">
         <div>
           <h1 style="font-size:22px;font-weight:700;color:#1e293b">Upcoming Shows</h1>
-          <p style="font-size:13px;color:#94a3b8;margin-top:2px">Manage your upcoming productions, ticket inventory, and real-time show statistics across major Indian cities.</p>
+          <p style="font-size:13px;color:#94a3b8;margin-top:2px">Manage your upcoming productions, ticket inventory, and real-time show statistics across Mumbai.</p>
         </div>
         <button class="btn btn-primary" onclick="ShowsPage.openAddModal()">${icon('plus',16)} Add New Show</button>
       </div>
 
       <!-- Insight strip -->
       <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
-        <div style="font-size:13px;color:#1e40af"><strong>PAN INDIA OCCUPANCY:</strong> <span style="font-size:20px;font-weight:700;margin-left:8px">87.5%</span> <span style="font-size:12px;color:#3b82f6">+2.3% above regional average</span></div>
+        <div style="font-size:13px;color:#1e40af"><strong>MUMBAI OCCUPANCY:</strong> <span style="font-size:20px;font-weight:700;margin-left:8px">87.5%</span> <span style="font-size:12px;color:#3b82f6">+2.3% above city average</span></div>
         <button class="btn btn-secondary btn-sm">View Breakdown</button>
       </div>
 
@@ -91,11 +91,12 @@ window.ShowsPage = {
           <option value="cancelled">Cancelled</option>
         </select>
         <select class="select" id="shows-city" onchange="ShowsPage.applyFilters()">
-          <option value="all">All Cities</option>
-          <option value="Mumbai">Mumbai</option>
-          <option value="Delhi">Delhi</option>
-          <option value="Bangalore">Bangalore</option>
-          <option value="Pune">Pune</option>
+          <option value="all">All Areas</option>
+          <option value="Andheri">Andheri</option>
+          <option value="Bandra">Bandra</option>
+          <option value="BKC">BKC</option>
+          <option value="Lower Parel">Lower Parel</option>
+          <option value="Mahalaxmi">Mahalaxmi</option>
         </select>
       </div>
 
@@ -123,12 +124,12 @@ window.ShowsPage = {
       <div style="display:grid;grid-template-columns:1fr 220px;gap:16px;margin-top:16px">
         <div class="card" style="padding:20px;background:linear-gradient(135deg,#0f172a,#1e3a5f);color:#fff">
           <div style="font-size:11px;font-weight:600;color:#93c5fd;margin-bottom:8px">VENUE SPOTLIGHT</div>
-          <div style="font-size:16px;font-weight:700;margin-bottom:6px">Mumbai Metropolitan</div>
-          <div style="font-size:13px;color:#94a3b8">Mumbai venue category currently leads in advance booking conversion rates.</div>
+          <div style="font-size:16px;font-weight:700;margin-bottom:6px">MMRDA Grounds, BKC</div>
+          <div style="font-size:13px;color:#94a3b8">BKC venue leads in advance booking conversion with 84% fill rate.</div>
         </div>
         <div class="card" style="padding:16px">
-          <div style="font-size:13px;font-weight:600;color:#1e293b;margin-bottom:12px">Top Region Performers</div>
-          ${D.analyticsData.cities.map(c=>`
+          <div style="font-size:13px;font-weight:600;color:#1e293b;margin-bottom:12px">Top Area Performers</div>
+          ${D.analyticsData.areas.map(c=>`
             <div style="margin-bottom:10px">
               <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px">
                 <span style="color:#374151">${c.name}</span><span style="color:#2563eb;font-weight:600">${c.pct}%</span>
@@ -152,7 +153,7 @@ window.ShowsPage = {
     let shows = D.shows.filter(s => {
       const matchSearch = !search || s.name.toLowerCase().includes(search) || s.venue.toLowerCase().includes(search);
       const matchStatus = status==='all' || s.status===status;
-      const matchCity   = city==='all'   || s.city===city;
+      const matchCity   = city==='all'   || s.venue.includes(city);
       return matchSearch && matchStatus && matchCity;
     });
 

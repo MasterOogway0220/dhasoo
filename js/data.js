@@ -21,13 +21,13 @@ window.D = {
   },
 
   shows: [
-    { id: 1, name: 'Bollywood Retro Beats', type: 'Concert', date: '24 Oct 2025', time: '07:00 PM', venue: 'Grand Arena, Mumbai', city: 'Mumbai', seats: 1500, filled: 1320, status: 'active',    banner: '🎵', description: 'A nostalgic evening of Bollywood classics.', reporting: '06:00 PM' },
-    { id: 2, name: 'Sufi Night with Nizami', type: 'Concert', date: '26 Oct 2025', time: '08:00 PM', venue: 'Fort Event, New Delhi', city: 'Delhi',  seats: 800,  filled: 800,  status: 'full',     banner: '🎶', description: 'An evening of soul-stirring Sufi music.', reporting: '07:00 PM' },
-    { id: 3, name: 'The Great Indian Comedy', type: 'Comedy', date: '03 Nov 2025', time: '07:30 PM', venue: 'LG Club, Bangalore', city: 'Bangalore', seats: 600, filled: 240,  status: 'active',    banner: '😂', description: 'Stand-up comedy night with top Indian comedians.', reporting: '06:30 PM' },
-    { id: 4, name: 'Neon Echoes Live Mumbai', type: 'Concert', date: '24 Oct 2025', time: '08:00 PM', venue: 'MMRDA Grounds, BKC, Mumbai', city: 'Mumbai', seats: 1000, filled: 842, status: 'active', banner: '🌟', description: 'Electronic music meets Bollywood in a live spectacle.', reporting: '07:00 PM' },
-    { id: 5, name: 'MH Weekender Finals',    type: 'Reality', date: '15 Nov 2025', time: '06:00 PM', venue: 'Mahalaxmi Lawns, Pune', city: 'Pune',  seats: 2000, filled: 1800, status: 'active',   banner: '🏆', description: 'Grand finale of Maharashtra Weekender 2025.', reporting: '05:00 PM' },
-    { id: 6, name: 'Laugh Riot Vol 3',       type: 'Comedy', date: '10 Oct 2025', time: '07:00 PM', venue: 'Chowdaiah Hall, Bangalore', city: 'Bangalore', seats: 450, filled: 450, status: 'completed', banner: '😄', description: 'Comedy show completed.', reporting: '06:00 PM' },
-    { id: 7, name: 'Jazz Nights Mumbai',     type: 'Concert', date: '05 Oct 2025', time: '08:30 PM', venue: 'Blue Frog, Mumbai', city: 'Mumbai', seats: 300, filled: 0, status: 'cancelled', banner: '🎷', description: 'Cancelled due to venue issue.', reporting: '07:30 PM' },
+    { id: 1, name: 'Bollywood Retro Beats',  type: 'Concert', date: '24 Oct 2025', time: '07:00 PM', venue: 'Grand Arena, Andheri, Mumbai',      city: 'Mumbai', seats: 1500, filled: 1320, status: 'active',    banner: '🎵', description: 'A nostalgic evening of Bollywood classics.', reporting: '06:00 PM' },
+    { id: 2, name: 'Sufi Night with Nizami', type: 'Concert', date: '26 Oct 2025', time: '08:00 PM', venue: 'Rang Sharda, Bandra, Mumbai',        city: 'Mumbai', seats: 800,  filled: 800,  status: 'full',      banner: '🎶', description: 'An evening of soul-stirring Sufi music.', reporting: '07:00 PM' },
+    { id: 3, name: 'The Great Indian Comedy', type: 'Comedy', date: '03 Nov 2025', time: '07:30 PM', venue: 'Canvas Laugh Club, Andheri, Mumbai', city: 'Mumbai', seats: 600,  filled: 240,  status: 'active',    banner: '😂', description: 'Stand-up comedy night with top Indian comedians.', reporting: '06:30 PM' },
+    { id: 4, name: 'Neon Echoes Live',        type: 'Concert', date: '24 Oct 2025', time: '08:00 PM', venue: 'MMRDA Grounds, BKC, Mumbai',        city: 'Mumbai', seats: 1000, filled: 842,  status: 'active',    banner: '🌟', description: 'Electronic music meets Bollywood in a live spectacle.', reporting: '07:00 PM' },
+    { id: 5, name: 'MH Weekender Finals',     type: 'Reality', date: '15 Nov 2025', time: '06:00 PM', venue: 'Mahalaxmi Racecourse, Mumbai',      city: 'Mumbai', seats: 2000, filled: 1800, status: 'active',    banner: '🏆', description: 'Grand finale of Maharashtra Weekender 2025.', reporting: '05:00 PM' },
+    { id: 6, name: 'Laugh Riot Vol 3',        type: 'Comedy', date: '10 Oct 2025', time: '07:00 PM', venue: 'Canvas Laugh Club, Andheri, Mumbai', city: 'Mumbai', seats: 450,  filled: 450,  status: 'completed', banner: '😄', description: 'Comedy show completed.', reporting: '06:00 PM' },
+    { id: 7, name: 'Jazz Nights Mumbai',      type: 'Concert', date: '05 Oct 2025', time: '08:30 PM', venue: 'Blue Frog, Lower Parel, Mumbai',    city: 'Mumbai', seats: 300,  filled: 0,    status: 'cancelled', banner: '🎷', description: 'Cancelled due to venue issue.', reporting: '07:30 PM' },
   ],
 
   registrations: [
@@ -142,6 +142,12 @@ window.D = {
       { name: 'MH Weekender Finals',    type: 'Reality', date: '15 Nov', regs: 1800, confirmed: 1260, checkedIn: 0,   noShows: 0,  fillPct: 90 },
     ],
     kpis: { appUsers: 8420, regsThisMonth: 2140, confirmRate: 85, attendanceRate: 78, noShowRate: 12 },
+    cities: [
+      { name: 'Mumbai',    pct: 87 },
+      { name: 'Delhi',     pct: 100 },
+      { name: 'Bangalore', pct: 53 },
+      { name: 'Pune',      pct: 90 },
+    ],
   },
 
   users: [
