@@ -63,7 +63,7 @@ window.CallQueuePage = {
           <div style="display:flex;gap:8px;margin-bottom:14px">
             <div style="flex:1;display:flex;align-items:center;gap:8px;background:#fff;border:1.5px solid #e2e8f0;border-radius:12px;padding:11px 14px">
               ${icon('phone',16)}
-              <a href="tel:${user.mobile}" style="color:#E8761A;font-weight:700;font-size:15px;text-decoration:none;display:flex;align-items:center;gap:6px;">📞 ${user.mobile}</a>
+              <a href="tel:${user.mobile}" style="color:#E8761A;font-weight:700;font-size:15px;text-decoration:none;display:flex;align-items:center;gap:6px;">${user.mobile}</a>
             </div>
             <button style="width:48px;height:48px;background:#25D366;border:none;border-radius:12px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff" onclick="toast('Opening WhatsApp…','info')">${icon('message-circle',20)}</button>
           </div>
@@ -158,7 +158,7 @@ window.CallQueuePage = {
             <div style="display:flex;gap:10px;margin-bottom:20px">
               <div style="flex:1;display:flex;align-items:center;gap:8px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:10px 14px">
                 ${icon('phone',16)}
-                <a href="tel:${user.mobile}" style="color:#E8761A;font-weight:700;font-size:15px;text-decoration:none;display:flex;align-items:center;gap:6px;">📞 ${user.mobile}</a>
+                <a href="tel:${user.mobile}" style="color:#E8761A;font-weight:700;font-size:15px;text-decoration:none;display:flex;align-items:center;gap:6px;">${user.mobile}</a>
               </div>
               <button class="btn" style="flex:1;justify-content:center;background:#25D366;color:#fff" onclick="toast('Opening WhatsApp…','info')">${icon('message-circle',16)} WhatsApp</button>
             </div>
