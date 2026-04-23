@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3 *)",
+      "Bash(grep -n \"color:#[0-9a-fA-F]\\\\{3,6\\\\}\" \"E:/dhasoo/app/index.html\")",
+      "Bash(grep -n \"fill=\\\\\"#[0-9a-fA-F]\\\\{3,6\\\\}\\\\\"\" \"E:/dhasoo/app/index.html\")",
+      "Read(//e/dhasoo//**)",
+      "Read(//e/dhasoo/**)"
+    ]
+  }
+}

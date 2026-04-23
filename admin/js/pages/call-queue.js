@@ -63,7 +63,7 @@ window.CallQueuePage = {
           <div style="display:flex;gap:8px;margin-bottom:14px">
             <div style="flex:1;display:flex;align-items:center;gap:8px;background:#fff;border:1.5px solid #e2e8f0;border-radius:12px;padding:11px 14px">
               ${icon('phone',16)}
-              <span style="font-size:14px;font-weight:600;color:#1e293b">${user.mobile}</span>
+              <a href="tel:${user.mobile}" style="color:#E8761A;font-weight:700;font-size:15px;text-decoration:none;display:flex;align-items:center;gap:6px;">📞 ${user.mobile}</a>
             </div>
             <button style="width:48px;height:48px;background:#25D366;border:none;border-radius:12px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff" onclick="toast('Opening WhatsApp…','info')">${icon('message-circle',20)}</button>
           </div>
@@ -100,7 +100,7 @@ window.CallQueuePage = {
           <div class="avatar ${u.avatar}" style="width:36px;height:36px;font-size:12px;flex-shrink:0">${u.initials}</div>
           <div style="flex:1;min-width:0">
             <div style="font-size:13px;font-weight:600;color:#1e293b">${u.name}</div>
-            <div style="font-size:11px;color:#94a3b8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${u.mobile}</div>
+            <a href="tel:${u.mobile}" style="font-size:11px;color:#E8761A;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-decoration:none;display:block">${u.mobile}</a>
           </div>
           ${flagged?`<span class="badge badge-red" style="font-size:10px">Flagged</span>`:''}
         </div>`;
@@ -158,7 +158,7 @@ window.CallQueuePage = {
             <div style="display:flex;gap:10px;margin-bottom:20px">
               <div style="flex:1;display:flex;align-items:center;gap:8px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:10px 14px">
                 ${icon('phone',16)}
-                <span style="font-size:14px;font-weight:600;color:#1e293b;letter-spacing:0.5px">${user.mobile}</span>
+                <a href="tel:${user.mobile}" style="color:#E8761A;font-weight:700;font-size:15px;text-decoration:none;display:flex;align-items:center;gap:6px;">📞 ${user.mobile}</a>
               </div>
               <button class="btn" style="flex:1;justify-content:center;background:#25D366;color:#fff" onclick="toast('Opening WhatsApp…','info')">${icon('message-circle',16)} WhatsApp</button>
             </div>

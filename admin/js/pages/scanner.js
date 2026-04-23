@@ -51,10 +51,21 @@ window.ScannerPage = {
           </div>
         </div>
 
-        <!-- Scan button -->
-        <button class="mob-btn-primary" style="margin-bottom:12px;gap:10px" onclick="ScannerPage.simulateScan()">
-          ${icon('scan-line',20)} Tap to Scan QR
-        </button>
+        <!-- Simulate buttons 2x2 grid -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+          <button class="mob-btn-primary" style="border:2px solid #22c55e;background:#052e16;color:#86efac;border-radius:14px;padding:14px 10px;font-size:13px;font-weight:700;gap:8px;justify-content:center" onclick="ScannerPage.showResult('valid')">
+            ${icon('check-circle',16)} Simulate Valid
+          </button>
+          <button class="mob-btn-primary" style="border:2px solid #f59e0b;background:#1c1004;color:#fcd34d;border-radius:14px;padding:14px 10px;font-size:13px;font-weight:700;gap:8px;justify-content:center" onclick="ScannerPage.showResult('waitlist')">
+            ${icon('clock',16)} Simulate Waitlist
+          </button>
+          <button class="mob-btn-primary" style="border:2px solid #3b82f6;background:#0a1628;color:#93c5fd;border-radius:14px;padding:14px 10px;font-size:13px;font-weight:700;gap:8px;justify-content:center" onclick="ScannerPage.showResult('already_used')">
+            ${icon('refresh-cw',16)} Already Checked In
+          </button>
+          <button class="mob-btn-primary" style="border:2px solid #ef4444;background:#1c0606;color:#fca5a5;border-radius:14px;padding:14px 10px;font-size:13px;font-weight:700;gap:8px;justify-content:center" onclick="ScannerPage.showResult('invalid')">
+            ${icon('x-circle',16)} Simulate Invalid
+          </button>
+        </div>
 
         <!-- Manual search -->
         <div class="mob-card">
@@ -138,9 +149,21 @@ window.ScannerPage = {
           <div style="font-size:13px;color:#94a3b8">Camera preview</div>
           <div style="font-size:11px;color:#cbd5e1;margin-top:4px">(simulated in demo)</div>
         </div>
-        <button id="scan-btn" class="btn btn-primary" style="padding:14px 40px;font-size:16px;border-radius:12px" onclick="ScannerPage.simulateScan()">
-          ${icon('scan-line',20)} Tap to Scan QR
-        </button>
+        <!-- Simulate buttons 2x2 grid -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px">
+          <button class="btn" style="border:2px solid #22c55e;background:#052e16;color:#86efac;border-radius:10px;padding:10px 8px;font-size:13px;font-weight:700;gap:6px;cursor:pointer" onclick="ScannerPage.showResult('valid')">
+            ${icon('check-circle',15)} Simulate Valid
+          </button>
+          <button class="btn" style="border:2px solid #f59e0b;background:#1c1004;color:#fcd34d;border-radius:10px;padding:10px 8px;font-size:13px;font-weight:700;gap:6px;cursor:pointer" onclick="ScannerPage.showResult('waitlist')">
+            ${icon('clock',15)} Simulate Waitlist
+          </button>
+          <button class="btn" style="border:2px solid #3b82f6;background:#0a1628;color:#93c5fd;border-radius:10px;padding:10px 8px;font-size:13px;font-weight:700;gap:6px;cursor:pointer" onclick="ScannerPage.showResult('already_used')">
+            ${icon('refresh-cw',15)} Already Checked In
+          </button>
+          <button class="btn" style="border:2px solid #ef4444;background:#1c0606;color:#fca5a5;border-radius:10px;padding:10px 8px;font-size:13px;font-weight:700;gap:6px;cursor:pointer" onclick="ScannerPage.showResult('invalid')">
+            ${icon('x-circle',15)} Simulate Invalid
+          </button>
+        </div>
         <div style="margin-top:12px;font-size:12px;color:#94a3b8">Point camera at the audience member's QR code</div>
       </div>
 
@@ -176,9 +199,10 @@ window.ScannerPage = {
 
   showResult(type) {
     const mobileCfg = {
-      valid:        { bg:'linear-gradient(135deg,#16a34a,#22c55e)', ic:'check',   title:'Access Granted',      name:'Arjun Mehta',    sub:'Zone A · Seat 42' },
-      already_used: { bg:'linear-gradient(135deg,#dc2626,#ef4444)', ic:'x',       title:'Already Checked-In',  name:'Invalid Ticket', sub:'Please direct guest to Help Desk' },
-      invalid:      { bg:'linear-gradient(135deg,#dc2626,#ef4444)', ic:'x',       title:'Invalid Ticket',       name:'Unknown Token',  sub:'Ticket does not match any registration' },
+      valid:        { bg:'linear-gradient(135deg,#16a34a,#22c55e)', ic:'check',         title:'Access Granted',      name:'Arjun Mehta',    sub:'Zone A · Seat 42' },
+      waitlist:     { bg:'linear-gradient(135deg,#b45309,#d97706)', ic:'clock',         title:'On Waitlist',         name:'Priya Sharma',   sub:'Seat not yet confirmed' },
+      already_used: { bg:'linear-gradient(135deg,#1d4ed8,#3b82f6)', ic:'refresh-cw',   title:'Already Checked-In',  name:'Rohan Kapoor',   sub:'Please direct guest to Help Desk' },
+      invalid:      { bg:'linear-gradient(135deg,#dc2626,#ef4444)', ic:'x',             title:'Invalid Ticket',      name:'Unknown Token',  sub:'Ticket does not match any registration' },
     };
 
     if (isMobile()) {
@@ -193,17 +217,15 @@ window.ScannerPage = {
           <div style="font-size:13px;opacity:0.75">${cfg.sub}</div>
         </div>`;
       if (window.lucide) lucide.createIcons();
-      if (type === 'valid') {
-        setTimeout(() => {
-          if (card) card.innerHTML = `
-            <div style="background:linear-gradient(135deg,#3B4FDB,#5B6FEB);border-radius:24px;padding:32px 20px;text-align:center;color:#fff">
-              <div style="width:72px;height:72px;background:rgba(255,255,255,0.2);border-radius:20px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px">${icon('scan-line',36)}</div>
-              <div style="font-size:22px;font-weight:800;margin-bottom:4px">Ready to Scan</div>
-              <div style="font-size:14px;opacity:0.8">Tap the button below to validate a QR ticket</div>
-            </div>`;
-          if (window.lucide) lucide.createIcons();
-        }, 2500);
-      }
+      setTimeout(() => {
+        if (card) card.innerHTML = `
+          <div style="background:linear-gradient(135deg,#3B4FDB,#5B6FEB);border-radius:24px;padding:32px 20px;text-align:center;color:#fff">
+            <div style="width:72px;height:72px;background:rgba(255,255,255,0.2);border-radius:20px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px">${icon('scan-line',36)}</div>
+            <div style="font-size:22px;font-weight:800;margin-bottom:4px">Ready to Scan</div>
+            <div style="font-size:14px;opacity:0.8">Tap a button below to simulate a scan</div>
+          </div>`;
+        if (window.lucide) lucide.createIcons();
+      }, 2500);
       return;
     }
 
@@ -220,9 +242,17 @@ window.ScannerPage = {
         sub: 'DH-10231 · Neon Echoes Live Mumbai',
         extra: '<div style="margin-top:12px;font-size:14px;opacity:0.85">Entry recorded · 24 Oct 2025, 07:23 PM</div>'
       },
+      waitlist: {
+        bg: '#92400e',
+        icon: '⏳',
+        title: 'On Waitlist',
+        name: 'Priya Sharma',
+        sub: 'DH-10298 · Neon Echoes Live Mumbai',
+        extra: '<div style="margin-top:12px;font-size:14px;opacity:0.85">This registration is on the waitlist. Seat not yet confirmed.</div>'
+      },
       already_used: {
-        bg: '#dc2626',
-        icon: '🔴',
+        bg: '#1d4ed8',
+        icon: '🔵',
         title: 'Already Checked-In',
         name: 'Rohan Kapoor',
         sub: 'DH-10233 · Entry recorded at 06:58 PM',
@@ -247,9 +277,7 @@ window.ScannerPage = {
       <div style="font-size:14px;color:rgba(255,255,255,0.7)">${cfg.sub}</div>
       ${cfg.extra}`;
 
-    if (type === 'valid') {
-      setTimeout(() => this.closeResult(), 2000);
-    }
+    setTimeout(() => this.closeResult(), type === 'valid' ? 2000 : 3000);
   },
 
   closeResult() {

@@ -1,0 +1,3331 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Dhaasoo Talent</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #190d00;
+      --card:      #251500;
+      --input:     #1e1000;
+      --orange:    #E8761A;
+      --orange-dk: #c96015;
+      --border:    #3d2010;
+      --muted:     #9A7A5A;
+      --dim:       #6B4A2A;
+      --green:     #22c55e;
+      --green-bg:  #0d2818;
+      --green-bdr: #1a4a2e;
+      --white:     #ffffff;
+    }
+
+    html, body {
+      height: 100%;
+      background: #0d0700;
+      color: #ffffff;
+      font-family: 'Inter', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .free-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--green-bg);
+      border: 1px solid var(--green-bdr);
+      border-radius: 20px;
+      padding: 7px 14px;
+      color: var(--green);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    #app {
+      position: relative;
+      width: 100%;
+      max-width: 390px;
+      height: 100dvh;
+      margin: 0 auto;
+      background: var(--bg);
+      overflow: hidden;
+    }
+
+    .screen {
+      position: absolute;
+      inset: 0;
+      overflow-y: auto;
+      display: none;
+      flex-direction: column;
+      background: var(--bg);
+      will-change: transform, opacity;
+    }
+
+    .screen.active {
+      display: flex;
+    }
+
+    /* Hide scrollbars everywhere — content still scrolls */
+    * { scrollbar-width: none; -ms-overflow-style: none; }
+    *::-webkit-scrollbar { display: none; }
+
+    /* Common reusable pieces */
+    .btn-orange {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 15px 20px;
+      background: var(--orange);
+      color: var(--white);
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      border: none;
+      border-radius: 14px;
+      cursor: pointer;
+      transition: background 0.15s;
+      letter-spacing: 0.01em;
+    }
+    .btn-orange:active { background: var(--orange-dk); }
+
+    @keyframes freePulse {
+      0%,100% { opacity:1; box-shadow:0 0 0 0 rgba(232,118,26,0); }
+      50% { opacity:0.85; box-shadow:0 0 0 6px rgba(232,118,26,0.25); }
+    }
+    .free-flash {
+      animation: freePulse 2s ease-in-out infinite;
+    }
+
+    .btn-outline-orange {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 14px 20px;
+      background: transparent;
+      color: var(--orange);
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      border: 1.5px solid var(--orange);
+      border-radius: 14px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .btn-outline-orange:active { background: rgba(232,118,26,0.1); }
+
+    .green-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--green-bg);
+      border: 1px solid var(--green-bdr);
+      border-radius: 20px;
+      padding: 7px 14px;
+      color: var(--green);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .bottom-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      background: var(--card);
+      border-top: 1px solid var(--border);
+      padding: 10px 0 16px;
+      flex-shrink: 0;
+    }
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      padding: 4px 12px;
+      border-radius: 10px;
+      transition: background 0.15s;
+    }
+    .nav-item:active { background: rgba(232,118,26,0.1); }
+    .nav-label {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--muted);
+    }
+    .nav-item.active .nav-label { color: var(--orange); }
+    .nav-item.active svg path, .nav-item.active svg rect, .nav-item.active svg circle { stroke: var(--orange); }
+
+    .chip-row {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      scrollbar-width: none;
+    }
+    .chip-row::-webkit-scrollbar { display: none; }
+    .chip {
+      flex-shrink: 0;
+      padding: 7px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s;
+    }
+    .chip.active {
+      background: var(--orange);
+      border-color: var(--orange);
+      color: var(--white);
+    }
+
+    .input-field {
+      width: 100%;
+      background: var(--input);
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 16px;
+      color: var(--white);
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      outline: none;
+      transition: border-color 0.15s;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+    .input-field:focus { border-color: var(--orange); }
+    .input-field::placeholder { color: var(--dim); }
+
+    .input-icon-wrap {
+      position: relative;
+    }
+    .input-icon-wrap .input-field { padding-left: 42px; }
+    .input-icon-wrap .icon-left {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+    }
+
+    .form-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .section-heading {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--white);
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .screen-header {
+      display: flex;
+      align-items: center;
+      padding: 16px 20px;
+      flex-shrink: 0;
+    }
+    .header-back {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .header-title {
+      flex: 1;
+      text-align: center;
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--white);
+    }
+    .header-spacer {
+      width: 36px;
+      flex-shrink: 0;
+    }
+
+    /* ─── SELECT & DATE styling ─── */
+    select.input-field {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%239A7A5A' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      padding-right: 40px;
+      cursor: pointer;
+    }
+    select.input-field option { background: #251500; }
+
+    input[type="date"].input-field::-webkit-calendar-picker-indicator {
+      filter: invert(0.5) sepia(1) saturate(2) hue-rotate(10deg);
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- SCREEN 1 — SPLASH                          -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div id="screen-splash" class="screen active" style="align-items:center;justify-content:center;gap:0;padding:40px 32px 60px;">
+
+    <!-- Icon -->
+    <div id="splash-logo" style="width:88px;height:88px;background:var(--orange);border-radius:22px;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 32px rgba(232,118,26,0.35);margin-bottom:28px;">
+      <!-- Clapperboard SVG -->
+      <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- board body -->
+        <rect x="6" y="18" width="38" height="26" rx="3" fill="white" fill-opacity="0.15" stroke="white" stroke-width="2"/>
+        <!-- top strip -->
+        <rect x="6" y="12" width="38" height="9" rx="3" fill="white" fill-opacity="0.25" stroke="white" stroke-width="2"/>
+        <!-- clapper teeth lines -->
+        <line x1="15" y1="12" x2="12" y2="21" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        <line x1="23" y1="12" x2="20" y2="21" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        <line x1="31" y1="12" x2="28" y2="21" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        <line x1="39" y1="12" x2="36" y2="21" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        <!-- play arrow inside body -->
+        <path d="M20 27 L20 38 L33 32.5 Z" fill="white" fill-opacity="0.9"/>
+      </svg>
+    </div>
+
+    <!-- Title -->
+    <h1 style="font-size:28px;font-weight:800;color:var(--white);letter-spacing:-0.5px;margin-bottom:12px;text-align:center;">Dhaasoo Talent</h1>
+
+    <!-- Subtitle -->
+    <p style="font-size:15px;color:var(--muted);text-align:center;max-width:220px;line-height:1.55;margin-bottom:48px;">
+      To Register yourself for Guest Audience to your favorite Show/s
+    </p>
+
+    <!-- CTA button -->
+    <button class="btn-orange" style="max-width:280px;border-radius:40px;font-size:14px;" onclick="goto('agreement')">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="20 6 9 17 4 12"/>
+      </svg>
+      100% FREE / NO CHARGES
+    </button>
+
+    <!-- Dots + version -->
+    <div style="position:absolute;bottom:36px;display:flex;flex-direction:column;align-items:center;gap:12px;">
+      <div style="display:flex;align-items:center;gap:6px;">
+        <div style="width:22px;height:7px;border-radius:4px;background:var(--orange);"></div>
+        <div style="width:7px;height:7px;border-radius:50%;background:var(--dim);"></div>
+        <div style="width:7px;height:7px;border-radius:50%;background:var(--dim);"></div>
+      </div>
+      <p style="font-size:12px;color:var(--dim);">Version 1.0</p>
+    </div>
+
+  </div><!-- /screen-splash -->
+
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- SCREEN 2 — LOGIN                           -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div id="screen-login" class="screen" style="padding:0 0 32px;">
+
+    <!-- Top bar -->
+    <div style="display:flex;align-items:center;justify-content:flex-end;padding:16px 20px 0;">
+      <button style="width:36px;height:36px;border-radius:50%;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;">
+        <!-- circle-i -->
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9A7A5A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="8" x2="12" y2="8"/>
+          <line x1="12" y1="12" x2="12" y2="16"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Language toggle -->
+    <div style="display:flex;justify-content:center;padding:12px 20px 16px;">
+      <div style="display:flex;background:var(--card);border:1px solid var(--border);border-radius:40px;padding:4px;gap:4px;">
+        <button id="lang-en" onclick="setLang('en')" style="padding:8px 20px;border-radius:36px;border:none;background:var(--orange);color:white;font-family:'Inter',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all 0.15s;">English</button>
+        <button id="lang-hi" onclick="setLang('hi')" style="padding:8px 20px;border-radius:36px;border:none;background:transparent;color:var(--muted);font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.15s;">हिंदी</button>
+      </div>
+    </div>
+
+
+    <!-- Content area -->
+    <div style="flex:1;display:flex;flex-direction:column;align-items:center;padding:0 24px;">
+
+      <!-- Icon -->
+      <div style="width:64px;height:64px;background:var(--orange);border-radius:16px;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 20px rgba(232,118,26,0.3);margin-bottom:24px;">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="white">
+          <path d="M8 5v14l11-7z"/>
+        </svg>
+      </div>
+
+      <h1 style="font-size:26px;font-weight:800;color:var(--white);letter-spacing:-0.5px;margin-bottom:10px;text-align:center;">Welcome to Dhaasoo</h1>
+      <p style="font-size:14px;color:var(--muted);text-align:center;line-height:1.6;margin-bottom:32px;max-width:280px;">
+        Register with your number to join the live TV audience.
+      </p>
+
+      <!-- Phone input -->
+      <div style="width:100%;margin-bottom:16px;">
+        <label class="form-label">Mobile Number</label>
+        <div style="display:flex;gap:10px;">
+          <!-- Flag + code box -->
+          <div id="country-code-box" style="flex-shrink:0;background:var(--input);border:1.5px solid var(--border);border-radius:12px;display:flex;align-items:center;justify-content:center;gap:6px;padding:0 12px;min-width:82px;">
+            <span id="country-flag" style="font-size:18px;line-height:1;">🇮🇳</span>
+            <span id="country-code-static" style="font-size:14px;font-weight:700;color:var(--white);">+91</span>
+            <input id="country-code-input" type="tel" inputmode="numeric" maxlength="4" placeholder="+__" style="display:none;width:48px;background:transparent;border:none;outline:none;font-size:14px;font-weight:700;color:var(--white);font-family:'Inter',sans-serif;padding:0;" />
+          </div>
+          <!-- Number input -->
+          <input type="tel" inputmode="numeric" maxlength="11" placeholder="00000 00000" class="input-field" style="flex:1;" />
+        </div>
+      </div>
+
+      <!-- Send OTP button -->
+      <button class="btn-orange" style="margin-bottom:12px;" onclick="goto('otp')">
+        Send OTP →
+      </button>
+
+      <!-- Do not pay warning -->
+      <p style="font-size:11px;color:#F5A040;text-align:center;padding:0 20px;margin-bottom:16px;line-height:1.5;">⚠️ Do not pay money to anyone for show registrations. Dhaasoo is 100% free.</p>
+
+      <!-- Green badge -->
+      <span class="green-badge" style="margin-bottom:32px;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+        100% Free Registration
+      </span>
+
+    </div>
+
+    <!-- Footer -->
+    <p style="font-size:11px;color:var(--dim);text-align:center;padding:0 28px;line-height:1.7;">
+      By tapping 'Send OTP', you agree to our
+      <span style="color:var(--orange);cursor:pointer;" onclick="goto('terms')">Terms of Service</span>
+      &amp;
+      <span style="color:var(--orange);cursor:pointer;" onclick="goto('terms')">Privacy Policy</span>
+    </p>
+
+  </div><!-- /screen-login -->
+
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- SCREEN 3 — OTP                             -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div id="screen-otp" class="screen" style="padding-bottom:40px;">
+
+    <!-- Header -->
+    <div class="screen-header">
+      <div class="header-back" onclick="goto('login')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9A7A5A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"/>
+        </svg>
+      </div>
+      <div class="header-title">Verify OTP</div>
+      <div class="header-spacer"></div>
+    </div>
+
+    <!-- Content -->
+    <div style="flex:1;display:flex;flex-direction:column;align-items:center;padding:24px 24px 0;">
+
+      <!-- Lock icon -->
+      <div style="width:72px;height:72px;border-radius:50%;background:rgba(232,118,26,0.15);border:2px solid rgba(232,118,26,0.3);display:flex;align-items:center;justify-content:center;margin-bottom:24px;">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#E8761A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        </svg>
+      </div>
+
+      <h2 style="font-size:24px;font-weight:800;color:var(--white);margin-bottom:10px;">Verify OTP</h2>
+      <p style="font-size:14px;color:var(--muted);text-align:center;margin-bottom:32px;line-height:1.6;">
+        Enter the 6-digit code sent to<br/>
+        <span style="color:var(--orange);font-weight:700;">+91 00000 00000</span>
+      </p>
+
+      <!-- OTP boxes -->
+      <div style="display:flex;gap:10px;margin-bottom:28px;" id="otp-boxes">
+        <input type="text" inputmode="numeric" maxlength="1" class="otp-box" style="width:44px;height:52px;text-align:center;font-size:22px;font-weight:700;color:var(--white);background:var(--input);border:1.5px solid var(--border);border-radius:12px;font-family:'Inter',sans-serif;outline:none;transition:border-color 0.15s;" />
+        <input type="text" inputmode="numeric" maxlength="1" class="otp-box" style="width:44px;height:52px;text-align:center;font-size:22px;font-weight:700;color:var(--white);background:var(--input);border:1.5px solid var(--border);border-radius:12px;font-family:'Inter',sans-serif;outline:none;transition:border-color 0.15s;" />
+        <input type="text" inputmode="numeric" maxlength="1" class="otp-box" style="width:44px;height:52px;text-align:center;font-size:22px;font-weight:700;color:var(--white);background:var(--input);border:1.5px solid var(--border);border-radius:12px;font-family:'Inter',sans-serif;outline:none;transition:border-color 0.15s;" />
+        <input type="text" inputmode="numeric" maxlength="1" class="otp-box" style="width:44px;height:52px;text-align:center;font-size:22px;font-weight:700;color:var(--white);background:var(--input);border:1.5px solid var(--border);border-radius:12px;font-family:'Inter',sans-serif;outline:none;transition:border-color 0.15s;" />
+        <input type="text" inputmode="numeric" maxlength="1" class="otp-box" style="width:44px;height:52px;text-align:center;font-size:22px;font-weight:700;color:var(--white);background:var(--input);border:1.5px solid var(--border);border-radius:12px;font-family:'Inter',sans-serif;outline:none;transition:border-color 0.15s;" />
+        <input type="text" inputmode="numeric" maxlength="1" class="otp-box" style="width:44px;height:52px;text-align:center;font-size:22px;font-weight:700;color:var(--white);background:var(--input);border:1.5px solid var(--border);border-radius:12px;font-family:'Inter',sans-serif;outline:none;transition:border-color 0.15s;" />
+      </div>
+
+      <!-- Demo hint -->
+      <p style="font-size:11px;color:var(--orange);text-align:center;margin-bottom:8px;">Demo: Use <strong>123456</strong></p>
+
+      <!-- Resend row -->
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:28px;flex-wrap:wrap;justify-content:center;">
+        <span style="font-size:13px;color:var(--muted);">Didn't receive the code?</span>
+        <span style="font-size:13px;color:var(--orange);font-weight:600;cursor:pointer;">Resend OTP</span>
+        <span style="font-size:13px;color:var(--dim);">|</span>
+        <span style="display:inline-flex;align-items:center;gap:4px;background:var(--card);border:1px solid var(--border);border-radius:20px;padding:4px 10px;font-size:12px;font-weight:700;color:var(--muted);">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#9A7A5A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+          </svg>
+          <span id="otp-timer">00:59</span>
+        </span>
+      </div>
+
+      <!-- Verify button -->
+      <button class="btn-orange" style="margin-bottom:20px;" onclick="verifyOTP()">
+        Verify &amp; Proceed →
+      </button>
+
+      <!-- Green badge -->
+      <span class="green-badge" style="margin-bottom:28px;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+        100% FREE REGISTRATION
+      </span>
+
+      <!-- Progress dots -->
+      <div style="display:flex;align-items:center;gap:6px;">
+        <div style="width:22px;height:7px;border-radius:4px;background:var(--orange);"></div>
+        <div style="width:22px;height:7px;border-radius:4px;background:var(--orange);"></div>
+        <div style="width:7px;height:7px;border-radius:50%;background:var(--dim);"></div>
+        <div style="width:7px;height:7px;border-radius:50%;background:var(--dim);"></div>
+      </div>
+
+    </div>
+  </div><!-- /screen-otp -->
+
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- SCREEN 4 — DASHBOARD                       -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div id="screen-dashboard" class="screen">
+
+    <!-- Top bar -->
+    <div style="display:flex;align-items:center;gap:12px;padding:18px 20px 16px;flex-shrink:0;">
+      <!-- Avatar -->
+      <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#E8761A,#c96015);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <span id="dashboard-avatar-initial" style="font-size:18px;font-weight:800;color:white;">R</span>
+      </div>
+      <!-- Greeting -->
+      <div style="flex:1;">
+        <p style="font-size:12px;color:var(--muted);margin-bottom:2px;">Namaste,</p>
+        <p id="dashboard-greeting-name" style="font-size:16px;font-weight:700;color:var(--white);">Rahul ! 👋</p>
+      </div>
+      <!-- Right: bell + date -->
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
+        <div style="position:relative;cursor:pointer;" onclick="openNotifications()">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#9A7A5A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+          </svg>
+          <div id="notif-dot" style="position:absolute;top:-2px;right:-2px;width:8px;height:8px;background:var(--orange);border-radius:50%;border:1.5px solid var(--bg);"></div>
+        </div>
+        <p style="font-size:11px;color:var(--muted);">Jan 15</p>
+      </div>
+    </div>
+
+    <!-- Scrollable body -->
+    <div style="padding:0 20px 16px;">
+
+      <!-- Upcoming Shows heading -->
+      <p class="section-heading" style="margin-bottom:14px;">Your Upcoming Shows</p>
+
+      <!-- Featured show card -->
+      <div class="card" style="margin-bottom:20px;">
+        <!-- Banner -->
+        <div style="height:140px;background:linear-gradient(135deg,#2d1155,#1a0a3d);position:relative;display:flex;align-items:flex-end;padding:14px;">
+          <p style="font-size:11px;font-weight:700;color:var(--dim);letter-spacing:1.5px;text-transform:uppercase;">THE KAPIL SHARMA SHOW</p>
+          <!-- Comedy tag -->
+          <div style="position:absolute;top:12px;right:12px;background:rgba(232,118,26,0.2);border:1px solid var(--orange);border-radius:6px;padding:3px 8px;">
+            <span style="font-size:10px;font-weight:700;color:var(--orange);">COMEDY</span>
+          </div>
+        </div>
+        <!-- Card content -->
+        <div style="padding:14px;">
+          <p style="font-size:16px;font-weight:700;color:var(--white);margin-bottom:6px;">The Kapil Sharma Show</p>
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#9A7A5A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <span style="font-size:12px;color:var(--muted);">Film City, Mumbai</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:14px;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#9A7A5A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            <span style="font-size:12px;color:var(--muted);">Every Weekend • 7:00 PM</span>
+          </div>
+          <button class="btn-orange" onclick="goto('book')" style="border-radius:10px;padding:12px 16px;font-size:14px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            @ Free Pass
+          </button>
+        </div>
+      </div>
+
+      <!-- Genre filter chips -->
+      <div class="chip-row" style="margin-bottom:20px;">
+        <div class="chip active" onclick="setGenre(this)">All Shows</div>
+        <div class="chip" onclick="setGenre(this)">Reality TV</div>
+        <div class="chip" onclick="setGenre(this)">Comedy</div>
+        <div class="chip" onclick="setGenre(this)">Talent</div>
+      </div>
+
+      <!-- Trending Now heading -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+        <p class="section-heading">Trending Now 🔥</p>
+        <span style="font-size:13px;color:var(--orange);font-weight:600;cursor:pointer;" onclick="goto('shows')">See All</span>
+      </div>
+
+      <!-- Trending show list -->
+
+      <!-- Item 1: Indian Idol -->
+      <div class="card" style="display:flex;align-items:center;gap:12px;padding:12px;margin-bottom:10px;">
+        <div style="width:72px;height:72px;border-radius:12px;background:linear-gradient(135deg,#4c1d95,#7c3aed);flex-shrink:0;display:flex;align-items:center;justify-content:center;">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
+        <div style="flex:1;min-width:0;">
+          <p style="font-size:14px;font-weight:700;color:var(--white);margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Indian Idol</p>
+          <p style="font-size:12px;color:var(--muted);margin-bottom:3px;">Film City, Mumbai</p>
+          <p style="font-size:11px;color:var(--dim);">Sat–Sun • 8:00 PM</p>
+        </div>
+        <button class="btn-orange" onclick="goto('book')" style="width:auto;padding:9px 14px;font-size:12px;border-radius:10px;flex-shrink:0;">Request Seat</button>
+      </div>
+
+      <!-- Item 2: TANCK -->
+      <div class="card" style="display:flex;align-items:center;gap:12px;padding:12px;margin-bottom:10px;">
+        <div style="width:72px;height:72px;border-radius:12px;background:linear-gradient(135deg,#0c4a6e,#0284c7);flex-shrink:0;display:flex;align-items:center;justify-content:center;">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        </div>
+        <div style="flex:1;min-width:0;">
+          <p style="font-size:14px;font-weight:700;color:var(--white);margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">TANCK</p>
+          <p style="font-size:12px;color:var(--muted);margin-bottom:3px;">BKC, Mumbai</p>
+          <p style="font-size:11px;color:var(--dim);">Weekdays • 7:30 PM</p>
+        </div>
+        <button style="width:auto;padding:9px 14px;font-size:12px;border-radius:10px;flex-shrink:0;background:transparent;border:1.5px solid var(--border);color:var(--muted);font-family:'Inter',sans-serif;font-weight:600;cursor:pointer;">Join Waitlist</button>
+      </div>
+
+      <!-- Item 3: Shark Tank India -->
+      <div class="card" style="display:flex;align-items:center;gap:12px;padding:12px;margin-bottom:10px;">
+        <div style="width:72px;height:72px;border-radius:12px;background:linear-gradient(135deg,#064e3b,#059669);flex-shrink:0;display:flex;align-items:center;justify-content:center;">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <div style="flex:1;min-width:0;">
+          <p style="font-size:14px;font-weight:700;color:var(--white);margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Shark Tank India</p>
+          <p style="font-size:12px;color:var(--muted);margin-bottom:3px;">Goregaon, Mumbai</p>
+          <p style="font-size:11px;color:var(--dim);">Mon–Fri • 9:00 PM</p>
+        </div>
+        <button class="btn-orange" onclick="goto('book')" style="width:auto;padding:9px 14px;font-size:12px;border-radius:10px;flex-shrink:0;">Request Seat</button>
+      </div>
+
+      <!-- Item 4: Bigg Boss Weekend -->
+      <div class="card" style="display:flex;align-items:center;gap:12px;padding:12px;margin-bottom:4px;">
+        <div style="width:72px;height:72px;border-radius:12px;background:linear-gradient(135deg,#1e1b4b,#3730a3);flex-shrink:0;display:flex;align-items:center;justify-content:center;">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </div>
+        <div style="flex:1;min-width:0;">
+          <p style="font-size:14px;font-weight:700;color:var(--white);margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Bigg Boss Weekend</p>
+          <p style="font-size:12px;color:var(--muted);margin-bottom:3px;">Lonavala</p>
+          <p style="font-size:11px;color:var(--dim);">Sat–Sun • 9:00 PM</p>
+        </div>
+        <button class="btn-orange" onclick="goto('book')" style="width:auto;padding:9px 14px;font-size:12px;border-radius:10px;flex-shrink:0;">Request Seat</button>
+      </div>
+
+    </div><!-- /scroll body -->
+
+    <!-- Bottom nav -->
+    <nav class="bottom-nav">
+      <div class="nav-item active" onclick="goto('dashboard')">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" stroke="#E8761A"/>
+          <polyline points="9 22 9 12 15 12 15 22" stroke="#E8761A"/>
+        </svg>
+        <span class="nav-label" style="color:var(--orange);">Home</span>
+      </div>
+      <div class="nav-item" onclick="goto('shows')">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#9A7A5A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="7" width="20" height="15" rx="2" ry="2"/>
+          <polyline points="17 2 12 7 7 2"/>
+        </svg>
+        <span class="nav-label">Shows</span>
+      </div>
+      <div class="nav-item" onclick="goto('myregs')">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#9A7A5A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <line x1="16" y1="13" x2="8" y2="13"/>
+          <line x1="16" y1="17" x2="8" y2="17"/>
+        </svg>
+        <span class="nav-label">My Regs</span>
+      </div>
+      <div class="nav-item" onclick="goto('profile')">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#9A7A5A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+        <span class="nav-label">Profile</span>
+      </div>
+    </nav>
+
+  </div><!-- /screen-dashboard -->
+
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- SCREEN 5 — SHOWS                           -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div id="screen-shows" class="screen">
+
+    <!-- Top bar -->
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 20px 14px;flex-shrink:0;">
+      <span style="font-size:22px;font-weight:900;color:var(--orange);letter-spacing:-0.5px;">Dhaasoo</span>
+      <span style="font-size:16px;font-weight:700;color:var(--white);">Live Shows</span>
+      <div style="position:relative;cursor:pointer;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#9A7A5A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+        </svg>
+        <div style="position:absolute;top:-2px;right:-2px;width:8px;height:8px;background:var(--orange);border-radius:50%;border:1.5px solid var(--bg);"></div>
+      </div>
+    </div>
+
+    <!-- Search bar -->
+    <div style="padding:0 20px 14px;flex-shrink:0;">
+      <div class="input-icon-wrap">
+        <span class="icon-left">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#6B4A2A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+        </span>
+        <input type="search" placeholder="Search shows, stars..." class="input-field" />
+      </div>
+    </div>
+
+    <!-- Genre chips -->
+    <div class="chip-row" style="padding:0 20px 16px;flex-shrink:0;">
+      <div class="chip active" onclick="setGenre(this)">All</div>
+      <div class="chip" onclick="setGenre(this)">Comedy</div>
+      <div class="chip" onclick="setGenre(this)">Reality</div>
+      <div class="chip" onclick="setGenre(this)">Talent</div>
+      <div class="chip" onclick="setGenre(this)">Drama</div>
+      <div class="chip" onclick="setGenre(this)">Game Show</div>
+    </div>
+
+    <!-- Scrollable list -->
+    <div style="padding:0 20px 16px;">
+
+      <p class="section-heading" style="margin-bottom:14px;">Trending Now</p>
+
+      <!-- Card 1: KBC -->
+      <div class="card" style="margin-bottom:14px;">
+        <div style="height:160px;background:linear-gradient(135deg,#7f1d1d,#b91c1c,#dc2626);position:relative;display:flex;align-items:flex-end;padding:14px;">
+          <div>
+            <div style="background:rgba(0,0,0,0.3);border-radius:6px;padding:3px 8px;display:inline-block;margin-bottom:6px;">
+              <span style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.7);letter-spacing:1px;">GAME SHOW</span>
+            </div>
+            <p style="font-size:16px;font-weight:800;color:white;letter-spacing:-0.3px;">Kaun Banega Crorepati</p>
+          </div>
+        </div>
+        <div style="padding:14px;">
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#9A7A5A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <span style="font-size:12px;color:var(--muted);">Film City, Mumbai</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:14px;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#9A7A5A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <span style="font-size:12px;color:var(--muted);">Wed–Thu • 9:00 PM</span>
+          </div>
+          <button class="btn-orange" onclick="goto('book')" style="border-radius:10px;padding:12px;font-size:14px;">Request Seat</button>
+        </div>
+      </div>
+
+      <!-- Card 2: Kapil Sharma Show -->
+      <div class="card" style="margin-bottom:14px;">
+        <div style="height:160px;background:linear-gradient(135deg,#1e3a5f,#1d4ed8,#3b82f6);position:relative;display:flex;align-items:flex-end;padding:14px;">
+          <div>
+            <div style="background:rgba(0,0,0,0.3);border-radius:6px;padding:3px 8px;display:inline-block;margin-bottom:6px;">
+              <span style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.7);letter-spacing:1px;">COMEDY</span>
+            </div>
+            <p style="font-size:16px;font-weight:800;color:white;letter-spacing:-0.3px;">The Kapil Sharma Show</p>
+          </div>
+        </div>
+        <div style="padding:14px;">
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#9A7A5A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <span style="font-size:12px;color:var(--muted);">Film City, Mumbai</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:14px;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#9A7A5A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <span style="font-size:12px;color:var(--muted);">Every Weekend</span>
+          </div>
+          <button class="btn-orange" onclick="goto('book')" style="border-radius:10px;padding:12px;font-size:14px;">Request Seat</button>
+        </div>
+      </div>
+
+      <!-- Card 3: Bigg Boss 17 Finale - SOLD OUT -->
+      <div class="card" style="margin-bottom:14px;">
+        <div style="height:160px;background:linear-gradient(135deg,#0f172a,#1e1b4b,#312e81);position:relative;display:flex;align-items:flex-end;padding:14px;">
+          <div>
+            <div style="background:rgba(0,0,0,0.3);border-radius:6px;padding:3px 8px;display:inline-block;margin-bottom:6px;">
+              <span style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.7);letter-spacing:1px;">REALITY</span>
+            </div>
+            <p style="font-size:16px;font-weight:800;color:white;letter-spacing:-0.3px;">Bigg Boss 17 – Finale</p>
+          </div>
+        </div>
+        <div style="padding:14px;">
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#9A7A5A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <span style="font-size:12px;color:var(--muted);">Lonavala, Maharashtra</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:14px;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#9A7A5A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            <span style="font-size:12px;color:var(--muted);">Feb 18, Sunday</span>
+          </div>
+          <!-- Sold out badge (not a button) -->
+          <div style="display:flex;align-items:center;justify-content:center;width:100%;padding:12px;background:#2a2a2a;border-radius:10px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+            <span style="font-size:14px;font-weight:700;color:var(--muted);">Sold Out</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Request a show card -->
+      <div class="card" style="padding:20px;text-align:center;">
+        <p style="font-size:15px;font-weight:600;color:var(--white);margin-bottom:6px;">Don't see your favourite show?</p>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:16px;">We're always adding new shows to the platform.</p>
+        <button class="btn-outline-orange">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/>
+          </svg>
+          Request a Show
+        </button>
+      </div>
+
+    </div><!-- /scroll -->
+
+    <!-- Bottom nav -->
+    <nav class="bottom-nav">
+      <div class="nav-item" onclick="goto('dashboard')">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#9A7A5A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+          <polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+        <span class="nav-label">Home</span>
+      </div>
+      <div class="nav-item active" onclick="goto('shows')">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="7" width="20" height="15" rx="2" ry="2" stroke="#E8761A"/>
+          <polyline points="17 2 12 7 7 2" stroke="#E8761A"/>
+        </svg>
+        <span class="nav-label" style="color:var(--orange);">Shows</span>
+      </div>
+      <div class="nav-item" onclick="goto('myregs')">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#9A7A5A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <line x1="16" y1="13" x2="8" y2="13"/>
+          <line x1="16" y1="17" x2="8" y2="17"/>
+        </svg>
+        <span class="nav-label">My Regs</span>
+      </div>
+      <div class="nav-item" onclick="goto('profile')">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#9A7A5A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+        <span class="nav-label">Profile</span>
+      </div>
+    </nav>
+
+  </div><!-- /screen-shows -->
+
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- SCREEN 6 — BOOK                            -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div id="screen-book" class="screen">
+
+    <!-- Header -->
+    <div class="screen-header" style="flex-shrink:0;">
+      <div class="header-back" onclick="goto('shows')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9A7A5A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"/>
+        </svg>
+      </div>
+      <div class="header-title">Book Your Seat</div>
+      <div class="header-spacer"></div>
+    </div>
+
+    <!-- Scrollable body -->
+    <div style="padding:0 20px 120px;">
+
+      <!-- Show info row -->
+      <div class="card" style="display:flex;align-items:center;gap:12px;padding:14px;margin-bottom:24px;">
+        <div style="width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,#1e3a5f,#1d4ed8);flex-shrink:0;"></div>
+        <div style="flex:1;min-width:0;">
+          <p style="font-size:10px;font-weight:700;color:var(--dim);letter-spacing:1px;margin-bottom:3px;">AUDIENCE REGISTRATION</p>
+          <p style="font-size:15px;font-weight:700;color:var(--white);margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">The Kapil Sharma Show</p>
+          <p style="font-size:12px;color:var(--muted);">📍 Film City, Mumbai</p>
+        </div>
+      </div>
+
+      <!-- Select Date section -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+        <label class="form-label" style="margin:0;">Select Date</label>
+        <span class="green-badge free-flash" style="font-size:11px;padding:5px 10px;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          100% FREE
+        </span>
+      </div>
+
+      <!-- Date dropdown -->
+      <div style="position:relative;margin-bottom:24px;">
+        <select class="input-field">
+          <option>5 Sep, Tuesday</option>
+          <option>12 Sep, Tuesday</option>
+          <option>19 Sep, Tuesday</option>
+          <option>26 Sep, Tuesday</option>
+        </select>
+      </div>
+
+      <!-- Preferred Slot heading -->
+      <div style="margin-bottom:6px;">
+        <label class="form-label" style="margin:0;">Preferred Slot</label>
+      </div>
+      <p style="font-size:11px;color:var(--dim);margin-bottom:12px;">Select your preferred time of day. Actual entry time is confirmed by Dhaasoo team.</p>
+
+      <!-- Slot options -->
+      <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:28px;">
+
+        <!-- Morning - selected -->
+        <div class="slot-card" onclick="selectSlot(this)" style="display:flex;align-items:center;gap:14px;padding:16px;background:var(--input);border:2px solid var(--orange);border-radius:14px;cursor:pointer;">
+          <span style="font-size:22px;width:30px;text-align:center;flex-shrink:0;">☀️</span>
+          <div style="flex:1;">
+            <p style="font-size:15px;font-weight:700;color:var(--white);">Morning</p>
+          </div>
+          <div style="width:22px;height:22px;border-radius:50%;border:2px solid var(--orange);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <div class="radio-dot" style="width:10px;height:10px;border-radius:50%;background:var(--orange);"></div>
+          </div>
+        </div>
+
+        <!-- Afternoon -->
+        <div class="slot-card" onclick="selectSlot(this)" style="display:flex;align-items:center;gap:14px;padding:16px;background:var(--input);border:2px solid var(--border);border-radius:14px;cursor:pointer;">
+          <span style="font-size:22px;width:30px;text-align:center;flex-shrink:0;">⛅</span>
+          <div style="flex:1;">
+            <p style="font-size:15px;font-weight:700;color:var(--white);">Afternoon</p>
+          </div>
+          <div style="width:22px;height:22px;border-radius:50%;border:2px solid var(--dim);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <div class="radio-dot" style="width:10px;height:10px;border-radius:50%;background:transparent;"></div>
+          </div>
+        </div>
+
+        <!-- Evening -->
+        <div class="slot-card" onclick="selectSlot(this)" style="display:flex;align-items:center;gap:14px;padding:16px;background:var(--input);border:2px solid var(--border);border-radius:14px;cursor:pointer;">
+          <span style="font-size:22px;width:30px;text-align:center;flex-shrink:0;">🌙</span>
+          <div style="flex:1;">
+            <p style="font-size:15px;font-weight:700;color:var(--white);">Evening</p>
+          </div>
+          <div style="width:22px;height:22px;border-radius:50%;border:2px solid var(--dim);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <div class="radio-dot" style="width:10px;height:10px;border-radius:50%;background:transparent;"></div>
+          </div>
+        </div>
+
+      </div><!-- /slots -->
+
+      <!-- Number of Additional Users -->
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:24px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+          <div>
+            <p style="color:var(--white);font-size:14px;font-weight:700;">Additional Seats</p>
+            <p style="color:var(--dim);font-size:11px;margin-top:2px;">Including yourself — max 4 seats per booking</p>
+          </div>
+          <div style="display:flex;align-items:center;gap:0;">
+            <button onclick="changeSeats(-1)" style="width:36px;height:36px;border-radius:10px 0 0 10px;background:var(--input);border:1.5px solid var(--border);color:var(--white);font-size:20px;font-weight:300;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;">−</button>
+            <div id="seat-count-display" style="width:44px;height:36px;background:var(--bg);border-top:1.5px solid var(--border);border-bottom:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;">
+              <span id="seat-count-val" style="color:var(--orange);font-size:17px;font-weight:800;">0</span>
+            </div>
+            <button onclick="changeSeats(1)" style="width:36px;height:36px;border-radius:0 10px 10px 0;background:var(--input);border:1.5px solid var(--border);color:var(--white);font-size:20px;font-weight:300;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;">+</button>
+          </div>
+        </div>
+        <div id="seat-total-row" style="display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+          <span style="color:var(--muted);font-size:13px;">Total seats requested</span>
+          <span id="seat-total-val" style="color:var(--orange);font-size:14px;font-weight:800;">1</span>
+        </div>
+      </div>
+
+      <!-- Additional Guests BaRCo (shown when seat count > 0) -->
+      <div id="guest-section" style="display:none;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+          <p class="section-heading" style="margin:0;">Guest BaRCo</p>
+          <span style="font-size:11px;color:var(--dim);">Required per guest</span>
+        </div>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:14px;line-height:1.5;">Enter the BaRCo of each registered guest you're bringing along.</p>
+        <div id="guest-list" style="display:flex;flex-direction:column;gap:10px;margin-bottom:8px;"></div>
+        <p style="font-size:11px;color:var(--dim);margin-bottom:20px;text-align:center;">Each guest must be registered on Dhaasoo app</p>
+      </div>
+
+    </div><!-- /scroll -->
+
+    <!-- Sticky bottom bar -->
+    <div style="position:sticky;bottom:0;background:var(--card);border-top:1px solid var(--border);padding:16px 20px;display:flex;align-items:center;gap:14px;margin-top:auto;">
+      <div style="flex:1;min-width:0;">
+        <p style="font-size:11px;color:var(--muted);margin-bottom:2px;">Slot · Seats</p>
+        <p id="selected-slot-label" style="font-size:13px;font-weight:700;color:var(--white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Morning · <span id="bottom-seat-label">1 seat</span></p>
+      </div>
+      <button class="btn-orange" style="width:auto;padding:14px 18px;font-size:14px;border-radius:12px;white-space:nowrap;flex-shrink:0;" onclick="goto('reg1')">
+        Proceed →
+      </button>
+    </div>
+
+  </div><!-- /screen-book -->
+
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- SCREEN 7 — REG1 (User Registration Step 1) -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div id="screen-reg1" class="screen">
+
+    <!-- Header -->
+    <div class="screen-header" style="flex-shrink:0;">
+      <div class="header-back" onclick="goto('book')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9A7A5A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"/>
+        </svg>
+      </div>
+      <div class="header-title">Create Profile</div>
+      <div class="header-spacer"></div>
+    </div>
+
+    <!-- Progress -->
+    <div style="padding:0 20px 20px;flex-shrink:0;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+        <span style="font-size:12px;color:var(--muted);">Step 1 of 2</span>
+        <span style="font-size:12px;color:var(--orange);font-weight:600;">50% Completed</span>
+      </div>
+      <div style="height:5px;background:var(--border);border-radius:10px;overflow:hidden;">
+        <div style="height:100%;width:50%;background:var(--orange);border-radius:10px;"></div>
+      </div>
+    </div>
+
+    <!-- Scrollable body -->
+    <div style="padding:0 20px 40px;">
+
+      <!-- 100% Free flash badge -->
+      <div class="free-flash" style="display:flex;align-items:center;justify-content:center;gap:6px;background:#0d2a14;border:1px solid var(--green-bdr);border-radius:20px;padding:5px 12px;margin-bottom:16px;">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        <span style="color:var(--green);font-size:12px;font-weight:700;">100% FREE — No Charges Ever</span>
+      </div>
+
+      <!-- Warning banner -->
+      <div style="background:#2a1a00;border:1px solid #8B5A00;border-radius:12px;padding:12px 14px;display:flex;gap:10px;align-items:flex-start;margin-bottom:16px;">
+        <span style="font-size:16px;flex-shrink:0;">⚠️</span>
+        <p style="color:#F5C842;font-size:12px;line-height:1.6;margin:0;">
+          <strong>No Charges · 100% Free</strong> for Registration &amp; Entry to Show.<br/>Do not pay money to anyone.
+        </p>
+      </div>
+
+      <h2 style="font-size:20px;font-weight:800;color:var(--white);margin-bottom:8px;letter-spacing:-0.3px;">Let's get you in the audience!</h2>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:24px;line-height:1.6;">Sign up to book your free seats for Dhaasoo shows.</p>
+
+      <!-- Photo Upload (mandatory) -->
+      <div style="display:flex;flex-direction:column;align-items:center;margin-bottom:24px;">
+        <input type="file" id="reg-photo-input" accept="image/*" style="display:none;" onchange="previewRegPhoto(this)" />
+        <div id="reg-photo-wrap" onclick="document.getElementById('reg-photo-input').click()"
+             style="position:relative;width:88px;height:88px;border-radius:50%;background:var(--card);border:2px dashed var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;transition:border-color 0.2s;">
+          <img id="reg-photo-preview" src="" alt="" style="display:none;width:100%;height:100%;object-fit:cover;border-radius:50%;" />
+          <div id="reg-photo-placeholder" style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+              <circle cx="12" cy="13" r="4"/>
+            </svg>
+          </div>
+          <!-- Camera badge overlay -->
+          <div id="reg-photo-badge" style="position:absolute;bottom:4px;right:4px;width:24px;height:24px;background:var(--orange);border-radius:50%;border:2px solid var(--bg);display:none;align-items:center;justify-content:center;">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+          </div>
+        </div>
+        <div style="margin-top:8px;display:flex;align-items:center;gap:5px;">
+          <span id="reg-photo-label" style="font-size:12px;color:var(--muted);">Tap to add photo</span>
+          <span style="font-size:11px;color:#e74c3c;font-weight:600;">*</span>
+        </div>
+      </div>
+
+      <!-- Title -->
+      <div style="margin-bottom:16px;">
+        <label class="form-label">Title</label>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button class="title-btn" onclick="selectTitle(this)" data-title="Mr."
+                  style="padding:9px 16px;border-radius:10px;border:1.5px solid var(--orange);background:rgba(232,118,26,0.15);color:var(--orange);font-family:'Inter',sans-serif;font-size:13px;font-weight:700;cursor:pointer;">Mr.</button>
+          <button class="title-btn" onclick="selectTitle(this)" data-title="Mrs."
+                  style="padding:9px 16px;border-radius:10px;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;">Mrs.</button>
+          <button class="title-btn" onclick="selectTitle(this)" data-title="Ms."
+                  style="padding:9px 16px;border-radius:10px;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;">Ms.</button>
+          <button class="title-btn" onclick="selectTitle(this)" data-title="Dr."
+                  style="padding:9px 16px;border-radius:10px;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;">Dr.</button>
+          <button class="title-btn" onclick="selectTitle(this)" data-title="Mx."
+                  style="padding:9px 16px;border-radius:10px;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;">Mx.</button>
+        </div>
+      </div>
+
+      <!-- First Name + Last Name -->
+      <div style="display:flex;gap:10px;margin-bottom:6px;">
+        <div style="flex:1;">
+          <label class="form-label">First Name*</label>
+          <input type="text" id="reg-first-name" placeholder="Rahul" class="input-field" />
+        </div>
+        <div style="flex:1;">
+          <label class="form-label">Last Name*</label>
+          <input type="text" id="reg-last-name" placeholder="Sharma" class="input-field" />
+        </div>
+      </div>
+      <p style="font-size:11px;color:var(--dim);margin-bottom:16px;line-height:1.5;padding-left:2px;">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--dim)" stroke-width="2" style="vertical-align:-1px;margin-right:3px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        Please write your name as per Aadhaar card.
+      </p>
+
+      <!-- Email -->
+      <div style="margin-bottom:16px;">
+        <label class="form-label">Email Address</label>
+        <div class="input-icon-wrap">
+          <span class="icon-left">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B4A2A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+              <polyline points="22,6 12,13 2,6"/>
+            </svg>
+          </span>
+          <input type="email" placeholder="rahul@example.com" class="input-field" />
+        </div>
+      </div>
+
+      <!-- WhatsApp Number -->
+      <div style="margin-bottom:16px;">
+        <label class="form-label">WhatsApp Number</label>
+        <label id="wa-same-label" style="display:flex;align-items:center;gap:8px;cursor:pointer;margin-bottom:10px;" onclick="toggleWaSame()">
+          <div id="wa-same-box" style="width:20px;height:20px;border:2px solid var(--orange);border-radius:5px;background:rgba(232,118,26,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <span style="font-size:13px;color:var(--muted);line-height:1.4;">Same as my mobile number</span>
+        </label>
+        <div id="wa-separate-wrap" style="display:none;">
+          <div class="input-icon-wrap">
+            <span class="icon-left" style="color:#25D366;font-size:13px;font-weight:700;">WA</span>
+            <input type="tel" id="wa-number-input" inputmode="numeric" maxlength="10" placeholder="Enter WhatsApp number" class="input-field" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Gender -->
+      <div style="margin-bottom:16px;">
+        <label class="form-label">Gender</label>
+        <div style="display:flex;gap:8px;">
+          <button class="gender-btn" onclick="selectGender(this)" style="flex:1;padding:11px 8px;border-radius:10px;border:1.5px solid var(--orange);background:rgba(232,118,26,0.15);color:var(--orange);font-family:'Inter',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all 0.15s;">Male</button>
+          <button class="gender-btn" onclick="selectGender(this)" style="flex:1;padding:11px 8px;border-radius:10px;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.15s;">Female</button>
+          <button class="gender-btn" onclick="selectGender(this)" style="flex:1;padding:11px 8px;border-radius:10px;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.15s;">Other</button>
+        </div>
+      </div>
+
+      <!-- Age Range + City -->
+      <div style="display:flex;gap:10px;margin-bottom:16px;">
+        <div style="flex:1;">
+          <label class="form-label">Age Range</label>
+          <select class="input-field">
+            <option value="" disabled selected>Select age</option>
+            <option>10–17</option>
+            <option>18–30</option>
+            <option>31–45</option>
+            <option>46–60</option>
+            <option>61+</option>
+          </select>
+        </div>
+        <div style="flex:1;">
+          <label class="form-label">City</label>
+          <select class="input-field">
+            <option value="" disabled selected>Select city</option>
+            <option>Mumbai</option>
+            <option>Delhi</option>
+            <option>Bengaluru</option>
+            <option>Hyderabad</option>
+            <option>Chennai</option>
+            <option>Kolkata</option>
+            <option>Pune</option>
+            <option>Ahmedabad</option>
+            <option>Other</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- State -->
+      <div style="margin-bottom:16px;">
+        <label class="form-label">State</label>
+        <select class="input-field" id="reg-state">
+          <option value="" disabled selected>Select state</option>
+          <option>Maharashtra</option>
+          <option>Delhi</option>
+          <option>Karnataka</option>
+          <option>Tamil Nadu</option>
+          <option>Telangana</option>
+          <option>West Bengal</option>
+          <option>Gujarat</option>
+          <option>Rajasthan</option>
+          <option>Uttar Pradesh</option>
+          <option>Other</option>
+        </select>
+      </div>
+
+      <!-- Postal Pincode -->
+      <div style="margin-bottom:16px;">
+        <label class="form-label">Postal Pincode*</label>
+        <input type="tel" inputmode="numeric" maxlength="6" placeholder="6-digit pincode" id="reg-pincode" class="input-field" />
+      </div>
+
+      <!-- Aadhaar last 4 digits -->
+      <div style="margin-bottom:28px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+          <label class="form-label" style="margin:0;">Last 4 Digits of Aadhaar</label>
+          <span style="font-size:11px;color:var(--dim);font-weight:500;background:var(--card);border:1px solid var(--border);border-radius:6px;padding:2px 8px;">Optional</span>
+        </div>
+        <div class="input-icon-wrap">
+          <span class="icon-left">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B4A2A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="5" width="20" height="14" rx="2"/>
+              <line x1="2" y1="10" x2="22" y2="10"/>
+            </svg>
+          </span>
+          <input type="text" inputmode="numeric" maxlength="4" placeholder="XXXX" class="input-field" />
+        </div>
+        <p style="font-size:11px;color:var(--dim);margin-top:7px;line-height:1.5;padding-left:2px;">
+          Used for faster entry verification at venue.
+        </p>
+      </div>
+
+      <!-- Submit button -->
+      <button class="btn-orange" onclick="validateReg1AndContinue()">
+        Continue to Step 2 →
+      </button>
+
+    </div><!-- /scroll -->
+
+  </div><!-- /screen-reg1 -->
+
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- SCREEN 8: COMPLETE PROFILE (Step 2)        -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div id="screen-reg2" class="screen" style="display:none;flex-direction:column;background:var(--bg);">
+    <div class="screen-header">
+      <div class="header-back" onclick="goto('reg1')">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg>
+      </div>
+      <span class="header-title">Complete Profile</span>
+      <div style="width:40px;display:flex;justify-content:flex-end;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      </div>
+    </div>
+
+    <div style="padding:0 20px 24px;">
+      <!-- Step indicator -->
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;">
+        <div>
+          <p style="color:var(--orange);font-size:11px;font-weight:700;letter-spacing:0.6px;text-transform:uppercase;margin-bottom:2px;">STEP 2 OF 2</p>
+          <h2 style="color:var(--white);font-size:20px;font-weight:800;line-height:1.2;">Personal &amp; Community<br>Details</h2>
+        </div>
+        <div style="text-align:right;flex-shrink:0;margin-left:12px;padding-top:2px;">
+          <p style="color:var(--orange);font-size:14px;font-weight:700;">66%</p>
+          <p style="color:var(--muted);font-size:11px;">Complete</p>
+        </div>
+      </div>
+      <div style="height:4px;background:var(--border);border-radius:2px;margin-bottom:20px;">
+        <div style="width:66%;height:4px;background:var(--orange);border-radius:2px;"></div>
+      </div>
+
+      <!-- Free banner -->
+      <div style="background:#0d2a14;border:1px solid var(--green-bdr);border-radius:12px;padding:10px 14px;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:20px;">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        <p style="color:var(--white);font-size:12px;font-weight:500;white-space:nowrap;">Join Dhaasoo community today – <span style="color:var(--orange);font-weight:700;">100% Free Forever</span></p>
+      </div>
+
+      <!-- Profession -->
+      <div style="margin-bottom:16px;">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+          <label style="font-size:13px;color:var(--muted);font-weight:500;">Profession</label>
+        </div>
+        <select class="input-field" style="appearance:none;-webkit-appearance:none;background-image:url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2212%22 height=%2212%22 fill=%22%239A7A5A%22 viewBox=%220 0 16 16%22><path d=%22M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z%22/></svg>');background-repeat:no-repeat;background-position:right 14px center;padding-right:36px;">
+          <option value="">Select your profession</option>
+          <option>Student</option><option>Software Engineer</option><option>Doctor</option>
+          <option>Teacher</option><option>Business Owner</option><option>Artist / Creative</option>
+          <option>Other</option>
+        </select>
+      </div>
+
+      <!-- Community -->
+      <div style="margin-bottom:16px;">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <label style="font-size:13px;color:var(--muted);font-weight:500;">Which community do you belong to?</label>
+        </div>
+        <select class="input-field" style="appearance:none;-webkit-appearance:none;background-image:url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2212%22 height=%2212%22 fill=%22%239A7A5A%22 viewBox=%220 0 16 16%22><path d=%22M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z%22/></svg>');background-repeat:no-repeat;background-position:right 14px center;padding-right:36px;">
+          <option value="">Select community</option>
+          <option>Marathi</option><option>Gujarati</option><option>Tamil</option>
+          <option>Telugu</option><option>Bengali</option><option>Punjabi</option>
+        </select>
+      </div>
+
+      <!-- Languages -->
+      <div style="margin-bottom:16px;">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><path d="M5 8l6 6"/><path d="M4 14l6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="M22 22l-5-10-5 10"/><path d="M14 18h6"/></svg>
+          <label style="font-size:13px;color:var(--muted);font-weight:500;">Languages spoken by you</label>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;padding:12px;background:var(--input);border:1.5px solid var(--border);border-radius:12px;">
+          <span style="background:var(--orange);color:#fff;font-size:12px;font-weight:600;padding:4px 10px;border-radius:20px;display:flex;align-items:center;gap:4px;">Hindi <span style="cursor:pointer;opacity:0.8;">×</span></span>
+          <span style="background:var(--orange);color:#fff;font-size:12px;font-weight:600;padding:4px 10px;border-radius:20px;display:flex;align-items:center;gap:4px;">English <span style="cursor:pointer;opacity:0.8;">×</span></span>
+          <span style="background:var(--card);border:1px solid var(--border);color:var(--muted);font-size:12px;font-weight:500;padding:4px 10px;border-radius:20px;cursor:pointer;">+ Marathi</span>
+          <span style="background:var(--card);border:1px solid var(--border);color:var(--muted);font-size:12px;font-weight:500;padding:4px 10px;border-radius:20px;cursor:pointer;">+ Tamil</span>
+          <span style="background:var(--card);border:1px solid var(--border);color:var(--muted);font-size:12px;font-weight:500;padding:4px 10px;border-radius:20px;cursor:pointer;">+ Telugu</span>
+        </div>
+      </div>
+
+      <!-- Pincode -->
+      <div style="margin-bottom:6px;">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <label style="font-size:13px;color:var(--muted);font-weight:500;">Pincode</label>
+        </div>
+        <input type="text" inputmode="numeric" maxlength="6" placeholder="Enter 6-digit pincode" class="input-field" oninput="lookupPincode(this)" />
+      </div>
+      <div id="pincode-area" style="display:none;align-items:center;gap:8px;background:var(--card);border:1px solid var(--green-bdr);border-radius:10px;padding:10px 12px;margin-top:8px;margin-bottom:4px;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <div>
+          <p style="color:var(--dim);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.4px;">Auto Detected</p>
+          <p style="color:var(--white);font-size:13px;font-weight:600;">Andheri West, Mumbai, Maharashtra</p>
+        </div>
+      </div>
+      <p style="font-size:11px;color:var(--dim);margin-bottom:16px;margin-top:6px;padding-left:2px;">Area, City and State are auto-filled from pincode.</p>
+
+      <!-- How did you hear -->
+      <div style="margin-bottom:16px;">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3v5z"/><path d="M3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3v5z"/></svg>
+          <label style="font-size:13px;color:var(--muted);font-weight:500;">How did you hear about us?</label>
+        </div>
+        <select id="referral-source" class="input-field" onchange="toggleFriendDetails(this)" style="appearance:none;-webkit-appearance:none;background-image:url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2212%22 height=%2212%22 fill=%22%239A7A5A%22 viewBox=%220 0 16 16%22><path d=%22M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z%22/></svg>');background-repeat:no-repeat;background-position:right 14px center;padding-right:36px;">
+          <option value="friend">Friends / Referral</option>
+          <option value="social">Social Media</option>
+          <option value="tv">TV Advertisement</option>
+          <option value="search">Google Search</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+
+      <!-- Friend's details -->
+      <div id="friend-details" style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:20px;">
+        <p style="color:var(--orange);font-size:11px;font-weight:700;letter-spacing:0.6px;margin-bottom:12px;">FRIEND'S DETAILS</p>
+        <div style="margin-bottom:12px;">
+          <label style="font-size:13px;color:var(--muted);font-weight:500;display:block;margin-bottom:6px;">Friend's Name</label>
+          <input type="text" placeholder="Full name" class="input-field" />
+        </div>
+        <div>
+          <label style="font-size:13px;color:var(--muted);font-weight:500;display:block;margin-bottom:6px;">Mobile Number</label>
+          <input type="tel" placeholder="+91 XXXXX XXXXX" class="input-field" />
+        </div>
+      </div>
+
+      <button class="btn-orange" onclick="goto('review')">Review Registration →</button>
+    </div>
+
+    <nav class="bottom-nav">
+      <div class="nav-item" onclick="goto('dashboard')">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>Home</span>
+      </div>
+      <div class="nav-item active" onclick="goto('reg2')">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/><line x1="12" y1="12" x2="12" y2="21"/><line x1="8" y1="17" x2="16" y2="17"/></svg><span>Register</span>
+      </div>
+      <div class="nav-item" onclick="goto('profile')">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>Profile</span>
+      </div>
+    </nav>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- SCREEN 9: REVIEW & CONFIRM                 -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div id="screen-review" class="screen" style="display:none;flex-direction:column;background:var(--bg);">
+    <div class="screen-header">
+      <div class="header-back" onclick="goto('reg2')">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg>
+      </div>
+      <span class="header-title">Review &amp; Confirm</span>
+      <div style="width:40px;"></div>
+    </div>
+
+    <div style="padding:16px 20px 32px;">
+
+      <!-- Photo + Name -->
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:14px;display:flex;align-items:center;gap:14px;">
+        <div id="review-photo-wrap" style="width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#9A7A5A,#6B4A2A);flex-shrink:0;display:flex;align-items:center;justify-content:center;overflow:hidden;border:2px solid var(--orange);">
+          <img id="review-photo-img" src="" alt="" style="display:none;width:100%;height:100%;object-fit:cover;" />
+          <svg id="review-photo-fallback" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <div style="flex:1;">
+          <p style="color:var(--dim);font-size:11px;margin-bottom:2px;">Full Name</p>
+          <p style="color:var(--white);font-size:16px;font-weight:800;">Mr. Rahul Sharma</p>
+          <p style="color:var(--muted);font-size:12px;margin-top:2px;">+91 98765 43210</p>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;background:#0d2a14;border:1px solid var(--green-bdr);border-radius:20px;padding:4px 10px;">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <span style="color:var(--green);font-size:11px;font-weight:700;">Locked</span>
+        </div>
+      </div>
+
+      <!-- Step 1 details -->
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:14px;">
+        <div style="padding:12px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+          <p style="color:var(--orange);font-size:11px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;">Personal Details</p>
+          <button onclick="goto('reg1')" style="background:none;border:none;color:var(--orange);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:4px;padding:0;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            Edit
+          </button>
+        </div>
+        <div style="padding:0 16px;">
+          <div style="display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--border);">
+            <span style="color:var(--dim);font-size:12px;">Email</span>
+            <span style="color:var(--white);font-size:13px;font-weight:500;">rahul@example.com</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--border);">
+            <span style="color:var(--dim);font-size:12px;">WhatsApp</span>
+            <span style="color:var(--white);font-size:13px;font-weight:500;">Same as Mobile</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--border);">
+            <span style="color:var(--dim);font-size:12px;">Gender</span>
+            <span style="color:var(--white);font-size:13px;font-weight:500;">Male</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--border);">
+            <span style="color:var(--dim);font-size:12px;">Age Range</span>
+            <span style="color:var(--white);font-size:13px;font-weight:500;">18–30</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:11px 0;">
+            <span style="color:var(--dim);font-size:12px;">City</span>
+            <span style="color:var(--white);font-size:13px;font-weight:500;">Mumbai</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 2 details -->
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:20px;">
+        <div style="padding:12px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+          <p style="color:var(--orange);font-size:11px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;">Community &amp; Background</p>
+          <button onclick="goto('reg2')" style="background:none;border:none;color:var(--orange);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:4px;padding:0;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            Edit
+          </button>
+        </div>
+        <div style="padding:0 16px;">
+          <div style="display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--border);">
+            <span style="color:var(--dim);font-size:12px;">Profession</span>
+            <span style="color:var(--white);font-size:13px;font-weight:500;">Software Engineer</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--border);">
+            <span style="color:var(--dim);font-size:12px;">Community</span>
+            <span style="color:var(--white);font-size:13px;font-weight:500;">Marathi</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--border);">
+            <span style="color:var(--dim);font-size:12px;">Languages</span>
+            <span style="color:var(--white);font-size:13px;font-weight:500;">Hindi, English</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;padding:11px 0;border-bottom:1px solid var(--border);">
+            <span style="color:var(--dim);font-size:12px;">Area</span>
+            <span style="color:var(--white);font-size:13px;font-weight:500;text-align:right;">Andheri West, Mumbai, MH</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:11px 0;">
+            <span style="color:var(--dim);font-size:12px;">Referred By</span>
+            <span style="color:var(--white);font-size:13px;font-weight:500;">Friend</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Warning note -->
+      <p style="color:var(--muted);font-size:12px;line-height:1.5;margin-bottom:12px;padding:0 2px;"><span style="color:var(--orange);font-weight:700;">Note:</span> Name &amp; Mobile cannot be changed after registration.</p>
+
+      <!-- Checkbox -->
+      <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;margin-bottom:16px;" onclick="toggleAgree()">
+        <div style="width:20px;height:20px;border:2px solid var(--border);border-radius:5px;flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;" id="agree-box"></div>
+        <span style="color:var(--muted);font-size:12px;line-height:1.5;">I confirm all details above are correct. I agree to the <span style="color:var(--orange);">Terms &amp; Conditions</span> and <span style="color:var(--orange);">Audience Rules of Dhaasoo.</span></span>
+      </label>
+
+      <button class="btn-orange" onclick="goto('success')">Confirm Free Registration →</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- SCREEN 10: REGISTRATION SUCCESS            -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div id="screen-success" class="screen" style="display:none;flex-direction:column;background:var(--bg);">
+    <div class="screen-header">
+      <div class="header-back" onclick="goto('review')">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg>
+      </div>
+      <span class="header-title">Confirmation</span>
+      <div style="width:40px;"></div>
+    </div>
+
+    <div style="padding:0 24px 32px;display:flex;flex-direction:column;align-items:center;">
+      <!-- Big checkmark -->
+      <div id="success-check" style="width:80px;height:80px;background:linear-gradient(135deg,#E8761A,#c96015);border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:20px;box-shadow:0 8px 32px rgba(232,118,26,0.35);">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+
+      <h2 style="color:var(--orange);font-size:28px;font-weight:800;margin-bottom:6px;font-family:'Inter',sans-serif;">बधाई हो!</h2>
+      <p style="color:var(--white);font-size:16px;font-weight:600;margin-bottom:24px;">Registration Successful</p>
+
+      <!-- BaRCo ID card -->
+      <div id="success-barco" style="width:100%;background:var(--card);border:1.5px solid var(--border);border-radius:16px;padding:20px;text-align:center;margin-bottom:24px;">
+        <p style="color:var(--muted);font-size:11px;font-weight:600;letter-spacing:0.8px;text-transform:uppercase;margin-bottom:8px;">YOUR BARCO ID</p>
+        <p id="success-barco-id" style="color:var(--white);font-size:26px;font-weight:800;letter-spacing:2px;margin-bottom:14px;">DTAU-12345678</p>
+        <button onclick="copyBarcoId()" style="background:transparent;border:1px solid var(--border);border-radius:20px;color:var(--orange);font-size:12px;font-weight:600;padding:6px 18px;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:6px;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Tap to Copy
+        </button>
+      </div>
+
+      <!-- Status steps -->
+      <div id="success-steps" style="width:100%;margin-bottom:28px;">
+        <!-- Step 1 completed -->
+        <div style="display:flex;gap:14px;margin-bottom:16px;">
+          <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;">
+            <div style="width:28px;height:28px;background:var(--orange);border-radius:50%;display:flex;align-items:center;justify-content:center;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div style="width:2px;height:28px;background:var(--orange);margin-top:4px;"></div>
+          </div>
+          <div style="padding-top:4px;">
+            <p style="color:var(--white);font-size:14px;font-weight:700;margin-bottom:2px;">Registration Received</p>
+            <p style="color:var(--muted);font-size:12px;">We have received your application details.</p>
+          </div>
+        </div>
+        <!-- Step 2 active -->
+        <div style="display:flex;gap:14px;margin-bottom:16px;">
+          <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;">
+            <div style="width:28px;height:28px;background:transparent;border:2.5px solid var(--orange);border-radius:50%;display:flex;align-items:center;justify-content:center;">
+              <div style="width:10px;height:10px;background:var(--orange);border-radius:50%;"></div>
+            </div>
+            <div style="width:2px;height:28px;background:var(--border);margin-top:4px;"></div>
+          </div>
+          <div style="padding-top:4px;">
+            <p style="color:var(--orange);font-size:14px;font-weight:700;margin-bottom:2px;">Waitlist Review</p>
+            <p style="color:var(--muted);font-size:12px;">You have been added to the audience waiting list. We are currently reviewing seat availability.</p>
+          </div>
+        </div>
+        <!-- Step 3 pending -->
+        <div style="display:flex;gap:14px;">
+          <div style="flex-shrink:0;">
+            <div style="width:28px;height:28px;background:transparent;border:2px solid var(--border);border-radius:50%;"></div>
+          </div>
+          <div style="padding-top:4px;">
+            <p style="color:var(--dim);font-size:14px;font-weight:600;margin-bottom:2px;">Confirmation</p>
+            <p style="color:var(--dim);font-size:12px;">We will notify you via SMS once your seat is confirmed.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Share button -->
+      <button style="width:100%;height:52px;background:#1a4a2e;border:1.5px solid var(--green-bdr);color:var(--green);font-size:15px;font-weight:700;border-radius:14px;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:14px;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Share with Friends
+      </button>
+      <button onclick="goto('dashboard')" style="background:none;border:none;color:var(--muted);font-size:14px;font-weight:500;cursor:pointer;font-family:inherit;padding:8px;">Go to Home</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- SCREEN 11: MY REGISTRATIONS                -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div id="screen-myregs" class="screen" style="display:none;flex-direction:column;background:var(--bg);">
+    <div style="padding:18px 20px 12px;display:flex;align-items:center;justify-content:space-between;">
+      <h2 style="color:var(--white);font-size:20px;font-weight:800;">My Registrations</h2>
+      <div style="display:flex;gap:16px;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" style="cursor:pointer;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" style="cursor:pointer;"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="20" y2="12"/><line x1="12" y1="18" x2="20" y2="18"/></svg>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div style="display:flex;border-bottom:1px solid var(--border);padding:0 20px;gap:24px;margin-bottom:16px;">
+      <span id="tab-active" onclick="switchRegTab('active')" style="color:var(--orange);font-size:14px;font-weight:700;padding-bottom:10px;border-bottom:2px solid var(--orange);cursor:pointer;">Active</span>
+      <span id="tab-upcoming" onclick="switchRegTab('upcoming')" style="color:var(--dim);font-size:14px;font-weight:600;padding-bottom:10px;cursor:pointer;">Upcoming</span>
+      <span id="tab-history" onclick="switchRegTab('history')" style="color:var(--dim);font-size:14px;font-weight:600;padding-bottom:10px;cursor:pointer;">History</span>
+    </div>
+
+    <div style="padding:0 20px 16px;">
+
+      <!-- Card 1: Confirmed -->
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:12px;">
+        <div style="display:flex;gap:12px;padding:14px;">
+          <div style="width:64px;height:64px;border-radius:10px;background:linear-gradient(135deg,#1A3A6B,#0d1e3a);flex-shrink:0;"></div>
+          <div style="flex:1;min-width:0;">
+            <h4 style="color:var(--white);font-size:14px;font-weight:700;margin-bottom:3px;">The Kapil Sharma Show</h4>
+            <p style="color:var(--muted);font-size:11px;margin-bottom:2px;">📍 Film City, Mumbai</p>
+            <p style="color:var(--muted);font-size:11px;">📅 Sat 24 Oct • 4:00PM</p>
+          </div>
+          <span style="background:#0d2a14;border:1px solid var(--green-bdr);color:var(--green);font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;height:fit-content;white-space:nowrap;">✓ Confirmed</span>
+        </div>
+        <div style="border-top:1px solid var(--border);padding:10px 14px;">
+          <button class="btn-orange" style="height:40px;font-size:13px;border-radius:10px;">@ View Ticket</button>
+        </div>
+      </div>
+
+      <!-- Card 2: Awaiting Approval -->
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:12px;">
+        <div style="display:flex;gap:12px;padding:14px;">
+          <div style="width:64px;height:64px;border-radius:10px;background:linear-gradient(135deg,#6B1A4A,#3a0d26);flex-shrink:0;"></div>
+          <div style="flex:1;min-width:0;">
+            <h4 style="color:var(--white);font-size:14px;font-weight:700;margin-bottom:3px;">Indian Idol Season 14</h4>
+            <p style="color:var(--muted);font-size:11px;margin-bottom:2px;">📍 Film City, Mumbai</p>
+            <p style="color:var(--muted);font-size:11px;">📅 28 Nov 2025 • 3:00PM</p>
+          </div>
+          <span style="background:#2a1800;border:1px solid #6B4A1A;color:#F5A040;font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;height:fit-content;white-space:nowrap;">⏳ Awaiting</span>
+        </div>
+        <div style="border-top:1px solid var(--border);padding:10px 14px;display:flex;gap:8px;">
+          <button style="flex:1;height:40px;background:transparent;border:1.5px solid var(--orange);color:var(--orange);font-size:13px;font-weight:600;border-radius:10px;cursor:pointer;font-family:inherit;">Manage Request</button>
+          <button style="flex:1;height:40px;background:transparent;border:1.5px solid #c0392b;color:#e74c3c;font-size:13px;font-weight:600;border-radius:10px;cursor:pointer;font-family:inherit;" onclick="showCancelWarning()">Cancel</button>
+        </div>
+      </div>
+
+      <!-- Card 3: View Details -->
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:12px;">
+        <div style="display:flex;gap:12px;padding:14px;">
+          <div style="width:64px;height:64px;border-radius:10px;background:linear-gradient(135deg,#1A1A6B,#0d0d2a);flex-shrink:0;"></div>
+          <div style="flex:1;min-width:0;">
+            <h4 style="color:var(--white);font-size:14px;font-weight:700;margin-bottom:3px;">Bigg Boss 17 Weekend Ka Vaar</h4>
+            <p style="color:var(--muted);font-size:11px;margin-bottom:2px;">📍 Lonavala, Maharashtra</p>
+            <p style="color:var(--muted);font-size:11px;">📅 8 Feb 2025 • 6:00PM</p>
+          </div>
+        </div>
+        <div style="border-top:1px solid var(--border);padding:10px 14px;">
+          <button onclick="goto('review-details')" style="width:100%;height:40px;background:transparent;border:1.5px solid var(--border);color:var(--white);font-size:13px;font-weight:600;border-radius:10px;cursor:pointer;font-family:inherit;">View Details</button>
+        </div>
+      </div>
+
+      <!-- Card 4: Waitlist -->
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:12px;">
+        <div style="display:flex;gap:12px;padding:14px;">
+          <div style="width:64px;height:64px;border-radius:10px;background:linear-gradient(135deg,#6B4A1A,#3a260d);flex-shrink:0;"></div>
+          <div style="flex:1;min-width:0;">
+            <h4 style="color:var(--white);font-size:14px;font-weight:700;margin-bottom:3px;">Dance Deewane Season 4</h4>
+            <p style="color:var(--muted);font-size:11px;margin-bottom:2px;">📍 Film City, Mumbai</p>
+            <p style="color:var(--muted);font-size:11px;">📅 12 Mar 2025 • 5:00PM</p>
+          </div>
+          <span style="background:#1a1a3a;border:1px solid #3a3a6B;color:#8080E0;font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;height:fit-content;white-space:nowrap;">Waitlist</span>
+        </div>
+        <div style="border-top:1px solid var(--border);padding:10px 14px;">
+          <button style="width:100%;height:40px;background:transparent;border:1.5px solid var(--border);color:var(--muted);font-size:13px;font-weight:600;border-radius:10px;cursor:pointer;font-family:inherit;">Leave Waitlist</button>
+        </div>
+      </div>
+    </div>
+
+    <nav class="bottom-nav">
+      <div class="nav-item" onclick="goto('dashboard')">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>Home</span>
+      </div>
+      <div class="nav-item" onclick="goto('shows')">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg><span>Shows</span>
+      </div>
+      <div class="nav-item active" onclick="goto('myregs')">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg><span>My Regs</span>
+      </div>
+      <div class="nav-item" onclick="goto('profile')">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>Profile</span>
+      </div>
+    </nav>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- SCREEN 12: REVIEW DETAILS                  -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div id="screen-review-details" class="screen" style="display:none;flex-direction:column;background:var(--bg);">
+    <div class="screen-header">
+      <div class="header-back" onclick="goto('myregs')">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg>
+      </div>
+      <span class="header-title">Review Details</span>
+      <div style="width:40px;"></div>
+    </div>
+
+    <div style="padding:0 20px 100px;">
+      <!-- Profile -->
+      <div style="display:flex;flex-direction:column;align-items:center;margin-bottom:20px;padding-top:8px;">
+        <div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#9A7A5A,#6B4A2A);margin-bottom:10px;overflow:hidden;display:flex;align-items:center;justify-content:center;">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <h3 style="color:var(--white);font-size:18px;font-weight:700;margin-bottom:2px;">Johnathan Doe</h3>
+        <p style="color:var(--muted);font-size:13px;">Software Engineer</p>
+      </div>
+
+      <!-- Info card -->
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:16px;">
+        <div style="padding:14px 16px;border-bottom:1px solid var(--border);">
+          <p style="color:var(--orange);font-size:12px;font-weight:700;display:flex;align-items:center;gap:6px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            Personal Information
+          </p>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border);">
+            <span style="color:var(--muted);font-size:13px;">Personal Number</span>
+            <span style="color:var(--white);font-size:13px;font-weight:600;">+91 98765-43210</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border);">
+            <span style="color:var(--muted);font-size:13px;">WhatsApp Number</span>
+            <span style="color:var(--white);font-size:13px;font-weight:600;">+91 98765-43210</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border);">
+            <span style="color:var(--muted);font-size:13px;">Aadhaar Code ID</span>
+            <span style="color:var(--white);font-size:13px;font-weight:600;">XXXX-XXXX-8024</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border);">
+            <span style="color:var(--muted);font-size:13px;">BCM Range</span>
+            <span style="color:var(--white);font-size:13px;font-weight:600;">1961 - 1941</span>
+          </div>
+          <div style="padding:12px 16px;">
+            <span style="color:var(--muted);font-size:13px;">Senior Software Engineer</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Free registration banner -->
+      <div style="background:#0d2a14;border:1px solid var(--green-bdr);border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:10px;margin-bottom:20px;">
+        <div style="width:32px;height:32px;background:var(--green-bg);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div>
+          <p style="color:var(--green);font-size:13px;font-weight:700;">100% FREE REGISTRATION</p>
+          <p style="color:var(--muted);font-size:11px;margin-top:1px;">No payment required. Ever.</p>
+        </div>
+      </div>
+
+      <button class="btn-orange" onclick="goto('review')" style="margin-bottom:14px;">Confirm &amp; Register →</button>
+      <button onclick="goto('reg1')" style="width:100%;background:none;border:none;color:var(--orange);font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:6px;padding:8px;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        Edit Details
+      </button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- SCREEN 13: USER PROFILE                    -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div id="screen-profile" class="screen" style="display:none;flex-direction:column;background:var(--bg);">
+    <div class="screen-header">
+      <div class="header-back" onclick="goto('dashboard')">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg>
+      </div>
+      <span class="header-title">Profile</span>
+      <div style="width:40px;display:flex;justify-content:flex-end;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" style="cursor:pointer;"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </div>
+    </div>
+
+    <div style="padding-bottom:100px;">
+      <!-- Profile header -->
+      <div style="display:flex;flex-direction:column;align-items:center;padding:4px 20px 8px;">
+        <div style="position:relative;margin-bottom:8px;">
+          <div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#9A7A5A,#6B4A2A);display:flex;align-items:center;justify-content:center;border:3px solid var(--border);">
+            <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <div style="position:absolute;bottom:0;right:0;width:24px;height:24px;background:var(--orange);border-radius:50%;border:2px solid var(--bg);display:flex;align-items:center;justify-content:center;cursor:pointer;">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          </div>
+        </div>
+        <h2 style="color:var(--white);font-size:18px;font-weight:800;margin-bottom:4px;">Rahul Sharma</h2>
+        <div style="background:var(--card);border:1px solid var(--orange);border-radius:20px;padding:3px 12px;margin-bottom:3px;display:flex;align-items:center;gap:4px;">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          <span style="color:var(--orange);font-size:12px;font-weight:700;">ID: DHS-9928-XM</span>
+        </div>
+        <p style="color:var(--muted);font-size:11px;margin-bottom:6px;">Member since 2023</p>
+        <div style="background:#0d2a14;border:1px solid var(--green-bdr);border-radius:20px;padding:4px 12px;display:flex;align-items:center;gap:5px;">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+          <span style="color:var(--green);font-size:11px;font-weight:700;">100% FREE LIFETIME ACCESS</span>
+        </div>
+      </div>
+
+      <!-- BaRCo card -->
+      <div style="margin:0 20px 12px;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:14px;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
+          <div>
+            <p style="color:var(--orange);font-size:10px;font-weight:700;letter-spacing:0.6px;text-transform:uppercase;margin-bottom:2px;">UNIQUE IDENTITY</p>
+            <h3 style="color:var(--white);font-size:17px;font-weight:800;">My BaRCo</h3>
+          </div>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.5"><rect x="3" y="3" width="5" height="5"/><rect x="16" y="3" width="5" height="5"/><rect x="3" y="16" width="5" height="5"/><rect x="14" y="14" width="2" height="2"/><rect x="18" y="14" width="2" height="2"/><rect x="14" y="18" width="2" height="2"/><rect x="18" y="18" width="2" height="2"/></svg>
+        </div>
+
+        <!-- QR code (CSS generated) -->
+        <div style="background:white;border-radius:10px;padding:10px;margin-bottom:8px;display:flex;flex-direction:column;align-items:center;">
+          <div id="qr-canvas" style="width:120px;height:120px;position:relative;"></div>
+          <p style="color:#555;font-size:12px;font-weight:600;letter-spacing:3px;margin-top:6px;">9928 &nbsp;-&nbsp; 9912 &nbsp;-&nbsp; XMRZ</p>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <p style="color:var(--muted);font-size:12px;display:flex;align-items:center;gap:4px;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            Scan at venue entry
+          </p>
+          <span style="color:var(--orange);font-size:11px;font-weight:700;cursor:pointer;">TAP TO ENLARGE</span>
+        </div>
+      </div>
+
+      <!-- Profile locked warning -->
+      <div style="margin:0 20px 12px;background:#2a1500;border:1px solid #6B3A10;border-radius:12px;padding:12px;display:flex;gap:10px;align-items:flex-start;">
+        <div style="width:28px;height:28px;background:#3d2010;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </div>
+        <div>
+          <p style="color:var(--white);font-size:13px;font-weight:700;margin-bottom:3px;">Profile Partially Locked</p>
+          <p style="color:var(--muted);font-size:12px;line-height:1.4;">Name &amp; Mobile number cannot be changed after registration.</p>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div style="display:flex;margin:0 20px 10px;background:var(--card);border-radius:10px;padding:4px;gap:4px;">
+        <button id="tab-personal" onclick="switchProfileTab('personal')" style="flex:1;height:36px;background:var(--orange);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;">Personal Info</button>
+        <button id="tab-professional" onclick="switchProfileTab('professional')" style="flex:1;height:36px;background:transparent;color:var(--muted);border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;">Professional</button>
+      </div>
+
+      <!-- Info rows -->
+      <div id="profile-personal" style="margin:0 20px;background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid var(--border);">
+          <div>
+            <p style="color:var(--dim);font-size:11px;margin-bottom:2px;">Verified Mobile</p>
+            <p style="color:var(--white);font-size:14px;font-weight:600;">+91 98765 43210</p>
+          </div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--dim)" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid var(--border);">
+          <div>
+            <p style="color:var(--dim);font-size:11px;margin-bottom:2px;">First Name</p>
+            <p id="profile-first-name" style="color:var(--white);font-size:14px;font-weight:600;">Rahul</p>
+          </div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--dim)" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid var(--border);">
+          <div>
+            <p style="color:var(--dim);font-size:11px;margin-bottom:2px;">Last Name</p>
+            <p id="profile-last-name" style="color:var(--white);font-size:14px;font-weight:600;">Sharma</p>
+          </div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--dim)" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid var(--border);">
+          <div>
+            <p style="color:var(--dim);font-size:11px;margin-bottom:2px;">Age Range</p>
+            <p style="color:var(--white);font-size:14px;font-weight:600;">18–30</p>
+          </div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid var(--border);">
+          <div>
+            <p style="color:var(--dim);font-size:11px;margin-bottom:2px;">Gender</p>
+            <p style="color:var(--white);font-size:14px;font-weight:600;">Male</p>
+          </div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--dim)" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid var(--border);cursor:pointer;">
+          <div>
+            <p style="color:var(--dim);font-size:11px;margin-bottom:2px;">City / Location</p>
+            <p style="color:var(--white);font-size:14px;font-weight:600;">Mumbai, MH</p>
+          </div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid var(--border);cursor:pointer;">
+          <div>
+            <p style="color:var(--dim);font-size:11px;margin-bottom:2px;">State</p>
+            <p style="color:var(--white);font-size:14px;font-weight:600;">Maharashtra</p>
+          </div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid var(--border);cursor:pointer;">
+          <div>
+            <p style="color:var(--dim);font-size:11px;margin-bottom:2px;">Postal Pincode</p>
+            <p style="color:var(--white);font-size:14px;font-weight:600;">400053</p>
+          </div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px;cursor:pointer;">
+          <div>
+            <p style="color:var(--dim);font-size:11px;margin-bottom:2px;">Email Address</p>
+            <p style="color:var(--white);font-size:14px;font-weight:600;">rahul.sharma@example.com</p>
+          </div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+      </div>
+
+      <div id="profile-professional" style="display:none;margin:0 20px;">
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid var(--border);">
+            <div>
+              <p style="color:var(--dim);font-size:11px;margin-bottom:2px;">Profession</p>
+              <p style="color:var(--white);font-size:14px;font-weight:600;">Software Engineer</p>
+            </div>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px;">
+            <div>
+              <p style="color:var(--dim);font-size:11px;margin-bottom:2px;">Community</p>
+              <p style="color:var(--white);font-size:14px;font-weight:600;">Marathi</p>
+            </div>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;justify-content:center;margin:24px 0 16px;">
+        <button onclick="goto('login')" style="background:none;border:none;color:#e74c3c;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:6px;padding:10px 20px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Log Out
+        </button>
+      </div>
+    </div>
+
+    <!-- Edit Profile floating button -->
+    <div style="position:sticky;bottom:0;left:0;right:0;padding:12px 20px 20px;background:linear-gradient(to top, var(--bg) 60%, transparent);pointer-events:none;">
+      <button style="pointer-events:all;margin-left:auto;display:flex;align-items:center;gap:8px;background:var(--orange);color:#fff;border:none;border-radius:30px;padding:12px 22px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 4px 20px rgba(232,118,26,0.4);">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        Edit Profile
+      </button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- SCREEN 14: TERMS & CONDITIONS              -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div id="screen-terms" class="screen" style="display:none;flex-direction:column;background:var(--bg);">
+    <div class="screen-header">
+      <div class="header-back" onclick="history.back()">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg>
+      </div>
+      <span class="header-title">Dhaasoo</span>
+      <div style="width:40px;"></div>
+    </div>
+
+    <div style="padding:0 20px 100px;">
+      <h1 style="color:var(--white);font-size:26px;font-weight:800;margin-bottom:4px;">Terms &amp; Conditions</h1>
+      <p style="color:var(--muted);font-size:13px;margin-bottom:20px;">Last updated: October 2023</p>
+
+
+      <!-- Agreement Overview -->
+      <h2 style="color:var(--orange);font-size:17px;font-weight:700;margin-bottom:10px;">Agreement Overview</h2>
+      <p style="color:var(--muted);font-size:14px;line-height:1.7;margin-bottom:24px;">By using the Dhaasoo app, you agree to comply with our terms of service. Our platform is designed to provide a fair and competitive environment for all users. Registration is, and will always be, completely free for all active participants.</p>
+
+      <!-- Data Usage -->
+      <h2 style="color:var(--orange);font-size:17px;font-weight:700;margin-bottom:10px;">Data Usage &amp; Privacy</h2>
+      <p style="color:var(--muted);font-size:14px;line-height:1.7;margin-bottom:14px;">We prioritize your privacy. We use your data exclusively to enhance your experience, personalize contest suggestions, and ensure fair play. Your information is encrypted and never sold to third parties without explicit consent.</p>
+
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;display:flex;gap:10px;align-items:flex-start;margin-bottom:24px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2" style="flex-shrink:0;margin-top:1px;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <p style="color:var(--muted);font-size:12px;line-height:1.6;">Your data is stored securely in compliance with global data protection regulations.</p>
+      </div>
+
+      <!-- Entry Rules -->
+      <h2 style="color:var(--orange);font-size:17px;font-weight:700;margin-bottom:12px;">Entry Rules</h2>
+      <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:28px;">
+        <div style="display:flex;gap:10px;align-items:flex-start;">
+          <div style="width:20px;height:20px;background:#0d2a14;border:1px solid var(--green-bdr);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <p style="color:var(--muted);font-size:14px;line-height:1.6;">Only one account per user is permitted to ensure fair competition.</p>
+        </div>
+        <div style="display:flex;gap:10px;align-items:flex-start;">
+          <div style="width:20px;height:20px;background:#0d2a14;border:1px solid var(--green-bdr);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <p style="color:var(--muted);font-size:14px;line-height:1.6;">Participants must be at least 18 years of age.</p>
+        </div>
+        <div style="display:flex;gap:10px;align-items:flex-start;">
+          <div style="width:20px;height:20px;background:#0d2a14;border:1px solid var(--green-bdr);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <p style="color:var(--muted);font-size:14px;line-height:1.6;">Any form of automated scripts or bot interaction is strictly prohibited.</p>
+        </div>
+      </div>
+
+      <!-- Company details -->
+      <div style="margin-top:28px;padding:16px;background:var(--card);border:1px solid var(--border);border-radius:12px;">
+        <p style="color:var(--orange);font-size:13px;font-weight:700;margin-bottom:10px;">STEP PVT LTD</p>
+        <p style="color:var(--muted);font-size:12px;line-height:1.7;">
+          Showkase Talent &amp; Entertainment Prezenters Pvt. Ltd.<br/>
+          A10, Jeet Nagar, Machlimar Versova Road,<br/>
+          Andheri West, Mumbai, Maharashtra 400061, India<br/><br/>
+          Support: <span style="color:var(--orange);">writetodtc@gmail.com</span><br/>
+          Website: <span style="color:var(--orange);">dhaasootalent.com</span>
+        </p>
+      </div>
+
+    </div>
+
+    <!-- Accept footer -->
+    <div style="position:sticky;bottom:0;background:var(--bg);border-top:1px solid var(--border);padding:14px 20px 24px;">
+      <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;margin-bottom:14px;">
+        <div style="width:22px;height:22px;border:2px solid var(--border);border-radius:6px;flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;" id="terms-agree-box" onclick="toggleTermsAgree()"></div>
+        <span style="color:var(--muted);font-size:13px;line-height:1.5;">I have read and understood the Terms &amp; Conditions</span>
+      </label>
+      <button class="btn-orange" onclick="goto('dashboard')">Accept &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- SCREEN: USER AGREEMENT (pre-login, mandatory) -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div id="screen-agreement" class="screen" style="display:none;flex-direction:column;background:var(--bg);">
+
+    <!-- Header -->
+    <div style="padding:16px 20px 0;display:flex;align-items:center;justify-content:center;position:relative;">
+      <div onclick="goto('splash')" style="position:absolute;left:20px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;cursor:pointer;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg>
+      </div>
+      <span style="color:var(--white);font-size:17px;font-weight:700;">Dhaasoo</span>
+    </div>
+
+    <!-- Intro hero -->
+    <div id="agr-hero" style="padding:24px 24px 0;display:flex;flex-direction:column;align-items:center;text-align:center;">
+      <div style="width:64px;height:64px;background:linear-gradient(145deg,#F07820,#C96015);border-radius:16px;display:flex;align-items:center;justify-content:center;margin-bottom:16px;box-shadow:0 8px 24px rgba(232,118,26,0.3);">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      </div>
+      <h1 style="color:var(--white);font-size:22px;font-weight:800;line-height:1.25;margin-bottom:8px;">Register yourself for<br>audience to your<br>favourite shows</h1>
+      <p style="color:var(--muted);font-size:13px;line-height:1.6;margin-bottom:20px;">Please read and accept our terms before joining the live TV audience.</p>
+      <div class="free-badge" style="margin-bottom:24px;">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        100% Free — No charges ever
+      </div>
+    </div>
+
+    <!-- Scrollable T&C content -->
+    <div id="agr-content" style="padding:0 20px 32px;">
+
+      <!-- Free status banner -->
+      <div style="background:linear-gradient(135deg,#3d1a00,#251000);border:1px solid var(--border);border-radius:14px;padding:16px;display:flex;align-items:center;gap:14px;margin-bottom:24px;">
+        <div style="width:44px;height:44px;background:var(--orange);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div>
+          <p style="color:var(--muted);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px;">Registration Status</p>
+          <p style="color:var(--white);font-size:20px;font-weight:800;">100% FREE</p>
+        </div>
+      </div>
+
+      <!-- Agreement Overview -->
+      <h2 style="color:var(--orange);font-size:17px;font-weight:700;margin-bottom:10px;">Agreement Overview</h2>
+      <p style="color:var(--muted);font-size:14px;line-height:1.7;margin-bottom:24px;">By using the Dhaasoo app, you agree to comply with our terms of service. Our platform is designed to provide a fair and competitive environment for all users. Registration is, and will always be, completely free for all active participants.</p>
+
+      <!-- Data Usage -->
+      <h2 style="color:var(--orange);font-size:17px;font-weight:700;margin-bottom:10px;">Data Usage &amp; Privacy</h2>
+      <p style="color:var(--muted);font-size:14px;line-height:1.7;margin-bottom:14px;">We prioritize your privacy. We use your data exclusively to enhance your experience, personalize show suggestions, and ensure fair play. Your information is encrypted and never sold to third parties without explicit consent.</p>
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;display:flex;gap:10px;align-items:flex-start;margin-bottom:24px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2" style="flex-shrink:0;margin-top:1px;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <p style="color:var(--muted);font-size:12px;line-height:1.6;">Your data is stored securely in compliance with global data protection regulations.</p>
+      </div>
+
+      <!-- Entry Rules -->
+      <h2 style="color:var(--orange);font-size:17px;font-weight:700;margin-bottom:12px;">Entry Rules</h2>
+      <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:28px;">
+        <div style="display:flex;gap:10px;align-items:flex-start;">
+          <div style="width:20px;height:20px;background:#0d2a14;border:1px solid var(--green-bdr);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <p style="color:var(--muted);font-size:14px;line-height:1.6;">Only one account per user is permitted to ensure fair competition.</p>
+        </div>
+        <div style="display:flex;gap:10px;align-items:flex-start;">
+          <div style="width:20px;height:20px;background:#0d2a14;border:1px solid var(--green-bdr);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <p style="color:var(--muted);font-size:14px;line-height:1.6;">Participants must be at least 18 years of age.</p>
+        </div>
+        <div style="display:flex;gap:10px;align-items:flex-start;">
+          <div style="width:20px;height:20px;background:#0d2a14;border:1px solid var(--green-bdr);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <p style="color:var(--muted);font-size:14px;line-height:1.6;">Any form of automated scripts or bot interaction is strictly prohibited.</p>
+        </div>
+      </div>
+
+      <!-- Company details -->
+      <div style="margin-top:28px;margin-bottom:24px;padding:16px;background:var(--card);border:1px solid var(--border);border-radius:12px;">
+        <p style="color:var(--orange);font-size:13px;font-weight:700;margin-bottom:10px;">STEP PVT LTD</p>
+        <p style="color:var(--muted);font-size:12px;line-height:1.7;">
+          Showkase Talent &amp; Entertainment Prezenters Pvt. Ltd.<br/>
+          A10, Jeet Nagar, Machlimar Versova Road,<br/>
+          Andheri West, Mumbai, Maharashtra 400061, India<br/><br/>
+          Support: <span style="color:var(--orange);">writetodtc@gmail.com</span><br/>
+          Website: <span style="color:var(--orange);">dhaasootalent.com</span>
+        </p>
+      </div>
+
+      <button id="agr-accept-btn" class="btn-orange" onclick="acceptAgreement()">
+        Next
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><polyline points="12 5 19 12 12 19"/></svg>
+      </button>
+    </div>
+
+  </div>
+
+</div><!-- /#app -->
+
+<!-- Cancel Registration Warning Modal -->
+<!-- Notifications Panel -->
+<div id="notif-panel" style="display:none;position:fixed;inset:0;z-index:1000;align-items:flex-start;justify-content:center;">
+  <div onclick="closeNotifications()" style="position:absolute;inset:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);"></div>
+  <div style="position:relative;width:100%;max-width:390px;background:var(--card);border-radius:0 0 24px 24px;padding:20px 20px 28px;z-index:1;max-height:80dvh;overflow-y:auto;">
+    <!-- Header -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+      <h2 style="font-size:18px;font-weight:800;color:var(--white);">Notifications</h2>
+      <div style="display:flex;gap:12px;align-items:center;">
+        <span onclick="markAllRead()" style="font-size:12px;color:var(--orange);font-weight:600;cursor:pointer;">Mark all read</span>
+        <div onclick="closeNotifications()" style="width:32px;height:32px;background:var(--input);border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </div>
+      </div>
+    </div>
+    <!-- Notification items -->
+    <div style="display:flex;flex-direction:column;gap:10px;">
+
+      <!-- Unread -->
+      <div class="notif-item" style="background:rgba(232,118,26,0.08);border:1px solid rgba(232,118,26,0.2);border-radius:12px;padding:14px;display:flex;gap:12px;align-items:flex-start;">
+        <div style="width:40px;height:40px;background:var(--orange);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div style="flex:1;">
+          <p style="font-size:13px;font-weight:700;color:var(--white);margin-bottom:3px;">Seat Confirmed!</p>
+          <p style="font-size:12px;color:var(--muted);line-height:1.5;">Your seat for <span style="color:var(--white);font-weight:600;">The Kapil Sharma Show</span> on 24 Oct has been confirmed.</p>
+          <p style="font-size:11px;color:var(--dim);margin-top:5px;">2 hours ago</p>
+        </div>
+        <div style="width:8px;height:8px;background:var(--orange);border-radius:50%;flex-shrink:0;margin-top:4px;"></div>
+      </div>
+
+      <!-- Unread -->
+      <div class="notif-item" style="background:rgba(232,118,26,0.08);border:1px solid rgba(232,118,26,0.2);border-radius:12px;padding:14px;display:flex;gap:12px;align-items:flex-start;">
+        <div style="width:40px;height:40px;background:#0d2a14;border:1px solid var(--green-bdr);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        </div>
+        <div style="flex:1;">
+          <p style="font-size:13px;font-weight:700;color:var(--white);margin-bottom:3px;">New Show Available</p>
+          <p style="font-size:12px;color:var(--muted);line-height:1.5;"><span style="color:var(--white);font-weight:600;">Indian Idol Season 15</span> is now open for audience registration.</p>
+          <p style="font-size:11px;color:var(--dim);margin-top:5px;">Yesterday</p>
+        </div>
+        <div style="width:8px;height:8px;background:var(--orange);border-radius:50%;flex-shrink:0;margin-top:4px;"></div>
+      </div>
+
+      <!-- Read -->
+      <div class="notif-item" style="background:var(--input);border:1px solid var(--border);border-radius:12px;padding:14px;display:flex;gap:12px;align-items:flex-start;">
+        <div style="width:40px;height:40px;background:var(--card);border:1px solid var(--border);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        </div>
+        <div style="flex:1;">
+          <p style="font-size:13px;font-weight:700;color:var(--white);margin-bottom:3px;">Reminder: Show Tomorrow</p>
+          <p style="font-size:12px;color:var(--muted);line-height:1.5;">Don't forget — <span style="color:var(--white);font-weight:600;">Bigg Boss Weekend Ka Vaar</span> is tomorrow. Carry your BaRCo.</p>
+          <p style="font-size:11px;color:var(--dim);margin-top:5px;">2 days ago</p>
+        </div>
+      </div>
+
+      <!-- Read -->
+      <div class="notif-item" style="background:var(--input);border:1px solid var(--border);border-radius:12px;padding:14px;display:flex;gap:12px;align-items:flex-start;">
+        <div style="width:40px;height:40px;background:var(--card);border:1px solid var(--border);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        </div>
+        <div style="flex:1;">
+          <p style="font-size:13px;font-weight:700;color:var(--white);margin-bottom:3px;">Profile Complete</p>
+          <p style="font-size:12px;color:var(--muted);line-height:1.5;">Your profile has been verified. You can now register for any Dhaasoo show.</p>
+          <p style="font-size:11px;color:var(--dim);margin-top:5px;">5 days ago</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div id="cancel-warning-modal" style="display:none;position:fixed;inset:0;z-index:1000;align-items:flex-end;justify-content:center;">
+  <!-- Backdrop -->
+  <div onclick="closeCancelWarning()" style="position:absolute;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(4px);"></div>
+  <!-- Sheet -->
+  <div style="position:relative;width:100%;max-width:430px;background:var(--card);border-radius:24px 24px 0 0;padding:24px 20px 36px;z-index:1;">
+    <!-- Handle -->
+    <div style="width:40px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 20px;"></div>
+    <!-- Warning icon -->
+    <div style="width:56px;height:56px;background:#2d0808;border:1.5px solid #7a1111;border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#e74c3c" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    </div>
+    <h2 style="color:var(--white);font-size:19px;font-weight:800;text-align:center;margin-bottom:8px;">Cancel Registration?</h2>
+    <p style="color:var(--muted);font-size:14px;line-height:1.6;text-align:center;margin-bottom:20px;">If you cancel, you will <span style="color:#e74c3c;font-weight:700;">not be able to register for this show again for 72 hours.</span> This policy applies per show individually.</p>
+    <!-- Warning detail card -->
+    <div style="background:#2d0808;border:1px solid #7a1111;border-radius:12px;padding:14px 16px;margin-bottom:24px;display:flex;gap:10px;align-items:flex-start;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#e74c3c" stroke-width="2" style="flex-shrink:0;margin-top:1px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <p style="color:#F87171;font-size:12px;line-height:1.6;">Repeated cancellations may result in your account being flagged. Please only register for shows you intend to attend.</p>
+    </div>
+    <!-- Actions -->
+    <button onclick="closeCancelWarning()" class="btn-orange" style="margin-bottom:12px;">Keep My Registration</button>
+    <button onclick="confirmCancel()" style="width:100%;background:transparent;border:1.5px solid #c0392b;color:#e74c3c;font-size:14px;font-weight:600;padding:14px;border-radius:12px;cursor:pointer;font-family:inherit;">Yes, Cancel Registration</button>
+  </div>
+</div>
+
+<script>
+  /* ────────────────────────────────────────
+     NAVIGATION
+  ──────────────────────────────────────── */
+  function goto(id) {
+    var target = document.getElementById('screen-' + id);
+    if (!target) return; // gracefully handle missing screens
+
+    // hide all screens
+    var screens = document.querySelectorAll('.screen');
+    screens.forEach(function(s) {
+      s.classList.remove('active');
+      s.style.display = 'none';
+    });
+
+    // show target
+    target.style.display = 'flex';
+    target.classList.add('active');
+
+    // scroll to top
+    target.scrollTop = 0;
+
+    // side effects per screen
+    if (id === 'otp') {
+      startOtpTimer();
+      focusFirstOtpBox();
+    }
+  }
+
+
+  /* ────────────────────────────────────────
+     LANGUAGE TOGGLE
+  ──────────────────────────────────────── */
+  function setLang(lang) {
+    var enBtn = document.getElementById('lang-en');
+    var hiBtn = document.getElementById('lang-hi');
+    if (!enBtn || !hiBtn) return;
+
+    if (lang === 'en') {
+      enBtn.style.background = 'var(--orange)';
+      enBtn.style.color = 'white';
+      hiBtn.style.background = 'transparent';
+      hiBtn.style.color = 'var(--muted)';
+    } else {
+      hiBtn.style.background = 'var(--orange)';
+      hiBtn.style.color = 'white';
+      enBtn.style.background = 'transparent';
+      enBtn.style.color = 'var(--muted)';
+    }
+  }
+
+
+  /* ────────────────────────────────────────
+     GENRE CHIPS
+  ──────────────────────────────────────── */
+  function setGenre(btn) {
+    // only affect chips in the same chip-row parent
+    var row = btn.closest('.chip-row');
+    if (!row) return;
+    row.querySelectorAll('.chip').forEach(function(c) { c.classList.remove('active'); });
+    btn.classList.add('active');
+  }
+
+
+  /* ────────────────────────────────────────
+     SLOT RADIO SELECT
+  ──────────────────────────────────────── */
+  function selectSlot(el) {
+    var container = el.closest('#screen-book');
+    if (!container) return;
+
+    var slotNames = ['Morning Slot', 'Afternoon Slot', 'Evening Slot'];
+    var cards = container.querySelectorAll('.slot-card');
+
+    cards.forEach(function(card, i) {
+      var dot = card.querySelector('.radio-dot');
+      var outerRing = card.querySelector('.radio-dot').parentElement;
+
+      if (card === el) {
+        // selected state
+        card.style.borderColor = 'var(--orange)';
+        outerRing.style.borderColor = 'var(--orange)';
+        dot.style.background = 'var(--orange)';
+        // update sticky label
+        var label = document.getElementById('selected-slot-label');
+        if (label) label.textContent = '5 Sep, ' + slotNames[i];
+      } else {
+        // unselected state
+        card.style.borderColor = 'var(--border)';
+        outerRing.style.borderColor = 'var(--dim)';
+        dot.style.background = 'transparent';
+      }
+    });
+  }
+
+
+  /* ────────────────────────────────────────
+     GENDER PILL SELECT
+  ──────────────────────────────────────── */
+  function selectGender(btn) {
+    var row = btn.closest('div');
+    if (!row) return;
+    row.querySelectorAll('.gender-btn').forEach(function(b) {
+      b.style.borderColor = 'var(--border)';
+      b.style.background = 'transparent';
+      b.style.color = 'var(--muted)';
+    });
+    btn.style.borderColor = 'var(--orange)';
+    btn.style.background = 'rgba(232,118,26,0.15)';
+    btn.style.color = 'var(--orange)';
+  }
+
+
+  /* ────────────────────────────────────────
+     OTP BOX AUTO-TAB
+  ──────────────────────────────────────── */
+  function initOtpBoxes() {
+    var boxes = document.querySelectorAll('.otp-box');
+    boxes.forEach(function(box, i) {
+      // focus styling
+      box.addEventListener('focus', function() {
+        this.style.borderColor = 'var(--orange)';
+        this.select();
+      });
+      box.addEventListener('blur', function() {
+        this.style.borderColor = this.value ? 'var(--orange)' : 'var(--border)';
+      });
+
+      box.addEventListener('input', function() {
+        var val = this.value.replace(/\D/g, '');
+        // handle paste of full code
+        if (val.length > 1) {
+          var chars = val.split('');
+          boxes.forEach(function(b, j) {
+            b.value = chars[j] || '';
+          });
+          boxes[Math.min(chars.length, boxes.length - 1)].focus();
+          return;
+        }
+        this.value = val;
+        if (val && i < boxes.length - 1) {
+          boxes[i + 1].focus();
+        }
+      });
+
+      box.addEventListener('keydown', function(e) {
+        if (e.key === 'Backspace' && !this.value && i > 0) {
+          boxes[i - 1].focus();
+        }
+        if (e.key === 'ArrowLeft' && i > 0) boxes[i - 1].focus();
+        if (e.key === 'ArrowRight' && i < boxes.length - 1) boxes[i + 1].focus();
+      });
+    });
+  }
+
+  function focusFirstOtpBox() {
+    var first = document.querySelector('.otp-box');
+    if (first) setTimeout(function() { first.focus(); }, 100);
+  }
+
+
+  /* ────────────────────────────────────────
+     OTP COUNTDOWN TIMER
+  ──────────────────────────────────────── */
+  var otpTimerInterval = null;
+
+  function startOtpTimer() {
+    if (otpTimerInterval) clearInterval(otpTimerInterval);
+    var seconds = 59;
+    var timerEl = document.getElementById('otp-timer');
+    if (!timerEl) return;
+    timerEl.textContent = '00:59';
+
+    otpTimerInterval = setInterval(function() {
+      seconds--;
+      if (seconds <= 0) {
+        clearInterval(otpTimerInterval);
+        otpTimerInterval = null;
+        if (timerEl) timerEl.textContent = '00:00';
+        return;
+      }
+      if (timerEl) {
+        var mm = String(Math.floor(seconds / 60)).padStart(2, '0');
+        var ss = String(seconds % 60).padStart(2, '0');
+        timerEl.textContent = mm + ':' + ss;
+      }
+    }, 1000);
+  }
+
+
+  /* ────────────────────────────────────────
+     SPLASH AUTO-ADVANCE
+  ──────────────────────────────────────── */
+  setTimeout(function() {
+    var splash = document.getElementById('screen-splash');
+    if (splash && splash.classList.contains('active')) {
+      goto('agreement');
+    }
+  }, 2500);
+
+
+  /* ────────────────────────────────────────
+     INIT
+  ──────────────────────────────────────── */
+  document.addEventListener('DOMContentLoaded', function() {
+    initOtpBoxes();
+    generateQR();
+    if (typeof updateDashboardGreeting === 'function') updateDashboardGreeting();
+  });
+
+  /* ──────────────────────────────────────── */
+  /* AGREEMENT CHECKBOXES                     */
+  /* ──────────────────────────────────────── */
+  var agreeChecked = false;
+  function toggleAgree() {
+    agreeChecked = !agreeChecked;
+    var box = document.getElementById('agree-box');
+    if (!box) return;
+    box.style.background = agreeChecked ? 'var(--orange)' : 'transparent';
+    box.style.borderColor = agreeChecked ? 'var(--orange)' : 'var(--border)';
+    box.innerHTML = agreeChecked ? '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>' : '';
+  }
+
+  var termsChecked = false;
+  function toggleTermsAgree() {
+    termsChecked = !termsChecked;
+    var box = document.getElementById('terms-agree-box');
+    if (!box) return;
+    box.style.background = termsChecked ? 'var(--orange)' : 'transparent';
+    box.style.borderColor = termsChecked ? 'var(--orange)' : 'var(--border)';
+    box.innerHTML = termsChecked ? '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>' : '';
+  }
+
+  /* ──────────────────────────────────────── */
+  /* AGREEMENT SCREEN                         */
+  /* ──────────────────────────────────────── */
+  window._agrChecked = false;
+  function toggleAgrCheck() {
+    window._agrChecked = !window._agrChecked;
+    var box = document.getElementById('agr-checkbox');
+    if (!box) return;
+    box.style.background = window._agrChecked ? 'var(--orange)' : 'transparent';
+    box.style.borderColor = window._agrChecked ? 'var(--orange)' : 'var(--border)';
+    box.innerHTML = window._agrChecked ? '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>' : '';
+  }
+  function acceptAgreement() {
+    /* auto-check the box if not already ticked, then always proceed */
+    if (!window._agrChecked) {
+      window._agrChecked = true;
+      var box = document.getElementById('agr-checkbox');
+      if (box) {
+        box.style.background = 'var(--orange)';
+        box.style.borderColor = 'var(--orange)';
+        box.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>';
+      }
+    }
+    goto('login');
+  }
+
+  /* ──────────────────────────────────────── */
+  /* CANCEL REGISTRATION MODAL                */
+  /* ──────────────────────────────────────── */
+  /* ──────────────────────────────────────── */
+  /* NOTIFICATIONS                            */
+  /* ──────────────────────────────────────── */
+  function openNotifications() {
+    var panel = document.getElementById('notif-panel');
+    if (panel) { panel.style.display = 'flex'; document.body.style.overflow = 'hidden'; }
+  }
+  function closeNotifications() {
+    var panel = document.getElementById('notif-panel');
+    if (panel) { panel.style.display = 'none'; document.body.style.overflow = ''; }
+  }
+  function markAllRead() {
+    document.querySelectorAll('.notif-item').forEach(function(item) {
+      item.style.background = 'var(--input)';
+      item.style.borderColor = 'var(--border)';
+      var dot = item.querySelector('[style*="background:var(--orange);border-radius:50%"]');
+      if (dot) dot.style.display = 'none';
+    });
+    var dot = document.getElementById('notif-dot');
+    if (dot) dot.style.display = 'none';
+  }
+
+  function showCancelWarning() {
+    var modal = document.getElementById('cancel-warning-modal');
+    if (modal) { modal.style.display = 'flex'; document.body.style.overflow = 'hidden'; }
+  }
+  function closeCancelWarning() {
+    var modal = document.getElementById('cancel-warning-modal');
+    if (modal) { modal.style.display = 'none'; document.body.style.overflow = ''; }
+  }
+  function confirmCancel() {
+    closeCancelWarning();
+    /* In production: mark registration cancelled, start 72-hr cooldown per show */
+    alert('Your registration has been cancelled. You cannot re-register for this show for 72 hours.');
+  }
+
+  /* ──────────────────────────────────────── */
+  /* REG1: PHOTO UPLOAD                       */
+  /* ──────────────────────────────────────── */
+  function previewRegPhoto(input) {
+    if (!input.files || !input.files[0]) return;
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      var preview = document.getElementById('reg-photo-preview');
+      var placeholder = document.getElementById('reg-photo-placeholder');
+      var badge = document.getElementById('reg-photo-badge');
+      var label = document.getElementById('reg-photo-label');
+      var wrap = document.getElementById('reg-photo-wrap');
+      if (preview) { preview.src = e.target.result; preview.style.display = 'block'; }
+      if (placeholder) placeholder.style.display = 'none';
+      if (badge) badge.style.display = 'flex';
+      if (label) { label.textContent = 'Photo added'; label.style.color = 'var(--green)'; }
+      if (wrap) { wrap.style.borderStyle = 'solid'; wrap.style.borderColor = 'var(--orange)'; }
+      /* mirror photo to review screen */
+      var ri = document.getElementById('review-photo-img');
+      var rf = document.getElementById('review-photo-fallback');
+      if (ri) { ri.src = e.target.result; ri.style.display = 'block'; }
+      if (rf) rf.style.display = 'none';
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+
+  /* ──────────────────────────────────────── */
+  /* REG1: TITLE SELECTION                    */
+  /* ──────────────────────────────────────── */
+  function selectTitle(btn) {
+    document.querySelectorAll('.title-btn').forEach(function(b) {
+      b.style.background = 'transparent';
+      b.style.borderColor = 'var(--border)';
+      b.style.color = 'var(--muted)';
+    });
+    btn.style.background = 'rgba(232,118,26,0.15)';
+    btn.style.borderColor = 'var(--orange)';
+    btn.style.color = 'var(--orange)';
+  }
+
+  /* ──────────────────────────────────────── */
+  /* REG1: WHATSAPP TOGGLE                    */
+  /* ──────────────────────────────────────── */
+  window._waSame = true;
+  function toggleWaSame() {
+    window._waSame = !window._waSame;
+    var box = document.getElementById('wa-same-box');
+    var wrap = document.getElementById('wa-separate-wrap');
+    if (window._waSame) {
+      if (box) { box.style.background = 'rgba(232,118,26,0.15)'; box.style.borderColor = 'var(--orange)'; box.innerHTML = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>'; }
+      if (wrap) wrap.style.display = 'none';
+    } else {
+      if (box) { box.style.background = 'transparent'; box.style.borderColor = 'var(--border)'; box.innerHTML = ''; }
+      if (wrap) wrap.style.display = 'block';
+    }
+  }
+
+  /* ──────────────────────────────────────── */
+  /* REG1: VALIDATE PHOTO BEFORE CONTINUE    */
+  /* ──────────────────────────────────────── */
+  function validateReg1AndContinue() {
+    goto('reg2');
+  }
+
+  /* ──────────────────────────────────────── */
+  /* REG2: PINCODE LOOKUP (SIMULATED)         */
+  /* ──────────────────────────────────────── */
+  function lookupPincode(input) {
+    var val = input.value.trim();
+    var area = document.getElementById('pincode-area');
+    if (!area) return;
+    if (val.length === 6) {
+      area.style.display = 'flex';
+    } else {
+      area.style.display = 'none';
+    }
+  }
+
+  /* ──────────────────────────────────────── */
+  /* BOOK: BARCO GUEST LOOKUP                 */
+  /* ──────────────────────────────────────── */
+  var _seatExtra = 0; /* additional seats beyond the user themselves */
+  var _guestCount = 0;
+
+  /* Fake database of BaRCo → name */
+  var _barcoDb = {
+    'BC-F821L': { first: 'Priya', last: 'Mehta' },
+    'BC-K349M': { first: 'Suresh', last: 'Iyer' },
+    'BC-T112X': { first: 'Aarti', last: 'Kulkarni' },
+    'BC-A203Z': { first: 'Rohit', last: 'Desai' }
+  };
+
+  function _maskName(first, last) {
+    function mask(str) {
+      if (!str || str.length < 2) return str;
+      return str[0] + '*'.repeat(Math.max(str.length - 2, 1)) + str[str.length - 1];
+    }
+    return mask(first) + ' ' + mask(last);
+  }
+
+  function changeSeats(delta) {
+    var next = _seatExtra + delta;
+    if (next < 0 || next > 3) return;
+
+    var diff = next - _seatExtra;
+    _seatExtra = next;
+
+    /* update counter UI */
+    var val = document.getElementById('seat-count-val');
+    var totalRow = document.getElementById('seat-total-row');
+    var totalVal = document.getElementById('seat-total-val');
+    var bottomLabel = document.getElementById('bottom-seat-label');
+    var guestSection = document.getElementById('guest-section');
+
+    if (val) val.textContent = _seatExtra;
+    if (totalRow) totalRow.style.display = _seatExtra > 0 ? 'flex' : 'none';
+    var total = _seatExtra + 1;
+    if (totalVal) totalVal.textContent = total;
+    if (bottomLabel) bottomLabel.textContent = total + (total === 1 ? ' seat' : ' seats');
+
+    /* add or remove guest BaRCo rows to match */
+    if (diff > 0) {
+      for (var i = 0; i < diff; i++) addGuestRow();
+    } else {
+      for (var j = 0; j < -diff; j++) {
+        var list = document.getElementById('guest-list');
+        if (list && list.lastChild) {
+          _guestCount--;
+          list.removeChild(list.lastChild);
+        }
+      }
+    }
+
+    /* show/hide the whole guest BaRCo section */
+    if (guestSection) guestSection.style.display = _seatExtra > 0 ? 'block' : 'none';
+  }
+
+  function addGuestRow() {
+    if (_guestCount >= 3) return;
+    _guestCount++;
+    var guestNum = _guestCount;
+    var list = document.getElementById('guest-list');
+    var row = document.createElement('div');
+    row.id = 'guest-row-' + guestNum;
+    row.style.cssText = 'background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;';
+    row.innerHTML = '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">' +
+      '<p style="color:var(--muted);font-size:12px;font-weight:600;">Guest ' + guestNum + '</p>' +
+      '<div style="display:flex;gap:12px;">' +
+      '<button onclick="editGuestRow(' + guestNum + ')" style="background:none;border:none;color:var(--orange);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;padding:0;">Edit</button>' +
+      '<button onclick="removeGuestRow(' + guestNum + ')" style="background:none;border:none;color:#e74c3c;font-size:12px;cursor:pointer;font-family:inherit;padding:0;">Remove</button>' +
+      '</div>' +
+      '</div>' +
+      '<input type="text" id="barco-input-' + guestNum + '" placeholder="Enter BaRCo (e.g. BC-F821L)" class="input-field" ' +
+      'oninput="lookupBarco(' + guestNum + ',this.value)" style="font-size:13px;letter-spacing:0.5px;margin-bottom:8px;" />' +
+      '<div id="barco-result-' + guestNum + '" style="display:none;align-items:center;gap:8px;background:var(--input);border:1px solid var(--green-bdr);border-radius:8px;padding:9px 12px;">' +
+      '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>' +
+      '<div>' +
+      '<p style="color:var(--dim);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.4px;">Registered User</p>' +
+      '<p id="barco-name-' + guestNum + '" style="color:var(--white);font-size:14px;font-weight:700;"></p>' +
+      '</div></div>' +
+      '<div id="barco-error-' + guestNum + '" style="display:none;align-items:center;gap:6px;">' +
+      '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#e74c3c" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>' +
+      '<p style="color:#e74c3c;font-size:12px;">BaRCo not found. User must be registered on Dhaasoo.</p>' +
+      '</div>';
+    list.appendChild(row);
+  }
+
+  function editGuestRow(num) {
+    var input = document.getElementById('barco-input-' + num);
+    var result = document.getElementById('barco-result-' + num);
+    var errEl = document.getElementById('barco-error-' + num);
+    if (input) { input.value = ''; input.focus(); }
+    if (result) result.style.display = 'none';
+    if (errEl) errEl.style.display = 'none';
+  }
+
+  function removeGuestRow(num) {
+    /* removing via button decrements the seat counter too */
+    changeSeats(-1);
+  }
+
+  function lookupBarco(num, val) {
+    val = val.trim().toUpperCase();
+    var result = document.getElementById('barco-result-' + num);
+    var nameEl = document.getElementById('barco-name-' + num);
+    var errEl = document.getElementById('barco-error-' + num);
+    if (!result || !nameEl || !errEl) return;
+    if (val.length < 7) {
+      result.style.display = 'none';
+      errEl.style.display = 'none';
+      return;
+    }
+    var found = _barcoDb[val];
+    if (found) {
+      nameEl.textContent = _maskName(found.first, found.last);
+      result.style.display = 'flex';
+      errEl.style.display = 'none';
+    } else {
+      result.style.display = 'none';
+      errEl.style.display = 'flex';
+    }
+  }
+
+  /* ──────────────────────────────────────── */
+  /* PROFILE TABS                             */
+  /* ──────────────────────────────────────── */
+  function switchProfileTab(tab) {
+    var personal = document.getElementById('profile-personal');
+    var professional = document.getElementById('profile-professional');
+    var btnP = document.getElementById('tab-personal');
+    var btnPro = document.getElementById('tab-professional');
+    if (!personal || !professional) return;
+    if (tab === 'personal') {
+      personal.style.display = 'block';
+      professional.style.display = 'none';
+      btnP.style.background = 'var(--orange)'; btnP.style.color = '#fff';
+      btnPro.style.background = 'transparent'; btnPro.style.color = 'var(--muted)';
+    } else {
+      personal.style.display = 'none';
+      professional.style.display = 'block';
+      btnPro.style.background = 'var(--orange)'; btnPro.style.color = '#fff';
+      btnP.style.background = 'transparent'; btnP.style.color = 'var(--muted)';
+    }
+  }
+
+  /* ──────────────────────────────────────── */
+  /* MY REGISTRATIONS TABS                    */
+  /* ──────────────────────────────────────── */
+  function switchRegTab(tab) {
+    ['active','upcoming','history'].forEach(function(t) {
+      var el = document.getElementById('tab-' + t);
+      if (!el) return;
+      var active = t === tab;
+      el.style.color = active ? 'var(--orange)' : 'var(--dim)';
+      el.style.borderBottom = active ? '2px solid var(--orange)' : '2px solid transparent';
+      el.style.fontWeight = active ? '700' : '600';
+    });
+  }
+
+  /* ──────────────────────────────────────── */
+  /* FRIEND DETAILS TOGGLE                    */
+  /* ──────────────────────────────────────── */
+  function toggleFriendDetails(select) {
+    var fd = document.getElementById('friend-details');
+    if (!fd) return;
+    fd.style.display = select.value === 'friend' ? 'block' : 'none';
+  }
+
+  /* ──────────────────────────────────────── */
+  /* VERIFY OTP — returning user logic        */
+  /* ──────────────────────────────────────── */
+  function verifyOTP() {
+    var existing = localStorage.getItem('dhaasoo_user');
+    if (existing) { goto('dashboard'); } else { goto('reg1'); }
+  }
+
+
+  /* ──────────────────────────────────────── */
+  /* GENERATE BARCO & SAVE TO LOCALSTORAGE    */
+  /* ──────────────────────────────────────── */
+  function generateAndSaveBarco() {
+    var barco = 'DTAU-' + Math.random().toString(36).substring(2, 10).toUpperCase();
+    var userData = {
+      barco: barco,
+      firstName: document.getElementById('reg-first-name') ? document.getElementById('reg-first-name').value || 'User' : 'User',
+      lastName:  document.getElementById('reg-last-name')  ? document.getElementById('reg-last-name').value  || ''     : '',
+      mobile: '+91 XXXXX XXXXX',
+      memberSince: new Date().getFullYear().toString()
+    };
+    localStorage.setItem('dhaasoo_user', JSON.stringify(userData));
+    /* Save registration to shared registrations list */
+    var regId = 'DH-' + Math.floor(10000 + Math.random() * 90000);
+    var showNameEl = document.querySelector('#screen-book .card p[style*="font-weight:700"]');
+    var showName = showNameEl ? showNameEl.textContent.trim() : 'The Kapil Sharma Show';
+    var slotEl = document.getElementById('selected-slot-label');
+    var slot = slotEl ? slotEl.textContent.replace(/·.*/, '').trim() : 'Morning';
+    var dateEl = document.querySelector('#screen-book select.input-field');
+    var showDate = dateEl && dateEl.options[dateEl.selectedIndex] ? dateEl.options[dateEl.selectedIndex].text : '';
+    var newReg = {
+      id: regId, barco: barco,
+      name: (userData.firstName + ' ' + userData.lastName).trim(),
+      firstName: userData.firstName, lastName: userData.lastName,
+      mobile: userData.mobile, city: 'Mumbai',
+      show: showName, date: showDate, slot: slot, seats: 1,
+      status: 'waitlist', callStatus: 'not_called', checkin: 'pending',
+      regDate: new Date().toLocaleDateString('en-IN', { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' }),
+      source: 'app'
+    };
+    var regs = JSON.parse(localStorage.getItem('dhaasoo_registrations') || '[]');
+    regs.unshift(newReg);
+    localStorage.setItem('dhaasoo_registrations', JSON.stringify(regs));
+    /* Update BaRCo display on success screen */
+    var barcoEl = document.getElementById('success-barco-id');
+    if (barcoEl) barcoEl.textContent = barco;
+    /* Update dashboard greeting */
+    updateDashboardGreeting();
+  }
+
+  /* ──────────────────────────────────────── */
+  /* DASHBOARD GREETING FROM LOCALSTORAGE     */
+  /* ──────────────────────────────────────── */
+  function updateDashboardGreeting() {
+    var u = JSON.parse(localStorage.getItem('dhaasoo_user') || '{}');
+    var displayName = u.firstName || 'Guest';
+    var greetEl = document.getElementById('dashboard-greeting-name');
+    var avatarEl = document.getElementById('dashboard-avatar-initial');
+    if (greetEl) greetEl.textContent = displayName + ' ! 👋';
+    if (avatarEl) avatarEl.textContent = displayName.charAt(0).toUpperCase();
+  }
+
+  /* ──────────────────────────────────────── */
+  /* COPY BARCO ID                            */
+  /* ──────────────────────────────────────── */
+  function copyBarcoId() {
+    var barcoEl = document.getElementById('success-barco-id');
+    var barcoText = barcoEl ? barcoEl.textContent : 'DTAU-12345678';
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(barcoText).catch(function() {});
+    }
+    var btn = document.querySelector('[onclick="copyBarcoId()"]');
+    if (btn) {
+      var orig = btn.innerHTML;
+      btn.innerHTML = '✓ Copied!';
+      btn.style.color = 'var(--green)';
+      btn.style.borderColor = 'var(--green-bdr)';
+      setTimeout(function() { btn.innerHTML = orig; btn.style.color = 'var(--orange)'; btn.style.borderColor = 'var(--border)'; }, 2000);
+    }
+  }
+
+  /* ──────────────────────────────────────── */
+  /* FAKE QR CODE GENERATOR                   */
+  /* ──────────────────────────────────────── */
+  function generateQR() {
+    var canvas = document.getElementById('qr-canvas');
+    if (!canvas) return;
+    var size = 140;
+    var mod = 7; // modules per finder block
+    var cell = Math.floor(size / 21);
+    canvas.style.width = size + 'px';
+    canvas.style.height = size + 'px';
+    canvas.style.position = 'relative';
+    canvas.style.display = 'block';
+
+    // Random data pattern seed
+    var data = [];
+    for (var i = 0; i < 21 * 21; i++) { data.push(Math.random() > 0.5 ? 1 : 0); }
+
+    // Draw finder patterns (top-left, top-right, bottom-left)
+    function setFinder(ox, oy) {
+      for (var y = 0; y < 7; y++) for (var x = 0; x < 7; x++) {
+        var border = (x === 0 || x === 6 || y === 0 || y === 6);
+        var center = (x >= 2 && x <= 4 && y >= 2 && y <= 4);
+        data[(oy + y) * 21 + (ox + x)] = (border || center) ? 2 : 3;
+      }
+    }
+    setFinder(0, 0); setFinder(14, 0); setFinder(0, 14);
+
+    // Render
+    var html = '';
+    for (var r = 0; r < 21; r++) {
+      for (var c = 0; c < 21; c++) {
+        var v = data[r * 21 + c];
+        var color = v === 2 ? '#000' : v === 3 ? '#fff' : v === 1 ? '#000' : '#fff';
+        html += '<div style="position:absolute;width:' + cell + 'px;height:' + cell + 'px;left:' + (c * cell) + 'px;top:' + (r * cell) + 'px;background:' + color + ';"></div>';
+      }
+    }
+    canvas.innerHTML = html;
+  }
+</script>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     GSAP ANIMATION LAYER  (corrected: set → to pattern)
+     Elements are pre-hidden BEFORE screen slides in,
+     then animated to visible AFTER transition completes.
+════════════════════════════════════════════════════════ -->
+<script>
+(function () {
+  'use strict';
+
+  /* ── tiny helpers ──────────────────────────────────── */
+  var reduced = function () {
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  };
+  var qs  = function (scope, sel) { return scope.querySelector(sel); };
+  var qsa = function (scope, sel) { return scope.querySelectorAll(sel); };
+
+  /* ── global GSAP defaults ──────────────────────────── */
+  gsap.defaults({ ease: 'power3.out', overwrite: 'auto' });
+
+  /* ══════════════════════════════════════════════════════
+     ANIMATION MAP  — one definition per screen
+     Each entry: { targets, from, to (merged with from) }
+  ══════════════════════════════════════════════════════ */
+  function _getAnims(id) {
+    var s = document.getElementById('screen-' + id);
+    if (!s) return [];
+    var anims = [];
+
+    function add(els, fromVars, extraToVars) {
+      if (!els) return;
+      var isEmpty = (els.length !== undefined && els.length === 0);
+      if (isEmpty) return;
+      var toVars = Object.assign({}, fromVars, { autoAlpha: 1 }, extraToVars || {});
+      anims.push({ targets: els, from: fromVars, to: toVars });
+    }
+
+    switch (id) {
+
+      case 'splash': {
+        add(document.getElementById('splash-logo'),
+            { scale: 0.25, rotation: -12, autoAlpha: 0 },
+            { scale: 1, rotation: 0, duration: 0.82, ease: 'elastic.out(1,0.45)', delay: 0 });
+        add(qs(s, 'h1'),
+            { y: 32, autoAlpha: 0 },
+            { y: 0, duration: 0.5, delay: 0.45 });
+        add(qs(s, 'p'),
+            { y: 20, autoAlpha: 0 },
+            { y: 0, duration: 0.44, delay: 0.6 });
+        add(qs(s, 'button'),
+            { y: 20, scale: 0.88, autoAlpha: 0 },
+            { y: 0, scale: 1, duration: 0.46, ease: 'back.out(1.8)', delay: 0.76 });
+        add(qsa(s, '[style*="border-radius:2px"]'),
+            { y: 10, autoAlpha: 0 },
+            { y: 0, stagger: 0.06, duration: 0.32, delay: 0.9 });
+        break;
+      }
+
+      case 'login': {
+        add(qs(s, '[style*="border-radius:16px"]'),
+            { scale: 0.4, autoAlpha: 0 },
+            { scale: 1, duration: 0.55, ease: 'elastic.out(1,0.5)', delay: 0 });
+        add(qs(s, 'h1'),
+            { y: 24, autoAlpha: 0 },
+            { y: 0, duration: 0.45, delay: 0.18 });
+        add(qsa(s, '.btn-orange, .green-badge, label, .input-field, p'),
+            { y: 16, autoAlpha: 0 },
+            { y: 0, stagger: 0.06, duration: 0.38, delay: 0.3 });
+        break;
+      }
+
+      case 'otp': {
+        add(qs(s, '[style*="border-radius:50%"]'),
+            { scale: 0.3, autoAlpha: 0 },
+            { scale: 1, duration: 0.65, ease: 'elastic.out(1,0.4)', delay: 0 });
+        add(qs(s, 'h2'),
+            { y: 20, autoAlpha: 0 },
+            { y: 0, duration: 0.4, delay: 0.2 });
+        add(qsa(s, '.otp-box'),
+            { scale: 0.5, autoAlpha: 0 },
+            { scale: 1, stagger: 0.07, duration: 0.38, ease: 'back.out(2)', delay: 0.38 });
+        add(qsa(s, '.btn-orange, .green-badge'),
+            { y: 14, autoAlpha: 0 },
+            { y: 0, stagger: 0.07, duration: 0.36, delay: 0.78 });
+        break;
+      }
+
+      case 'dashboard': {
+        add(s.children[0],
+            { y: -24, autoAlpha: 0 },
+            { y: 0, duration: 0.4 });
+        add(qsa(s, '[onclick*="setGenre"]'),
+            { x: -14, autoAlpha: 0 },
+            { x: 0, stagger: 0.05, duration: 0.32, delay: 0.15 });
+        add(qsa(s, '.card'),
+            { y: 44, autoAlpha: 0 },
+            { y: 0, stagger: 0.1, duration: 0.52, ease: 'power3.out', delay: 0.18 });
+        break;
+      }
+
+      case 'shows': {
+        add(s.children[0],
+            { y: -20, autoAlpha: 0 },
+            { y: 0, duration: 0.35 });
+        add(qs(s, '[type="search"]'),
+            { y: 10, autoAlpha: 0 },
+            { y: 0, duration: 0.35, delay: 0.1 });
+        add(qsa(s, '.chip'),
+            { x: -10, autoAlpha: 0 },
+            { x: 0, stagger: 0.04, duration: 0.3, delay: 0.18 });
+        add(qsa(s, '.card'),
+            { y: 44, autoAlpha: 0 },
+            { y: 0, stagger: 0.12, duration: 0.5, ease: 'power3.out', delay: 0.28 });
+        break;
+      }
+
+      case 'book': {
+        add(qs(s, '.screen-header'),
+            { y: -20, autoAlpha: 0 },
+            { y: 0, duration: 0.35 });
+        add(qs(s, '[style*="border-radius:14px"]'),
+            { x: -28, autoAlpha: 0 },
+            { x: 0, duration: 0.45, ease: 'power2.out', delay: 0.1 });
+        add(qsa(s, '.slot-card'),
+            { y: 22, autoAlpha: 0 },
+            { y: 0, stagger: 0.1, duration: 0.4, delay: 0.22 });
+        break;
+      }
+
+      case 'reg1': {
+        add(qs(s, '.screen-header'),
+            { y: -20, autoAlpha: 0 },
+            { y: 0, duration: 0.35 });
+        add(qs(s, 'h2'),
+            { y: 22, autoAlpha: 0 },
+            { y: 0, duration: 0.42, delay: 0.12 });
+        /* photo upload wrap */
+        add(document.getElementById('reg-photo-wrap'),
+            { scale: 0.7, autoAlpha: 0 },
+            { scale: 1, duration: 0.5, ease: 'back.out(1.6)', delay: 0.18 });
+        /* progress bar: animate scaleX only, keep autoAlpha:1 */
+        var bar1 = qs(s, '[style*="width:50%"]');
+        if (bar1) {
+          anims.push({
+            targets: bar1,
+            from: { scaleX: 0, transformOrigin: 'left center' },
+            to:   { scaleX: 1, transformOrigin: 'left center', duration: 0.7, ease: 'power2.out', delay: 0.2 }
+          });
+        }
+        add(qsa(s, 'input, select'),
+            { y: 12, autoAlpha: 0 },
+            { y: 0, stagger: 0.05, duration: 0.35, delay: 0.38 });
+        add(qs(s, '.btn-orange'),
+            { y: 18, autoAlpha: 0 },
+            { y: 0, duration: 0.4, ease: 'back.out(1.7)', delay: 0.75 });
+        break;
+      }
+
+      case 'reg2': {
+        add(qs(s, 'h2'),
+            { y: 20, autoAlpha: 0 },
+            { y: 0, duration: 0.4 });
+        var bar2 = qs(s, '[style*="width:66%"]');
+        if (bar2) {
+          anims.push({
+            targets: bar2,
+            from: { scaleX: 0, transformOrigin: 'left center' },
+            to:   { scaleX: 1, transformOrigin: 'left center', duration: 0.75, ease: 'power2.out', delay: 0.15 }
+          });
+        }
+        add(qs(s, '[style*="0d2a14"]'),
+            { y: 14, autoAlpha: 0 },
+            { y: 0, duration: 0.4, delay: 0.28 });
+        add(qsa(s, 'input, select'),
+            { y: 12, autoAlpha: 0 },
+            { y: 0, stagger: 0.05, duration: 0.35, delay: 0.38 });
+        add(qs(s, '.btn-orange'),
+            { y: 18, autoAlpha: 0 },
+            { y: 0, duration: 0.4, ease: 'back.out(1.7)', delay: 0.78 });
+        break;
+      }
+
+      case 'review': {
+        add(qs(s, '.screen-header'),
+            { y: -16, autoAlpha: 0 },
+            { y: 0, duration: 0.3 });
+        break;
+      }
+
+      case 'success': {
+        add(document.getElementById('success-check'),
+            { scale: 0.15, autoAlpha: 0 },
+            { scale: 1, duration: 0.72, ease: 'elastic.out(1,0.45)', delay: 0 });
+        var h2s = qs(s, 'h2');
+        if (h2s) {
+          add(h2s,
+              { y: 22, autoAlpha: 0 },
+              { y: 0, duration: 0.42, delay: 0.45 });
+          add(h2s.nextElementSibling,
+              { y: 14, autoAlpha: 0 },
+              { y: 0, duration: 0.35, delay: 0.58 });
+        }
+        add(document.getElementById('success-barco'),
+            { y: 30, autoAlpha: 0 },
+            { y: 0, duration: 0.5, ease: 'back.out(1.5)', delay: 0.68 });
+        var stepsEl = document.getElementById('success-steps');
+        if (stepsEl) {
+          add(qsa(stepsEl, '[style*="display:flex;gap:14px"]'),
+              { x: -26, autoAlpha: 0 },
+              { x: 0, stagger: 0.15, duration: 0.42, delay: 0.9 });
+        }
+        add(qs(s, '[style*="1a4a2e"]'),
+            { y: 18, autoAlpha: 0 },
+            { y: 0, duration: 0.38, delay: 1.3 });
+        add(qs(s, '[onclick*="dashboard"]'),
+            { y: 12, autoAlpha: 0 },
+            { y: 0, duration: 0.3, delay: 1.46 });
+        break;
+      }
+
+      case 'myregs': {
+        add(s.children[0],
+            { y: -22, autoAlpha: 0 },
+            { y: 0, duration: 0.38 });
+        add(qs(s, '[style*="flex;border-bottom:1px"]'),
+            { y: 10, autoAlpha: 0 },
+            { y: 0, duration: 0.32, delay: 0.12 });
+        add(qsa(s, '[style*="border-radius:14px"]'),
+            { y: 38, autoAlpha: 0 },
+            { y: 0, stagger: 0.1, duration: 0.46, ease: 'power3.out', delay: 0.22 });
+        break;
+      }
+
+      case 'review-details': {
+        add(qs(s, '[style*="align-items:center;margin-bottom:20px"]'),
+            { y: -22, autoAlpha: 0 },
+            { y: 0, duration: 0.42 });
+        add(qs(s, '[style*="border-radius:14px"]'),
+            { x: -28, autoAlpha: 0 },
+            { x: 0, duration: 0.45, ease: 'power2.out', delay: 0.15 });
+        add(qs(s, '[style*="0d2a14"]'),
+            { y: 16, autoAlpha: 0 },
+            { y: 0, duration: 0.38, delay: 0.3 });
+        add(qsa(s, '.btn-orange, button'),
+            { y: 14, autoAlpha: 0 },
+            { y: 0, stagger: 0.08, duration: 0.36, delay: 0.42 });
+        break;
+      }
+
+      case 'profile': {
+        add(qs(s, '.screen-header'),
+            { y: -16, autoAlpha: 0 },
+            { y: 0, duration: 0.3 });
+        break;
+      }
+
+      case 'terms': {
+        add(qs(s, 'h1'),
+            { y: 22, autoAlpha: 0 },
+            { y: 0, duration: 0.42 });
+        add(qs(s, '[style*="linear-gradient(135deg"]'),
+            { x: -28, autoAlpha: 0 },
+            { x: 0, duration: 0.46, ease: 'power2.out', delay: 0.15 });
+        add(qsa(s, 'h2'),
+            { x: -14, autoAlpha: 0 },
+            { x: 0, stagger: 0.1, duration: 0.38, delay: 0.28 });
+        break;
+      }
+
+      case 'agreement': {
+        add(document.getElementById('agr-hero'),
+            { y: -24, autoAlpha: 0 },
+            { y: 0, duration: 0.5, ease: 'power2.out' });
+        add(document.getElementById('agr-content'),
+            { y: 32, autoAlpha: 0 },
+            { y: 0, duration: 0.48, ease: 'power2.out', delay: 0.18 });
+        add(qs(s, '[style*="position:sticky"]'),
+            { y: 40, autoAlpha: 0 },
+            { y: 0, duration: 0.4, ease: 'back.out(1.4)', delay: 0.36 });
+        break;
+      }
+    }
+
+    return anims;
+  }
+
+  /* ══════════════════════════════════════════════════════
+     PRE-HIDE  — gsap.set() every target to its start state
+     Called BEFORE the screen slides in so user never sees
+     the element at its final position.
+  ══════════════════════════════════════════════════════ */
+  function _preHide(id) {
+    if (reduced()) return;
+    _getAnims(id).forEach(function (a) {
+      if (!a.targets) return;
+      gsap.set(a.targets, a.from);
+    });
+  }
+
+  /* ══════════════════════════════════════════════════════
+     REVEAL  — gsap.to() every target to its end state
+     Called AFTER the screen has finished sliding in.
+  ══════════════════════════════════════════════════════ */
+  function _reveal(id) {
+    if (reduced()) return;
+    _getAnims(id).forEach(function (a) {
+      if (!a.targets) return;
+      gsap.to(a.targets, a.to);
+    });
+  }
+
+  /* ══════════════════════════════════════════════════════
+     SCREEN TRANSITION  — overrides the original goto()
+  ══════════════════════════════════════════════════════ */
+  window.goto = (function (_orig) {
+    return function (id, dir) {
+      var target  = document.getElementById('screen-' + id);
+      if (!target) return;
+      var current = document.querySelector('.screen.active');
+      if (current === target) return;
+
+      /* instant switch for prefers-reduced-motion */
+      if (reduced()) {
+        if (current) {
+          current.classList.remove('active');
+          gsap.set(current, { display: 'none' });
+        }
+        gsap.set(target, { display: 'flex', clearProps: 'x,opacity,visibility,autoAlpha' });
+        target.classList.add('active');
+        target.scrollTop = 0;
+        _sideEffects(id);
+        return;
+      }
+
+      var direction = dir || 'forward';
+      var xIn  = direction === 'back' ? -80 : 80;
+      var xOut = direction === 'back' ?  80 : -80;
+
+      /* STEP 1 — place target off-screen, hidden */
+      gsap.set(target, { display: 'flex', x: xIn, autoAlpha: 0 });
+      target.classList.add('active');
+
+      /* STEP 2 — pre-hide every entrance element NOW,
+         while the screen is still off-screen / invisible */
+      _preHide(id);
+
+      /* STEP 3 — run the slide transition */
+      var tl = gsap.timeline({
+        defaults: { ease: 'power2.out' },
+        onComplete: function () {
+          /* clean up the outgoing screen */
+          if (current) {
+            current.classList.remove('active');
+            gsap.set(current, { display: 'none', clearProps: 'x,opacity,visibility,autoAlpha' });
+          }
+          target.scrollTop = 0;
+          _sideEffects(id);
+
+          /* STEP 4 — now reveal entrance elements from their hidden state */
+          _reveal(id);
+        }
+      });
+
+      if (current) {
+        tl.to(current, { x: xOut, autoAlpha: 0, duration: 0.22, ease: 'power2.in' }, 0);
+      }
+      tl.to(target, { x: 0, autoAlpha: 1, duration: 0.3 }, current ? 0.07 : 0);
+    };
+  }(typeof goto !== 'undefined' ? goto : null));
+
+  /* ── side effects per screen ───────────────────────── */
+  function _sideEffects(id) {
+    if (id === 'otp') {
+      if (typeof startOtpTimer    === 'function') startOtpTimer();
+      if (typeof focusFirstOtpBox === 'function') setTimeout(focusFirstOtpBox, 360);
+    }
+    if (id === 'profile' && typeof generateQR === 'function') setTimeout(generateQR, 100);
+    if (id === 'success' && typeof generateAndSaveBarco === 'function') generateAndSaveBarco();
+    if (id === 'dashboard' && typeof updateDashboardGreeting === 'function') updateDashboardGreeting();
+  }
+
+  /* ══════════════════════════════════════════════════════
+     BUTTON / CARD PRESS FEEDBACK
+  ══════════════════════════════════════════════════════ */
+  var PRESSABLE = '.btn-orange, .btn-outline-orange, .slot-card, .nav-item';
+
+  document.addEventListener('mousedown', function (e) {
+    var el = e.target.closest(PRESSABLE);
+    if (el && !reduced()) gsap.to(el, { scale: 0.95, duration: 0.1, ease: 'power2.out' });
+  });
+  function _release(e) {
+    var el = e.target.closest(PRESSABLE);
+    if (el && !reduced()) gsap.to(el, { scale: 1, duration: 0.28, ease: 'back.out(2.2)' });
+  }
+  document.addEventListener('mouseup',     _release);
+  document.addEventListener('mouseleave',  _release, true);
+  document.addEventListener('touchstart', function (e) {
+    var el = e.target.closest(PRESSABLE);
+    if (el && !reduced()) gsap.to(el, { scale: 0.95, duration: 0.1, ease: 'power2.out' });
+  }, { passive: true });
+  document.addEventListener('touchend',    _release, { passive: true });
+  document.addEventListener('touchcancel', _release, { passive: true });
+
+  /* ══════════════════════════════════════════════════════
+     NAV ICON BOUNCE
+  ══════════════════════════════════════════════════════ */
+  document.addEventListener('click', function (e) {
+    if (reduced()) return;
+    var item = e.target.closest('.nav-item');
+    if (!item) return;
+    var icon = item.querySelector('svg');
+    if (icon) gsap.fromTo(icon, { y: 0 }, { y: -5, duration: 0.13, ease: 'power2.out', yoyo: true, repeat: 1 });
+  });
+
+  /* ══════════════════════════════════════════════════════
+     INTERACTIVE PATCHES  (slot, genre chip, gender, lang)
+  ══════════════════════════════════════════════════════ */
+  (function patchInteractive() {
+    function spring(el) {
+      if (!reduced()) gsap.fromTo(el, { scale: 0.9 }, { scale: 1, duration: 0.32, ease: 'back.out(2.2)' });
+    }
+
+    var origSlot = window.selectSlot;
+    if (typeof origSlot === 'function') {
+      window.selectSlot = function (el) { origSlot.call(this, el); spring(el); };
+    }
+
+    var origGenre = window.setGenre;
+    if (typeof origGenre === 'function') {
+      window.setGenre = function (btn, g) { origGenre.call(this, btn, g); spring(btn); };
+    }
+
+    var origGender = window.selectGender;
+    if (typeof origGender === 'function') {
+      window.selectGender = function (btn) { origGender.call(this, btn); spring(btn); };
+    }
+
+    var origLang = window.setLang;
+    if (typeof origLang === 'function') {
+      window.setLang = function (lang) {
+        origLang.call(this, lang);
+        if (!reduced()) spring(document.getElementById('lang-' + lang));
+      };
+    }
+
+    var origProfileTab = window.switchProfileTab;
+    if (typeof origProfileTab === 'function') {
+      window.switchProfileTab = function (tab) {
+        origProfileTab.call(this, tab);
+        if (reduced()) return;
+        var rows = qsa(document, '#profile-personal [style*="border-bottom"], #profile-professional [style*="border-bottom"]');
+        if (rows.length) gsap.from(rows, { x: tab === 'professional' ? 20 : -20, autoAlpha: 0, stagger: 0.05, duration: 0.28 });
+      };
+    }
+  }());
+
+  /* ══════════════════════════════════════════════════════
+     CARD HOVER LIFT  (desktop)
+  ══════════════════════════════════════════════════════ */
+  document.addEventListener('mouseover', function (e) {
+    if (reduced()) return;
+    var card = e.target.closest('.card');
+    if (card) gsap.to(card, { y: -3, duration: 0.22, ease: 'power2.out' });
+  });
+  document.addEventListener('mouseout', function (e) {
+    if (reduced()) return;
+    var card = e.target.closest('.card');
+    if (card) gsap.to(card, { y: 0, duration: 0.22, ease: 'power2.out' });
+  });
+
+  /* ══════════════════════════════════════════════════════
+     INIT  — pre-hide splash elements, then reveal them
+     Uses double rAF so browser paints the base frame first
+  ══════════════════════════════════════════════════════ */
+  document.addEventListener('DOMContentLoaded', function () {
+    _preHide('splash');
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+        _reveal('splash');
+      });
+    });
+  });
+
+}());
+</script>
+</body>
+</html>

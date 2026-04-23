@@ -1,5 +1,6 @@
 window.ShowsPage = {
   _filter: { status: 'all', city: 'all', search: '' },
+  _editingShowId: null,
 
   render() {
     return isMobile() ? this.renderMobile() : this.renderDesktop();
@@ -222,6 +223,7 @@ window.ShowsPage = {
       <div style="font-size:18px;font-weight:700;color:#1e293b;margin-bottom:4px">Show Actions</div>
       <div style="font-size:14px;color:#94a3b8;margin-bottom:20px">${show.name}</div>
       <div style="display:flex;flex-direction:column;gap:10px">
+        <button class="btn btn-secondary" onclick="ShowsPage.openEditModal(${showId})"><span>${icon('edit',15)}</span> Edit Show</button>
         <button class="btn btn-secondary" onclick="closeModal();toast('Show duplicated!','success')"><span>${icon('copy',15)}</span> Duplicate Show</button>
         <button class="btn btn-secondary" onclick="closeModal();toast('Show marked Active','success')"><span>${icon('check-circle',15)}</span> Mark as Active</button>
         <button class="btn btn-secondary" onclick="closeModal();toast('Show marked Inactive','info')"><span>${icon('eye-off',15)}</span> Mark as Inactive</button>
@@ -265,62 +267,190 @@ window.ShowsPage = {
     `);
   },
 
+  openEditModal(showId) {
+    closeModal();
+    const show = D.shows.find(s => s.id === showId);
+    if (!show) return;
+    this._editingShowId = showId;
+    // Parse show date into yyyy-mm-dd for the date input
+    const dateVal = (() => {
+      try {
+        const parts = show.date.split(' ');
+        const months = {Jan:'01',Feb:'02',Mar:'03',Apr:'04',May:'05',Jun:'06',Jul:'07',Aug:'08',Sep:'09',Oct:'10',Nov:'11',Dec:'12'};
+        if (parts.length === 3) return `${parts[2]}-${months[parts[1]]||'01'}-${parts[0].padStart(2,'0')}`;
+      } catch(e) {}
+      return '';
+    })();
+    const timeVal = show.time ? show.time.replace(/\s*(AM|PM)/i,'').trim() : '19:00';
+    const typeOpts = ['Concert','Comedy','Reality','Talent','Game Show'].map(t =>
+      `<option${show.type===t?' selected':''}>${t}</option>`).join('');
+    const cityOpts = ['Mumbai','Delhi','Bangalore','Pune','Hyderabad','Chennai','Kolkata','Ahmedabad'].map(c =>
+      `<option${show.city===c?' selected':''}>${c}</option>`).join('');
+    const statusOpts = `<option value="active"${show.status==='active'?' selected':''}>Active</option><option value="inactive"${show.status==='inactive'?' selected':''}>Inactive</option>`;
+    showModal(`
+      <div style="font-size:18px;font-weight:700;color:#1e293b;margin-bottom:4px">Edit Show</div>
+      <div style="font-size:13px;color:#94a3b8;margin-bottom:20px">Update the show details below</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <div style="grid-column:1/-1">
+          <label style="font-size:12px;font-weight:600;color:#64748b;display:block;margin-bottom:5px">SHOW NAME *</label>
+          <input class="input" id="show-form-name" placeholder="e.g. Bollywood Night 2025" value="${show.name}">
+        </div>
+        <div>
+          <label style="font-size:12px;font-weight:600;color:#64748b;display:block;margin-bottom:5px">SHOW TYPE</label>
+          <select class="select" id="show-form-type" style="width:100%">${typeOpts}</select>
+        </div>
+        <div>
+          <label style="font-size:12px;font-weight:600;color:#64748b;display:block;margin-bottom:5px">SHOW DATE *</label>
+          <input class="input" id="show-form-date" type="date" value="${dateVal}">
+        </div>
+        <div>
+          <label style="font-size:12px;font-weight:600;color:#64748b;display:block;margin-bottom:5px">START TIME</label>
+          <input class="input" id="show-form-time" type="time" value="${timeVal}">
+        </div>
+        <div>
+          <label style="font-size:12px;font-weight:600;color:#64748b;display:block;margin-bottom:5px">TOTAL SEATS *</label>
+          <input class="input" id="show-form-seats" type="number" placeholder="e.g. 1000" value="${show.seats}">
+        </div>
+        <div>
+          <label style="font-size:12px;font-weight:600;color:#64748b;display:block;margin-bottom:5px">REPORTING TIME</label>
+          <input class="input" id="show-form-report-time" type="time" value="18:00">
+        </div>
+        <div style="grid-column:1/-1">
+          <label style="font-size:12px;font-weight:600;color:#64748b;display:block;margin-bottom:5px">VENUE / LOCATION *</label>
+          <input class="input" id="show-form-venue" placeholder="Venue name" value="${show.venue}">
+        </div>
+        <div>
+          <label style="font-size:12px;font-weight:600;color:#64748b;display:block;margin-bottom:5px">CITY *</label>
+          <select class="select" id="show-form-city" style="width:100%">
+            <option value="">Select City</option>
+            ${cityOpts}
+          </select>
+        </div>
+        <div>
+          <label style="font-size:12px;font-weight:600;color:#64748b;display:block;margin-bottom:5px">STATUS</label>
+          <select class="select" id="show-form-status" style="width:100%">${statusOpts}</select>
+        </div>
+        <div style="grid-column:1/-1">
+          <label style="font-size:12px;font-weight:600;color:#64748b;display:block;margin-bottom:5px">DESCRIPTION</label>
+          <textarea class="input" id="show-form-desc" rows="2" placeholder="Short description for the app…">${show.description||''}</textarea>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:20px">
+        <button class="btn btn-secondary" style="flex:1;justify-content:center" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-primary" style="flex:1;justify-content:center" onclick="ShowsPage.saveShow()">Save Changes</button>
+      </div>
+    `);
+  },
+
   openAddModal() {
+    this._editingShowId = null;
     showModal(`
       <div style="font-size:18px;font-weight:700;color:#1e293b;margin-bottom:4px">Add New Show</div>
       <div style="font-size:13px;color:#94a3b8;margin-bottom:20px">Fill in the show details below</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
         <div style="grid-column:1/-1">
           <label style="font-size:12px;font-weight:600;color:#64748b;display:block;margin-bottom:5px">SHOW NAME *</label>
-          <input class="input" placeholder="e.g. Bollywood Night 2025">
+          <input class="input" id="show-form-name" placeholder="e.g. Bollywood Night 2025">
         </div>
         <div>
           <label style="font-size:12px;font-weight:600;color:#64748b;display:block;margin-bottom:5px">SHOW TYPE</label>
-          <select class="select" style="width:100%"><option>Concert</option><option>Comedy</option><option>Reality</option><option>Talent</option><option>Game Show</option></select>
+          <select class="select" id="show-form-type" style="width:100%"><option>Concert</option><option>Comedy</option><option>Reality</option><option>Talent</option><option>Game Show</option></select>
         </div>
         <div>
           <label style="font-size:12px;font-weight:600;color:#64748b;display:block;margin-bottom:5px">SHOW DATE *</label>
-          <input class="input" type="date">
+          <input class="input" id="show-form-date" type="date">
         </div>
         <div>
           <label style="font-size:12px;font-weight:600;color:#64748b;display:block;margin-bottom:5px">START TIME</label>
-          <input class="input" type="time" value="19:00">
+          <input class="input" id="show-form-time" type="time" value="19:00">
         </div>
         <div>
           <label style="font-size:12px;font-weight:600;color:#64748b;display:block;margin-bottom:5px">TOTAL SEATS *</label>
-          <input class="input" type="number" placeholder="e.g. 1000">
+          <input class="input" id="show-form-seats" type="number" placeholder="e.g. 1000">
         </div>
         <div>
           <label style="font-size:12px;font-weight:600;color:#64748b;display:block;margin-bottom:5px">REPORTING TIME</label>
-          <input class="input" type="time" value="18:00">
+          <input class="input" id="show-form-report-time" type="time" value="18:00">
         </div>
         <div style="grid-column:1/-1">
           <label style="font-size:12px;font-weight:600;color:#64748b;display:block;margin-bottom:5px">VENUE / LOCATION *</label>
-          <input class="input" placeholder="Venue name">
+          <input class="input" id="show-form-venue" placeholder="Venue name">
         </div>
         <div>
           <label style="font-size:12px;font-weight:600;color:#64748b;display:block;margin-bottom:5px">CITY *</label>
-          <select class="select" style="width:100%">
+          <select class="select" id="show-form-city" style="width:100%">
             <option value="">Select City</option>
             <option>Mumbai</option><option>Delhi</option><option>Bangalore</option><option>Pune</option><option>Hyderabad</option><option>Chennai</option><option>Kolkata</option><option>Ahmedabad</option>
           </select>
         </div>
         <div>
           <label style="font-size:12px;font-weight:600;color:#64748b;display:block;margin-bottom:5px">INITIAL STATUS</label>
-          <select class="select" style="width:100%">
+          <select class="select" id="show-form-status" style="width:100%">
             <option value="active">Active</option>
             <option value="inactive">Inactive</option>
           </select>
         </div>
         <div style="grid-column:1/-1">
           <label style="font-size:12px;font-weight:600;color:#64748b;display:block;margin-bottom:5px">DESCRIPTION</label>
-          <textarea class="input" rows="2" placeholder="Short description for the app…"></textarea>
+          <textarea class="input" id="show-form-desc" rows="2" placeholder="Short description for the app…"></textarea>
         </div>
       </div>
       <div style="display:flex;gap:10px;margin-top:20px">
         <button class="btn btn-secondary" style="flex:1;justify-content:center" onclick="closeModal()">Cancel</button>
-        <button class="btn btn-primary" style="flex:1;justify-content:center" onclick="closeModal();toast('Show created successfully!','success')">Create Show</button>
+        <button class="btn btn-primary" style="flex:1;justify-content:center" onclick="ShowsPage.saveShow()">Create Show</button>
       </div>
     `);
+  },
+
+  saveShow() {
+    const name  = document.getElementById('show-form-name')?.value.trim();
+    const type  = document.getElementById('show-form-type')?.value;
+    const date  = document.getElementById('show-form-date')?.value;
+    const time  = document.getElementById('show-form-time')?.value;
+    const seats = parseInt(document.getElementById('show-form-seats')?.value, 10);
+    const venue = document.getElementById('show-form-venue')?.value.trim();
+    const city  = document.getElementById('show-form-city')?.value;
+    const status = document.getElementById('show-form-status')?.value || 'active';
+    const desc  = document.getElementById('show-form-desc')?.value.trim();
+
+    if (!name) { toast('Show name is required', 'error'); return; }
+
+    if (this._editingShowId !== null) {
+      const show = D.shows.find(s => s.id === this._editingShowId);
+      if (show) {
+        if (name)  show.name   = name;
+        if (type)  show.type   = type;
+        if (date)  show.date   = date;
+        if (time)  show.time   = time;
+        if (seats && !isNaN(seats)) show.seats = seats;
+        if (venue) show.venue  = venue;
+        if (city)  show.city   = city;
+        show.status = status;
+        if (desc !== undefined) show.description = desc;
+      }
+      this._editingShowId = null;
+      closeModal();
+      toast('Show updated successfully!', 'success');
+      this.applyFilters();
+    } else {
+      const newId = Math.max(...D.shows.map(s => s.id), 0) + 1;
+      D.shows.push({
+        id: newId,
+        name: name || 'New Show',
+        type: type || 'Concert',
+        date: date || '',
+        time: time || '19:00',
+        seats: seats || 0,
+        filled: 0,
+        venue: venue || '',
+        city: city || 'Mumbai',
+        status: status,
+        description: desc || '',
+        banner: '🎭'
+      });
+      closeModal();
+      toast('Show created successfully!', 'success');
+      this.applyFilters();
+    }
   }
 };

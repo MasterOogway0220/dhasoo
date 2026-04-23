@@ -186,6 +186,9 @@ window.D = {
     { id: 'U-006', name: 'Kavya Nair',     mobile: '+91 82345 67890', email: 'kavya.n@gmail.com',    dob: '08 Jan 1998', city: 'Chennai',   regDate: '27 Jun 2024', location: 'Chennai',    attended: 7,  noShows: 0, reputation: 'Good',      status: 'active',    initials: 'KN', avatar: 'av-teal',   lastAttended: '4d ago' },
   ],
 
+  /* ── localStorage bridge ── populated on page load from mobile app registrations */
+  appRegistrations: [],
+
   templates: [
     { id: 'tpl-1', name: 'Event Reminder',       channel: 'SMS', body: 'Hi {{Name}}, this is a reminder that {{ShowName}} is on {{Date}} at {{Venue}}. Reporting time: {{ReportingTime}}. See you there! – Dhaasoo' },
     { id: 'tpl-2', name: 'Digital Pass',          channel: 'WhatsApp', body: 'Hi {{Name}} 👋 Your Dhaasoo ticket for *{{ShowName}}* is ready!\n📅 {{Date}}\n📍 {{Venue}}\nShow your QR at Gate 4. See you there!' },
@@ -195,3 +198,44 @@ window.D = {
   ],
 
 };
+
+// ── Load app registrations from localStorage (mobile app bridge) ──────────────
+(function mergeAppRegistrations() {
+  try {
+    var stored = JSON.parse(localStorage.getItem('dhaasoo_registrations') || '[]');
+    if (!stored.length) return;
+    stored.forEach(function(r) {
+      // avoid duplicates on reload
+      var exists = D.registrations.some(function(x) { return x.id === r.id; });
+      if (!exists) {
+        D.registrations.unshift({
+          id: r.id,
+          showId: null,          // app registrations may not map to an existing showId
+          name: r.name,
+          mobile: r.mobile || '',
+          city: r.city || 'Mumbai',
+          age: null,
+          gender: null,
+          regDate: r.regDate || 'Just now',
+          callStatus: r.callStatus || 'not_called',
+          ticket: 'not_sent',
+          checkin: 'pending',
+          avatar: 'av-orange',
+          initials: (r.firstName || 'U').charAt(0).toUpperCase() + (r.lastName || '').charAt(0).toUpperCase(),
+          show: r.show,
+          date: r.date,
+          slot: r.slot,
+          source: 'app',
+          barco: r.barco
+        });
+      } else {
+        // sync status changes made in admin back to the stored reg
+        var adminReg = D.registrations.find(function(x) { return x.id === r.id; });
+        if (adminReg && r.status !== adminReg.callStatus) {
+          r.status = adminReg.callStatus;
+        }
+      }
+    });
+    D.appRegistrations = stored;
+  } catch(e) {}
+})();

@@ -1,0 +1,168 @@
+5. Detailed Module Explanation
+
+Module 1: Mobile App (Android & iOS) – User Features
+The Dhaasoo mobile app will provide a simple, secure, and smooth experience for audience members.
+A) First Time User (Registration Flow)
+Step 1: Download & Open the App
+•	User downloads and opens the Dhaasoo App
+
+Step 2: Enter Mobile Number
+•	Welcome screen prompts user to enter mobile number
+•	User enters 10-digit number and clicks “Send OTP”
+Step 3: Verify OTP
+•	User receives a 6-digit OTP via SMS
+•	User enters OTP
+•	If correct → proceeds to registration
+•	If incorrect → user can retry
+Step 4: Complete Registration Form
+User fills details such as:
+•	Full Name
+•	Email ID
+•	City
+•	Date of Birth (DOB)
+•	Any other required details
+User clicks Submit, profile is created successfully and user lands on Dashboard.
+
+B) Dashboard (Main Screen)
+Once registered, user sees 4 main options:
+1.	Register Show Seat
+2.	Show Your Talent (Coming Soon)
+3.	Advertise With Us (Coming Soon)
+4.	Profile
+
+Option 1: Register Show Seat (Core Feature)
+
+Step 1: Browse Shows
+•	User clicks Register Show Seat
+•	User sees list of available shows and dates
+Step 2: Select Show & Date
+•	User selects show and preferred date
+•	Clicks Register for this show
+Step 3: Review Registration Details
+System auto-fills user profile details:
+•	Name (non-editable)
+•	Mobile Number (non-editable)
+•	Email ID (non-editable)
+Additional fields can be filled if required for that show.
+Step 4: Confirm Registration
+•	User clicks Confirm Registration
+•	Registration is successful
+•	Confirmation message is displayed
+•	User returns to dashboard
+
+Option 2: Show Your Talent (Coming Soon)
+•	Displays “Coming Soon” page
+•	Designed for future enhancement
+Option 3: Advertise With Us (Coming Soon)
+•	Displays “Coming Soon” page
+•	Designed for future enhancement
+
+Option 4: Profile (Smart Profile Control System)
+Scenario A: No Active Show Registrations
+•	Can edit: Name, Email, City, DOB, other details
+•	Cannot edit: Mobile number (permanently locked)
+Scenario B: Has Active Show Registrations
+•	Can edit: Email, City, other details
+•	Cannot edit: Mobile number (permanently locked)
+•	Cannot edit: Name & DOB until:
+o	show date passes OR
+o	registration is cancelled
+This ensures data integrity and avoids misuse or last-minute identity changes.
+Returning User Experience
+•	User opens the app
+•	System recognises authentication
+•	User directly lands on Dashboard
+•	No repeated login required
+C) Important Rules & Restrictions
+Mobile Number Rules
+•	Once registered, mobile number cannot be changed permanently
+Name Rules
+•	Name can be changed only if user has no upcoming show registrations
+•	Name locks once show registration is done
+•	Name unlocks after:
+o	show date passes OR
+o	registration is cancelled
+Email, City and Other Details
+•	Editable anytime from Profile section
+•	Remains editable even during active registrations
+
+
+Module 2: Admin Dashboard – Full Admin Features
+A dedicated admin dashboard will provide complete operational control and reporting for the Dhaasoo team.
+A) Admin Dashboard Overview
+Admin will have a central dashboard to monitor app activity including:
+•	Total registered users
+•	Daily / weekly / monthly registrations
+•	Total show seat registrations
+•	Event-wise registration summary
+•	Upcoming shows and dates snapshot
+B) User Registration Management
+Admin can view and manage registered users:
+•	Full user list with details (Name, Mobile, Email, City, DOB etc.)
+•	Search and filter by:
+o	Name
+o	Mobile number
+o	City
+o	Registration date
+•	View user registration history
+C) Event / Show Registration Reports
+Admin can track registrations event-wise:
+•	See who has registered for each event
+•	View date-wise registrations for a show
+•	Filter by:
+o	Show name
+o	Date
+o	City
+•	Download reports in Excel / CSV
+•	Export lists for entry/coordination purposes
+D) Event Management (Add / Edit / Delete Events)
+Admin can manage events completely:
+•	Add new shows/events with:
+o	Show Name
+o	Date(s)
+o	Location / Venue
+o	Seats / quota
+o	Optional extra fields
+•	Edit events anytime
+•	Delete outdated/cancelled events
+•	Mark events as:
+o	Active / Inactive
+o	Fully Booked/Closed.
+Module 3: Static Website (Landing Page) – Dhaasoo
+A professional static website will be developed to build trust, explain the platform, and drive app downloads.
+Purpose
+•	Explain clearly what Dhaasoo App is
+•	Provide app download links
+•	Build credibility through official online presence
+Key Sections / Features
+1. About Dhaasoo
+•	Short introduction and purpose
+•	Explanation of how the platform works
+2. How It Works
+•	Simple steps:
+o	Download app
+o	OTP registration
+o	Select show & date
+o	Confirm registration
+3. App Download Links
+•	Android Play Store link
+•	iOS App Store link (if applicable)
+•	QR code download option (optional)
+4. Team Behind Dhaasoo
+•	Introduction to the organisation/team
+•	Experience in managing audience registrations and show operations
+•	Builds strong credibility and trust
+
+5. Shows Managed / Experience
+Highlights types of shows managed earlier, such as:
+•	Reality shows
+•	Talent shows
+•	Comedy shows
+•	Game shows
+•	Live studio audience shows
+(Exact show names can be added as per client preference.)
+6. Screenshots / App Preview (Optional)
+•	App preview images for better user confidence
+7. Contact & Support
+•	Support email / phone number
+•	Social media links (optional)
