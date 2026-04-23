@@ -574,54 +574,46 @@
 
       <!-- Item 1: Indian Idol -->
       <div class="card" data-genre="talent" style="display:flex;align-items:center;gap:12px;padding:12px;margin-bottom:10px;">
-        <div style="width:72px;height:72px;border-radius:12px;background:url('https://upload.wikimedia.org/wikipedia/en/7/72/Indianidol14.png');background-size:cover;background-position:center;flex-shrink:0;display:flex;align-items:center;justify-content:center;">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-        </div>
+        <div style="width:72px;height:72px;border-radius:12px;background:url('./assets/images/indian_idol.png');background-size:cover;background-position:center;flex-shrink:0;"></div>
         <div style="flex:1;min-width:0;">
-          <p style="font-size:14px;font-weight:700;color:var(--white);margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Indian Idol</p>
-          <p style="font-size:12px;color:var(--muted);margin-bottom:3px;">Film City, Mumbai</p>
-          <p style="font-size:11px;color:var(--dim);">Sat–Sun • 8:00 PM</p>
+          <p style="font-size:14px;font-weight:700;color:var(--white);margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Indian Idol Season 14</p>
+          <p style="font-size:12px;color:var(--muted);margin-bottom:3px;">📍 Film City, Mumbai</p>
+          <p style="font-size:11px;color:var(--dim);">Sat–Sun</p>
         </div>
-        <button class="btn-orange" onclick="goto('book')" style="width:auto;padding:9px 14px;font-size:12px;border-radius:10px;flex-shrink:0;">Request Seat</button>
+        <button class="btn-orange" onclick="openBookScreen('indianidol')" style="width:auto;padding:9px 14px;font-size:12px;border-radius:10px;flex-shrink:0;">Request Seat</button>
       </div>
 
       <!-- Item 2: TANCK -->
       <div class="card" data-genre="reality" style="display:flex;align-items:center;gap:12px;padding:12px;margin-bottom:10px;">
-        <div style="width:72px;height:72px;border-radius:12px;background:url('https://upload.wikimedia.org/wikipedia/commons/0/0c/IGT_Logo.png');background-size:cover;background-position:center;flex-shrink:0;display:flex;align-items:center;justify-content:center;">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-        </div>
+        <div style="width:72px;height:72px;border-radius:12px;background:url('./assets/images/tanck.png');background-size:cover;background-position:center;flex-shrink:0;"></div>
         <div style="flex:1;min-width:0;">
           <p style="font-size:14px;font-weight:700;color:var(--white);margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">TANCK</p>
-          <p style="font-size:12px;color:var(--muted);margin-bottom:3px;">BKC, Mumbai</p>
-          <p style="font-size:11px;color:var(--dim);">Weekdays • 7:30 PM</p>
+          <p style="font-size:12px;color:var(--muted);margin-bottom:3px;">📍 BKC, Mumbai</p>
+          <p style="font-size:11px;color:var(--dim);">Weekdays</p>
         </div>
         <button style="width:auto;padding:9px 14px;font-size:12px;border-radius:10px;flex-shrink:0;background:transparent;border:1.5px solid var(--border);color:var(--muted);font-family:'Inter',sans-serif;font-weight:600;cursor:pointer;">Join Waitlist</button>
       </div>
 
       <!-- Item 3: Shark Tank India -->
       <div class="card" data-genre="reality" style="display:flex;align-items:center;gap:12px;padding:12px;margin-bottom:10px;">
-        <div style="width:72px;height:72px;border-radius:12px;background:url('https://upload.wikimedia.org/wikipedia/en/2/2f/Shark_Tank_India.jpg');background-size:cover;background-position:center;flex-shrink:0;display:flex;align-items:center;justify-content:center;">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-        </div>
+        <div style="width:72px;height:72px;border-radius:12px;background:url('./assets/images/shark_tank.png');background-size:cover;background-position:center;flex-shrink:0;"></div>
         <div style="flex:1;min-width:0;">
           <p style="font-size:14px;font-weight:700;color:var(--white);margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Shark Tank India</p>
-          <p style="font-size:12px;color:var(--muted);margin-bottom:3px;">Goregaon, Mumbai</p>
-          <p style="font-size:11px;color:var(--dim);">Mon–Fri • 9:00 PM</p>
+          <p style="font-size:12px;color:var(--muted);margin-bottom:3px;">📍 Goregaon, Mumbai</p>
+          <p style="font-size:11px;color:var(--dim);">Mon–Fri</p>
         </div>
-        <button class="btn-orange" onclick="goto('book')" style="width:auto;padding:9px 14px;font-size:12px;border-radius:10px;flex-shrink:0;">Request Seat</button>
+        <button class="btn-orange" onclick="openBookScreen('sharktank')" style="width:auto;padding:9px 14px;font-size:12px;border-radius:10px;flex-shrink:0;">Request Seat</button>
       </div>
 
       <!-- Item 4: Bigg Boss Weekend -->
       <div class="card" data-genre="reality" style="display:flex;align-items:center;gap:12px;padding:12px;margin-bottom:4px;">
-        <div style="width:72px;height:72px;border-radius:12px;background:url('https://upload.wikimedia.org/wikipedia/en/9/92/Bigg_Boss_17.png');background-color:#1e1b4b;background-size:cover;background-position:center;flex-shrink:0;display:flex;align-items:center;justify-content:center;">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-        </div>
+        <div style="width:72px;height:72px;border-radius:12px;background:url('./assets/images/bigg_boss.png');background-size:cover;background-position:center;flex-shrink:0;"></div>
         <div style="flex:1;min-width:0;">
-          <p style="font-size:14px;font-weight:700;color:var(--white);margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Bigg Boss Weekend</p>
-          <p style="font-size:12px;color:var(--muted);margin-bottom:3px;">Lonavala</p>
-          <p style="font-size:11px;color:var(--dim);">Sat–Sun • 9:00 PM</p>
+          <p style="font-size:14px;font-weight:700;color:var(--white);margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Bigg Boss Weekend Ka Vaar</p>
+          <p style="font-size:12px;color:var(--muted);margin-bottom:3px;">📍 Lonavala, Maharashtra</p>
+          <p style="font-size:11px;color:var(--dim);">Sat–Sun</p>
         </div>
-        <button class="btn-orange" onclick="goto('book')" style="width:auto;padding:9px 14px;font-size:12px;border-radius:10px;flex-shrink:0;">Request Seat</button>
+        <button class="btn-orange" onclick="openBookScreen('biggboss')" style="width:auto;padding:9px 14px;font-size:12px;border-radius:10px;flex-shrink:0;">Request Seat</button>
       </div>
 
       <div class="no-genre-results" style="display:none;text-align:center;padding:24px 0;">
@@ -714,7 +706,7 @@
 
       <!-- Card 1: KBC -->
       <div class="card" data-genre="game show" style="margin-bottom:14px;">
-        <div style="height:160px;background:linear-gradient(135deg,rgba(0,0,0,0.1),rgba(0,0,0,0.8)), url('https://upload.wikimedia.org/wikipedia/commons/0/03/KAUN_BANEGA_CROREPATI_SEASON_11.jpg');background-size:cover;background-position:center;position:relative;display:flex;align-items:flex-end;padding:14px;">
+        <div style="height:160px;background:linear-gradient(135deg,rgba(0,0,0,0.1),rgba(0,0,0,0.8)), url('./assets/images/kbc.png');background-size:cover;background-position:center;position:relative;display:flex;align-items:flex-end;padding:14px;">
           <div>
             <div style="background:rgba(0,0,0,0.3);border-radius:6px;padding:3px 8px;display:inline-block;margin-bottom:6px;">
               <span style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.7);letter-spacing:1px;">GAME SHOW</span>
@@ -731,13 +723,13 @@
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#9A7A5A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
             <span style="font-size:12px;color:var(--muted);">Wed–Thu • 9:00 PM</span>
           </div>
-          <button class="btn-orange" onclick="goto('book')" style="border-radius:10px;padding:12px;font-size:14px;">Request Seat</button>
+          <button class="btn-orange" onclick="openBookScreen('kbc')" style="border-radius:10px;padding:12px;font-size:14px;">Request Seat</button>
         </div>
       </div>
 
       <!-- Card 2: Kapil Sharma Show -->
       <div class="card" data-genre="comedy" style="margin-bottom:14px;">
-        <div style="height:160px;background:linear-gradient(135deg,rgba(0,0,0,0.1),rgba(0,0,0,0.8)), url('https://upload.wikimedia.org/wikipedia/en/4/45/The_Kapil_Sharma_Show_logo.png');background-size:cover;background-position:center;position:relative;display:flex;align-items:flex-end;padding:14px;">
+        <div style="height:160px;background:linear-gradient(135deg,rgba(0,0,0,0.1),rgba(0,0,0,0.8)), url('./assets/images/kapil_sharma.png');background-size:cover;background-position:center;position:relative;display:flex;align-items:flex-end;padding:14px;">
           <div>
             <div style="background:rgba(0,0,0,0.3);border-radius:6px;padding:3px 8px;display:inline-block;margin-bottom:6px;">
               <span style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.7);letter-spacing:1px;">COMEDY</span>
@@ -752,15 +744,15 @@
           </div>
           <div style="display:flex;align-items:center;gap:6px;margin-bottom:14px;">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#9A7A5A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-            <span style="font-size:12px;color:var(--muted);">Every Weekend</span>
+            <span style="font-size:12px;color:var(--muted);">Sat–Sun</span>
           </div>
-          <button class="btn-orange" onclick="goto('book')" style="border-radius:10px;padding:12px;font-size:14px;">Request Seat</button>
+          <button class="btn-orange" onclick="openBookScreen('kapil')" style="border-radius:10px;padding:12px;font-size:14px;">Request Seat</button>
         </div>
       </div>
 
       <!-- Card 3: Bigg Boss 17 Finale - SOLD OUT -->
       <div class="card" data-genre="reality" style="margin-bottom:14px;">
-        <div style="height:160px;background:linear-gradient(135deg,rgba(0,0,0,0.1),rgba(0,0,0,0.8)), url('https://upload.wikimedia.org/wikipedia/en/9/92/Bigg_Boss_17.png');background-color:#0f172a;background-size:cover;background-position:center;position:relative;display:flex;align-items:flex-end;padding:14px;">
+        <div style="height:160px;background:linear-gradient(135deg,rgba(0,0,0,0.1),rgba(0,0,0,0.8)), url('./assets/images/bigg_boss.png');background-color:#0f172a;background-size:cover;background-position:center;position:relative;display:flex;align-items:flex-end;padding:14px;">
           <div>
             <div style="background:rgba(0,0,0,0.3);border-radius:6px;padding:3px 8px;display:inline-block;margin-bottom:6px;">
               <span style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.7);letter-spacing:1px;">REALITY</span>
@@ -861,11 +853,11 @@
 
       <!-- Show info row -->
       <div class="card" style="display:flex;align-items:center;gap:12px;padding:14px;margin-bottom:24px;">
-        <div style="width:48px;height:48px;border-radius:12px;background:url('https://upload.wikimedia.org/wikipedia/en/4/45/The_Kapil_Sharma_Show_logo.png');background-size:cover;background-position:center;flex-shrink:0;"></div>
+        <div id="book-show-img" style="width:48px;height:48px;border-radius:12px;background:url('./assets/images/kapil_sharma.png');background-size:cover;background-position:center;flex-shrink:0;"></div>
         <div style="flex:1;min-width:0;">
           <p style="font-size:10px;font-weight:700;color:var(--dim);letter-spacing:1px;margin-bottom:3px;">AUDIENCE REGISTRATION</p>
-          <p style="font-size:15px;font-weight:700;color:var(--white);margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">The Kapil Sharma Show</p>
-          <p style="font-size:12px;color:var(--muted);">📍 Film City, Mumbai</p>
+          <p id="book-show-name" style="font-size:15px;font-weight:700;color:var(--white);margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">The Kapil Sharma Show</p>
+          <p id="book-show-location" style="font-size:12px;color:var(--muted);">📍 Film City, Mumbai</p>
         </div>
       </div>
 
@@ -876,11 +868,11 @@
 
       <!-- Date dropdown -->
       <div style="position:relative;margin-bottom:24px;">
-        <select class="input-field">
-          <option>5 Sep, Tuesday</option>
-          <option>12 Sep, Tuesday</option>
-          <option>19 Sep, Tuesday</option>
-          <option>26 Sep, Tuesday</option>
+        <select id="book-date-select" class="input-field">
+          <option>Sat, 8 Feb</option>
+          <option>Sun, 9 Feb</option>
+          <option>Sat, 15 Feb</option>
+          <option>Sun, 16 Feb</option>
         </select>
       </div>
 
@@ -1593,7 +1585,7 @@
       <!-- Card 1: Confirmed -->
       <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:12px;">
         <div style="display:flex;gap:12px;padding:14px;">
-          <div style="width:64px;height:64px;border-radius:10px;background:url('https://upload.wikimedia.org/wikipedia/en/4/45/The_Kapil_Sharma_Show_logo.png');background-size:cover;background-position:center;flex-shrink:0;"></div>
+          <div style="width:64px;height:64px;border-radius:10px;background:url('./assets/images/kapil_sharma.png');background-size:cover;background-position:center;flex-shrink:0;"></div>
           <div style="flex:1;min-width:0;">
             <h4 style="color:var(--white);font-size:14px;font-weight:700;margin-bottom:3px;">The Kapil Sharma Show</h4>
             <p style="color:var(--muted);font-size:11px;margin-bottom:2px;">📍 Film City, Mumbai</p>
@@ -1609,7 +1601,7 @@
       <!-- Card 2: Awaiting Approval -->
       <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:12px;">
         <div style="display:flex;gap:12px;padding:14px;">
-          <div style="width:64px;height:64px;border-radius:10px;background:url('https://upload.wikimedia.org/wikipedia/en/7/72/Indianidol14.png');background-size:cover;background-position:center;flex-shrink:0;"></div>
+          <div style="width:64px;height:64px;border-radius:10px;background:url('./assets/images/indian_idol.png');background-size:cover;background-position:center;flex-shrink:0;"></div>
           <div style="flex:1;min-width:0;">
             <h4 style="color:var(--white);font-size:14px;font-weight:700;margin-bottom:3px;">Indian Idol Season 14</h4>
             <p style="color:var(--muted);font-size:11px;margin-bottom:2px;">📍 Film City, Mumbai</p>
@@ -1626,7 +1618,7 @@
       <!-- Card 3: View Details -->
       <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:12px;">
         <div style="display:flex;gap:12px;padding:14px;">
-          <div style="width:64px;height:64px;border-radius:10px;background:url('https://upload.wikimedia.org/wikipedia/en/9/92/Bigg_Boss_17.png');background-color:#1e1b4b;background-size:cover;background-position:center;flex-shrink:0;"></div>
+          <div style="width:64px;height:64px;border-radius:10px;background:url('./assets/images/bigg_boss.png');background-color:#1e1b4b;background-size:cover;background-position:center;flex-shrink:0;"></div>
           <div style="flex:1;min-width:0;">
             <h4 style="color:var(--white);font-size:14px;font-weight:700;margin-bottom:3px;">Bigg Boss 17 Weekend Ka Vaar</h4>
             <p style="color:var(--muted);font-size:11px;margin-bottom:2px;">📍 Lonavala, Maharashtra</p>
@@ -1641,7 +1633,7 @@
       <!-- Card 4: Waitlist -->
       <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:12px;">
         <div style="display:flex;gap:12px;padding:14px;">
-          <div style="width:64px;height:64px;border-radius:10px;background:url('https://upload.wikimedia.org/wikipedia/en/3/39/DanceDeewane.png');background-size:contain;background-repeat:no-repeat;background-position:center;background-color:#111;flex-shrink:0;"></div>
+          <div style="width:64px;height:64px;border-radius:10px;background:url('./assets/images/dance_deewane.png');background-size:contain;background-repeat:no-repeat;background-position:center;background-color:#111;flex-shrink:0;"></div>
           <div style="flex:1;min-width:0;">
             <h4 style="color:var(--white);font-size:14px;font-weight:700;margin-bottom:3px;">Dance Deewane Season 4</h4>
             <p style="color:var(--muted);font-size:11px;margin-bottom:2px;">📍 Film City, Mumbai</p>
@@ -2220,6 +2212,60 @@
     }
   }
 
+
+  /* ────────────────────────────────────────
+     SHOW DATA & DYNAMIC BOOK SCREEN
+  ──────────────────────────────────────── */
+  var _showsData = {
+    kbc: {
+      name: 'Kaun Banega Crorepati',
+      location: '📍 Film City, Mumbai',
+      img: './assets/images/kbc.png',
+      dates: ['Wed, 5 Feb', 'Thu, 6 Feb', 'Wed, 12 Feb', 'Thu, 13 Feb', 'Wed, 19 Feb', 'Thu, 20 Feb']
+    },
+    kapil: {
+      name: 'The Kapil Sharma Show',
+      location: '📍 Film City, Mumbai',
+      img: './assets/images/kapil_sharma.png',
+      dates: ['Sat, 8 Feb', 'Sun, 9 Feb', 'Sat, 15 Feb', 'Sun, 16 Feb', 'Sat, 22 Feb', 'Sun, 23 Feb']
+    },
+    indianidol: {
+      name: 'Indian Idol Season 14',
+      location: '📍 Film City, Mumbai',
+      img: './assets/images/indian_idol.png',
+      dates: ['Sat, 8 Feb', 'Sun, 9 Feb', 'Sat, 15 Feb', 'Sun, 16 Feb', 'Sat, 22 Feb', 'Sun, 23 Feb']
+    },
+    sharktank: {
+      name: 'Shark Tank India',
+      location: '📍 Goregaon, Mumbai',
+      img: './assets/images/shark_tank.png',
+      dates: ['Mon, 3 Feb', 'Tue, 4 Feb', 'Wed, 5 Feb', 'Thu, 6 Feb', 'Fri, 7 Feb', 'Mon, 10 Feb']
+    },
+    biggboss: {
+      name: 'Bigg Boss Weekend Ka Vaar',
+      location: '📍 Lonavala, Maharashtra',
+      img: './assets/images/bigg_boss.png',
+      dates: ['Sat, 8 Feb', 'Sun, 9 Feb', 'Sat, 15 Feb', 'Sun, 16 Feb']
+    }
+  };
+
+  function openBookScreen(showKey) {
+    var show = _showsData[showKey];
+    if (!show) { goto('book'); return; }
+    var imgEl    = document.getElementById('book-show-img');
+    var nameEl   = document.getElementById('book-show-name');
+    var locEl    = document.getElementById('book-show-location');
+    var datesSel = document.getElementById('book-date-select');
+    if (imgEl)    imgEl.style.backgroundImage = "url('" + show.img + "')";
+    if (nameEl)   nameEl.textContent = show.name;
+    if (locEl)    locEl.textContent  = show.location;
+    if (datesSel) {
+      datesSel.innerHTML = show.dates.map(function(d) {
+        return '<option value="' + d + '">' + d + '</option>';
+      }).join('');
+    }
+    goto('book');
+  }
 
   /* ────────────────────────────────────────
      GENRE CHIPS
