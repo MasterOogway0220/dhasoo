@@ -498,7 +498,7 @@
   <!-- ═══════════════════════════════════════════ -->
   <!-- SCREEN 4 — DASHBOARD                       -->
   <!-- ═══════════════════════════════════════════ -->
-  <div id="screen-dashboard" class="screen">
+  <div id="screen-dashboard" class="screen" style="overflow:hidden;">
 
     <!-- Top bar -->
     <div style="display:flex;align-items:center;gap:12px;padding:18px 20px 16px;flex-shrink:0;">
@@ -525,7 +525,7 @@
     </div>
 
     <!-- Scrollable body -->
-    <div style="padding:0 20px 16px;">
+    <div style="padding:0 20px 16px;flex:1;overflow-y:auto;min-height:0;">
 
       <!-- Register Show Seat — primary action -->
       <div style="background:linear-gradient(135deg,#3d1800,#1f0c00);border:1.5px solid var(--orange);border-radius:16px;padding:18px;margin-bottom:12px;cursor:pointer;position:relative;overflow:hidden;" onclick="goto('shows')">
@@ -662,7 +662,7 @@
   <!-- ═══════════════════════════════════════════ -->
   <!-- SCREEN 5 — SHOWS                           -->
   <!-- ═══════════════════════════════════════════ -->
-  <div id="screen-shows" class="screen">
+  <div id="screen-shows" class="screen" style="overflow:hidden;">
 
     <!-- Top bar -->
     <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 20px 14px;flex-shrink:0;">
@@ -700,7 +700,7 @@
     </div>
 
     <!-- Scrollable list -->
-    <div style="padding:0 20px 16px;">
+    <div style="padding:0 20px 16px;flex:1;overflow-y:auto;min-height:0;">
 
       <p class="section-heading" style="margin-bottom:14px;">Trending Now</p>
 
@@ -1564,7 +1564,7 @@
   <!-- ═══════════════════════════════════════════ -->
   <!-- SCREEN 11: MY REGISTRATIONS                -->
   <!-- ═══════════════════════════════════════════ -->
-  <div id="screen-myregs" class="screen" style="display:none;flex-direction:column;background:var(--bg);">
+  <div id="screen-myregs" class="screen" style="display:none;flex-direction:column;background:var(--bg);overflow:hidden;">
     <div style="padding:18px 20px 12px;display:flex;align-items:center;justify-content:space-between;">
       <h2 style="color:var(--white);font-size:20px;font-weight:800;">My Registrations</h2>
       <div style="display:flex;gap:16px;">
@@ -1580,7 +1580,7 @@
       <span id="tab-history" onclick="switchRegTab('history')" style="color:var(--dim);font-size:14px;font-weight:600;padding-bottom:10px;cursor:pointer;">History</span>
     </div>
 
-    <div style="padding:0 20px 16px;">
+    <div style="padding:0 20px 16px;flex:1;overflow-y:auto;min-height:0;">
 
       <!-- Card 1: Confirmed -->
       <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:12px;">
@@ -1589,7 +1589,8 @@
           <div style="flex:1;min-width:0;">
             <h4 style="color:var(--white);font-size:14px;font-weight:700;margin-bottom:3px;">The Kapil Sharma Show</h4>
             <p style="color:var(--muted);font-size:11px;margin-bottom:2px;">📍 Film City, Mumbai</p>
-            <p style="color:var(--muted);font-size:11px;">📅 Sat 24 Oct • 4:00PM</p>
+            <p style="color:var(--muted);font-size:11px;">📅 Sat, 26 Apr 2026 &nbsp;•&nbsp; ☀️ Morning</p>
+            <p style="color:var(--dim);font-size:10px;margin-top:3px;">Reg ID: DH-48271 &nbsp;|&nbsp; 2 Seats</p>
           </div>
           <span style="background:#0d2a14;border:1px solid var(--green-bdr);color:var(--green);font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;height:fit-content;white-space:nowrap;">✓ Confirmed</span>
         </div>
@@ -1605,25 +1606,28 @@
           <div style="flex:1;min-width:0;">
             <h4 style="color:var(--white);font-size:14px;font-weight:700;margin-bottom:3px;">Indian Idol Season 14</h4>
             <p style="color:var(--muted);font-size:11px;margin-bottom:2px;">📍 Film City, Mumbai</p>
-            <p style="color:var(--muted);font-size:11px;">📅 28 Nov 2025 • 3:00PM</p>
+            <p style="color:var(--muted);font-size:11px;">📅 Sun, 27 Apr 2026 &nbsp;•&nbsp; ⛅ Afternoon</p>
+            <p style="color:var(--dim);font-size:10px;margin-top:3px;">Reg ID: DH-39154 &nbsp;|&nbsp; 1 Seat</p>
           </div>
           <span style="background:#2a1800;border:1px solid #6B4A1A;color:#F5A040;font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;height:fit-content;white-space:nowrap;">⏳ Awaiting</span>
         </div>
         <div style="border-top:1px solid var(--border);padding:10px 14px;display:flex;gap:8px;">
-          <button style="flex:1;height:40px;background:transparent;border:1.5px solid var(--orange);color:var(--orange);font-size:13px;font-weight:600;border-radius:10px;cursor:pointer;font-family:inherit;">Manage Request</button>
+          <button style="flex:1;height:40px;background:transparent;border:1.5px solid var(--orange);color:var(--orange);font-size:13px;font-weight:600;border-radius:10px;cursor:pointer;font-family:inherit;">Manage</button>
           <button style="flex:1;height:40px;background:transparent;border:1.5px solid #c0392b;color:#e74c3c;font-size:13px;font-weight:600;border-radius:10px;cursor:pointer;font-family:inherit;" onclick="showCancelWarning('Indian Idol Season 14')">Cancel</button>
         </div>
       </div>
 
-      <!-- Card 3: View Details -->
+      <!-- Card 3: Confirmed — Bigg Boss -->
       <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:12px;">
         <div style="display:flex;gap:12px;padding:14px;">
-          <div style="width:64px;height:64px;border-radius:10px;background:url('./assets/images/bigg_boss.png');background-color:#1e1b4b;background-size:cover;background-position:center;flex-shrink:0;"></div>
+          <div style="width:64px;height:64px;border-radius:10px;background:url('./assets/images/bigg_boss.png');background-size:cover;background-position:center;flex-shrink:0;"></div>
           <div style="flex:1;min-width:0;">
-            <h4 style="color:var(--white);font-size:14px;font-weight:700;margin-bottom:3px;">Bigg Boss 17 Weekend Ka Vaar</h4>
+            <h4 style="color:var(--white);font-size:14px;font-weight:700;margin-bottom:3px;">Bigg Boss Weekend Ka Vaar</h4>
             <p style="color:var(--muted);font-size:11px;margin-bottom:2px;">📍 Lonavala, Maharashtra</p>
-            <p style="color:var(--muted);font-size:11px;">📅 8 Feb 2025 • 6:00PM</p>
+            <p style="color:var(--muted);font-size:11px;">📅 Sat, 3 May 2026 &nbsp;•&nbsp; 🌙 Evening</p>
+            <p style="color:var(--dim);font-size:10px;margin-top:3px;">Reg ID: DH-72603 &nbsp;|&nbsp; 3 Seats</p>
           </div>
+          <span style="background:#0d2a14;border:1px solid var(--green-bdr);color:var(--green);font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;height:fit-content;white-space:nowrap;">✓ Confirmed</span>
         </div>
         <div style="border-top:1px solid var(--border);padding:10px 14px;">
           <button onclick="goto('review-details')" style="width:100%;height:40px;background:transparent;border:1.5px solid var(--border);color:var(--white);font-size:13px;font-weight:600;border-radius:10px;cursor:pointer;font-family:inherit;">View Details</button>
@@ -1633,11 +1637,12 @@
       <!-- Card 4: Waitlist -->
       <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:12px;">
         <div style="display:flex;gap:12px;padding:14px;">
-          <div style="width:64px;height:64px;border-radius:10px;background:url('./assets/images/dance_deewane.png');background-size:contain;background-repeat:no-repeat;background-position:center;background-color:#111;flex-shrink:0;"></div>
+          <div style="width:64px;height:64px;border-radius:10px;background:url('./assets/images/kbc.png');background-size:cover;background-position:center;flex-shrink:0;"></div>
           <div style="flex:1;min-width:0;">
-            <h4 style="color:var(--white);font-size:14px;font-weight:700;margin-bottom:3px;">Dance Deewane Season 4</h4>
+            <h4 style="color:var(--white);font-size:14px;font-weight:700;margin-bottom:3px;">Kaun Banega Crorepati</h4>
             <p style="color:var(--muted);font-size:11px;margin-bottom:2px;">📍 Film City, Mumbai</p>
-            <p style="color:var(--muted);font-size:11px;">📅 12 Mar 2025 • 5:00PM</p>
+            <p style="color:var(--muted);font-size:11px;">📅 Wed, 7 May 2026 &nbsp;•&nbsp; ☀️ Morning</p>
+            <p style="color:var(--dim);font-size:10px;margin-top:3px;">Reg ID: DH-51847 &nbsp;|&nbsp; 1 Seat</p>
           </div>
           <span style="background:#1a1a3a;border:1px solid #3a3a6B;color:#8080E0;font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;height:fit-content;white-space:nowrap;">Waitlist</span>
         </div>
